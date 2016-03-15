@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='clients',
-    version='0.0',
+    version='0.1',
     description='HTTP for lazy, impatient, hubristic humans.',
     long_description=open('README.rst').read(),
     author='Aric Coady',
@@ -13,7 +13,7 @@ setup(
     install_requires=['requests'],
     tests_require=['pytest-cov'],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',

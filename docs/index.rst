@@ -69,6 +69,7 @@ Avant-garde Usage
    * ``delitem``: DELETE
    * ``contains``: HEAD ok
    * ``iter``: GET with stream and iter_lines
+   * ``call``: GET with params
 
 .. literalinclude:: ../tests/test_remote.py
    :pyobject: test_syntax

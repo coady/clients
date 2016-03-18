@@ -78,6 +78,10 @@ class Resource(Client):
         """Return whether endpoint exists according to HEAD request."""
         return super(Resource, self).request('HEAD', path)
 
+    def __call__(self, path='', **params):
+        """GET request with params."""
+        return self.get(path, params=params)
+
     def __getattr__(self, name):
         """Return a cloned `Resource`_ with appended path."""
         if name in type(self).__attrs__:

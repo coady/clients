@@ -49,3 +49,4 @@ def test_syntax():
     assert '200' in resource.status
     assert '404' not in resource.status
     assert [line['id'] for line in resource / 'stream/3'] == [0, 1, 2]
+    assert resource('cookies/set', name='value') == {'cookies': {'name': 'value'}}

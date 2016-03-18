@@ -39,3 +39,4 @@ def test_resource(local):
     resource.headers['accept'] = 'text/html'
     assert resource.get() == b'{}'
     assert list(resource) == [b'{}']
+    assert resource(name='value') == b'{}'

@@ -40,3 +40,4 @@ def test_resource(local):
     assert resource.get() == b'{}'
     assert list(resource) == [b'{}']
     assert resource(name='value') == b'{}'
+    assert resource.update(name='value') == b'{}'

@@ -95,3 +95,7 @@ class Resource(Client):
         if response.headers['content-type'].startswith('application/json'):
             return response.json()
         return response.content
+
+    def update(self, path='', **json):
+        """PATCH request with json params."""
+        return self.patch(path, json=json)

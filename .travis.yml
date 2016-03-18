@@ -6,8 +6,12 @@ python:
   - "3.4"
   - "3.5"
 
+env:
+  - REQUESTS="requests==2.4.2"
+  - REQUESTS="requests"
+
 install:
-  - pip install requests pytest-cov codecov
+  - pip install $REQUESTS pytest-cov codecov
 
 script:
   - py.test -v --cov

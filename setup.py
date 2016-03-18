@@ -10,8 +10,9 @@ setup(
     url='https://bitbucket.org/coady/clients',
     license='Apache Software License',
     py_modules=['clients'],
-    install_requires=['requests'],
+    install_requires=['requests>=2.4.2'],
     tests_require=['pytest-cov'],
+    keywords='requests sessions responses resources',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

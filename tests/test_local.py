@@ -35,9 +35,13 @@ def test_resource(local):
     del resource['endpoint']
     assert 'endpoint' in resource
     assert list(resource) == [{}]
+    assert resource(name='value') == {}
+    assert resource.update(name='value') == {}
 
-    resource.headers['accept'] = 'text/html'
+    resource.headers['accept'] = 'application/octet-stream'
     assert resource.get() == b'{}'
     assert list(resource) == [b'{}']
-    assert resource(name='value') == b'{}'
-    assert resource.update(name='value') == b'{}'
+
+    resource.headers['accept'] = 'text/html'
+    assert resource.get() == '{}'
+    assert list(resource) == ['{}']

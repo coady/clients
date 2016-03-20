@@ -29,6 +29,7 @@ naturally the most common use case is to access the content.  But the onus is on
 
 `Resources <reference.html#resource>`_ aim to making writing custom api clients or sdks easier.
 Their primary feature is to allow direct content access without silencing errors.
+Response content type is inferred from headers: ``json``, ``content``, or ``text``.
 
 .. literalinclude:: ../tests/test_remote.py
    :pyobject: test_content

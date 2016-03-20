@@ -23,6 +23,8 @@ def test_content():
     assert resource.get('get')['url'] == 'http://httpbin.org/get'
     with pytest.raises(IOError):
         resource.get('status/404')
+    assert '<html>' in resource.get('html')
+    assert isinstance(resource.get('bytes/10'), bytes)
 
 
 def test_path():
@@ -50,4 +52,8 @@ def test_syntax():
     assert '404' not in resource.status
     assert [line['id'] for line in resource / 'stream/3'] == [0, 1, 2]
     assert resource('cookies/set', name='value') == {'cookies': {'name': 'value'}}
+
+
+def test_methods():
+    resource = clients.Resource('http://httpbin.org/')
     assert resource.update('patch', name='value')['json'] == {'name': 'value'}

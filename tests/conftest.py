@@ -6,13 +6,15 @@ def pytest_report_header(config):
     return 'Requests ' + requests.__version__
 
 
-def request(self, method, url, params=None, json=None, **kwargs):
+def request(self, method, url, allow_redirects=True, stream=False, **kwargs):
     response = requests.Response()
-    response.__setstate__({'method': method, 'url': url, '_content': b'{}', 'status_code': 200})
+    response.__setstate__({'url': url, '_content': b'{}', 'status_code': 200})
     response.request = requests.PreparedRequest()
-    response.request.prepare(method, url, params=params, json=json, hooks=())
+    response.request.prepare(method, url, hooks=(), **kwargs)
     accept = self.headers['accept']
     response.headers['content-type'] = 'application/json' if accept == '*/*' else accept
+    if accept.startswith('text/'):
+        response.encoding = 'utf8'
     return response
 
 

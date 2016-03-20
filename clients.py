@@ -1,6 +1,6 @@
 import requests
-json = requests.compat.json
-urljoin = requests.compat.urljoin
+from requests.compat import json, urljoin
+from requests.packages.urllib3.packages.six.moves import map
 
 __version__ = '0.1'
 
@@ -65,23 +65,6 @@ class Resource(Client):
     __setitem__ = Client.put
     __delitem__ = Client.delete
 
-    def __iter__(self):
-        """Iterate lines from streamed GET request."""
-        response = super(Resource, self).request('GET', '', stream=True)
-        response.raise_for_status()
-        lines = response.iter_lines()
-        if response.headers['content-type'].startswith('application/json'):
-            return (json.loads(line.decode('utf8')) for line in lines)
-        return lines
-
-    def __contains__(self, path):
-        """Return whether endpoint exists according to HEAD request."""
-        return super(Resource, self).request('HEAD', path)
-
-    def __call__(self, path='', **params):
-        """GET request with params."""
-        return self.get(path, params=params)
-
     def __getattr__(self, name):
         """Return a cloned `Resource`_ with appended path."""
         if name in type(self).__attrs__:
@@ -94,7 +77,24 @@ class Resource(Client):
         response.raise_for_status()
         if response.headers['content-type'].startswith('application/json'):
             return response.json()
-        return response.content
+        return response.text if response.encoding else response.content
+
+    def __iter__(self):
+        """Iterate lines from streamed GET request."""
+        response = super(Resource, self).request('GET', '', stream=True)
+        response.raise_for_status()
+        if response.headers['content-type'].startswith('application/json'):
+            response.encoding = response.encoding or 'utf8'
+            return map(json.loads, response.iter_lines(decode_unicode=True))
+        return response.iter_lines(decode_unicode=response.encoding)
+
+    def __contains__(self, path):
+        """Return whether endpoint exists according to HEAD request."""
+        return super(Resource, self).request('HEAD', path, allow_redirects=False)
+
+    def __call__(self, path='', **params):
+        """GET request with params."""
+        return self.get(path, params=params)
 
     def update(self, path='', **json):
         """PATCH request with json params."""

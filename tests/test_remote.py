@@ -57,3 +57,4 @@ def test_syntax():
 def test_methods():
     resource = clients.Resource('http://httpbin.org/')
     assert resource.update('patch', name='value')['json'] == {'name': 'value'}
+    assert resource.create('post', {'name': 'value'}) is None

@@ -15,6 +15,8 @@ def request(self, method, url, allow_redirects=True, stream=False, **kwargs):
     response.headers['content-type'] = 'application/json' if accept == '*/*' else accept
     if accept.startswith('text/'):
         response.encoding = 'utf8'
+    if method == 'POST':
+        response.headers['location'] = url + '/id'
     return response
 
 

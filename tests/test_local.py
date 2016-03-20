@@ -37,6 +37,7 @@ def test_resource(local):
     assert list(resource) == [{}]
     assert resource(name='value') == {}
     assert resource.update(name='value') == {}
+    assert resource.create(json={'name': 'value'}).endswith('/id')
 
     resource.headers['accept'] = 'application/octet-stream'
     assert resource.get() == b'{}'

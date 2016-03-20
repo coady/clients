@@ -99,3 +99,9 @@ class Resource(Client):
     def update(self, path='', **json):
         """PATCH request with json params."""
         return self.patch(path, json=json)
+
+    def create(self, path='', json=None, **kwargs):
+        """POST request and return location."""
+        response = super(Resource, self).request('POST', path, json=json, **kwargs)
+        response.raise_for_status()
+        return response.headers.get('location')

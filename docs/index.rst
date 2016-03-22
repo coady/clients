@@ -69,12 +69,24 @@ Avant-garde Usage
    * ``setitem``: PUT
    * ``delitem``: DELETE
    * ``contains``: HEAD ok
-   * ``iter``: GET with stream and iter_lines
+   * ``iter``: GET streamed lines or content
    * ``call``: GET with params
 
 .. literalinclude:: ../tests/test_remote.py
    :pyobject: test_syntax
    :start-after: syntax
+   :dedent: 4
+
+Higher-level methods for common requests.
+
+   * ``iter``: __iter__ with args
+   * ``update``: PATCH with json params
+   * ``create``: POST and return location
+   * ``download``: GET streamed content to file
+
+.. literalinclude:: ../tests/test_remote.py
+   :pyobject: test_methods
+   :start-after: methods
    :dedent: 4
 
 Contents:

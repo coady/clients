@@ -1,3 +1,4 @@
+import io
 import pytest
 import clients
 
@@ -51,10 +52,14 @@ def test_syntax():
     assert '200' in resource.status
     assert '404' not in resource.status
     assert [line['id'] for line in resource / 'stream/3'] == [0, 1, 2]
+    assert next(iter(resource / 'html')) == '<!DOCTYPE html>'
     assert resource('cookies/set', name='value') == {'cookies': {'name': 'value'}}
 
 
 def test_methods():
     resource = clients.Resource('http://httpbin.org/')
+    assert list(map(len, resource.iter('stream-bytes/256'))) == [128] * 2
     assert resource.update('patch', name='value')['json'] == {'name': 'value'}
     assert resource.create('post', {'name': 'value'}) is None
+    file = resource.download(io.BytesIO(), 'image/png')
+    assert file.tell()

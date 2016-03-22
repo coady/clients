@@ -79,14 +79,17 @@ class Resource(Client):
             return response.json()
         return response.text if response.encoding else response.content
 
-    def __iter__(self):
-        """Iterate lines from streamed GET request."""
-        response = super(Resource, self).request('GET', '', stream=True)
+    def iter(self, path='', **kwargs):
+        """Iterate lines or chunks from streamed GET request."""
+        response = super(Resource, self).request('GET', path, stream=True, **kwargs)
         response.raise_for_status()
         if response.headers['content-type'].startswith('application/json'):
             response.encoding = response.encoding or 'utf8'
             return map(json.loads, response.iter_lines(decode_unicode=True))
-        return response.iter_lines(decode_unicode=response.encoding)
+        if response.encoding or response.headers['content-type'].startswith('text/'):
+            return response.iter_lines(decode_unicode=response.encoding)
+        return iter(response)
+    __iter__ = iter
 
     def __contains__(self, path):
         """Return whether endpoint exists according to HEAD request."""
@@ -105,3 +108,11 @@ class Resource(Client):
         response = super(Resource, self).request('POST', path, json=json, **kwargs)
         response.raise_for_status()
         return response.headers.get('location')
+
+    def download(self, file, path='', **kwargs):
+        """Output streamed GET request to file."""
+        response = super(Resource, self).request('GET', path, stream=True, **kwargs)
+        response.raise_for_status()
+        for chunk in response:
+            file.write(chunk)
+        return file

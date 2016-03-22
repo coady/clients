@@ -1,3 +1,4 @@
+import io
 import pytest
 import requests
 from clients import Client, Resource
@@ -46,3 +47,6 @@ def test_resource(local):
     resource.headers['accept'] = 'text/html'
     assert resource.get() == '{}'
     assert list(resource) == ['{}']
+
+    file = resource.download(io.BytesIO())
+    assert file.tell() == 2

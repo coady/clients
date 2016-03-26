@@ -30,6 +30,7 @@ def test_resource(local):
         Resource(url).prefetch
     resource = Resource(url).path
     assert isinstance(resource, Client)
+    assert type(resource.client) is Client
 
     assert resource[''] == resource.get() == {}
     resource['enpoint'] = {}

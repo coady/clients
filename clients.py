@@ -20,9 +20,13 @@ class Client(requests.Session):
         self.trailing = trailing
         self.url = url.rstrip('/') + '/'
 
+    @classmethod
+    def clone(cls, other, path=''):
+        return cls(urljoin(other.url, path), other.trailing, **other.__getstate__())
+
     def __div__(self, path):
         """Return a cloned `Client`_ with appended path."""
-        return type(self)(urljoin(self.url, path), self.trailing, **self.__getstate__())
+        return type(self).clone(self, path)
     __truediv__ = __div__
 
     def request(self, method, path, **kwargs):
@@ -61,6 +65,7 @@ class Client(requests.Session):
 
 class Resource(Client):
     """A `Client`_ which returns json content and has syntactic support for requests."""
+    client = property(Client.clone, doc="Upcasted `Client`_.")
     __getitem__ = Client.get
     __setitem__ = Client.put
     __delitem__ = Client.delete

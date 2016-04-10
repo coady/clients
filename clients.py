@@ -2,7 +2,7 @@ import requests
 from requests.compat import json, urljoin
 from requests.packages.urllib3.packages.six.moves import map
 
-__version__ = '0.1'
+__version__ = '0.2'
 
 
 class Client(requests.Session):

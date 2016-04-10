@@ -1,5 +1,3 @@
-About clients
-=========================
 .. image:: https://img.shields.io/pypi/v/clients.svg
    :target: https://pypi.python.org/pypi/clients/
 .. image:: https://img.shields.io/pypi/pyversions/clients.svg
@@ -9,8 +7,8 @@ About clients
 .. image:: https://img.shields.io/codecov/c/github/coady/clients.svg
    :target: https://codecov.io/github/coady/clients
 
-Provides `requests`_ wrappers which encourage best practices,
-particularly always using Sessions to connect to the same host, or api endpoint.
+Clients provide `requests`_ wrappers which encourage best practices,
+particularly always using Sessions to connect to the same host or api endpoint.
 
 Usage
 =========================
@@ -54,19 +52,20 @@ Resources extend Clients to implicitly handle response content, with proper chec
    for repo in resource.get('user/repos'):
       ...
 
+Being session based, Clients also work seamlessly with other `requests`_ adapters, such as `CacheControl`_.
+
 See `documentation`_ for more examples.
 
 Installation
 =========================
-Standard installation from pypi or local download. ::
+::
 
    $ pip install clients
-   $ python setup.py install
 
 Dependencies
 =========================
-   * Requests
-   * Python 2.7, 3.3+
+* Requests 2.4.2+
+* Python 2.7, 3.3+
 
 Tests
 =========================
@@ -74,5 +73,16 @@ Tests
 
    $ py.test [--cov]
 
+Changes
+=========================
+0.2
+
+* Resource attribute upcasts back to a ``client``
+* ``iter`` and ``download`` implement GET requests with streamed content
+* ``create`` implements POST request and returns Location header
+* ``update`` implements PATCH request with json params
+* ``__call__`` implements GET request with params
+
 .. _requests: https://python-requests.org
 .. _documentation: http://pythonhosted.org/clients/
+.. _CacheControl: https://cachecontrol.readthedocs.org/en/latest/

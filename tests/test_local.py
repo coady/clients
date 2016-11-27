@@ -1,14 +1,14 @@
 import io
 import pytest
 import requests
-from clients import Client, Resource
+import clients
 
 url = 'http://localhost/'
 methods = 'get', 'options', 'head', 'post', 'put', 'patch', 'delete'
 
 
 def test_client(local):
-    client = Client(url, trailing='/')
+    client = clients.Client(url, trailing='/')
     assert isinstance(client, requests.Session)
     for method in methods:
         response = getattr(client, method)()
@@ -16,7 +16,7 @@ def test_client(local):
         assert response.url == url
         assert response.request.method == method.upper()
 
-    client = Client(url, headers={'Authorization': 'token'}, stream=True)
+    client = clients.Client(url, headers={'Authorization': 'token'}, stream=True)
     assert client.stream
     assert client.headers.pop('authorization') == 'token'
     assert client.headers
@@ -27,10 +27,10 @@ def test_client(local):
 
 def test_resource(local):
     with pytest.raises(AttributeError):
-        Resource(url).prefetch
-    resource = Resource(url).path
-    assert isinstance(resource, Client)
-    assert type(resource.client) is Client
+        clients.Resource(url).prefetch
+    resource = clients.Resource(url).path
+    assert isinstance(resource, clients.Client)
+    assert type(resource.client) is clients.Client
 
     assert resource[''] == resource.get() == {}
     resource['enpoint'] = {}
@@ -51,3 +51,12 @@ def test_resource(local):
 
     file = resource.download(io.BytesIO())
     assert file.tell() == 2
+
+
+def test_singleton():
+    @clients.singleton(url)
+    class custom_api(clients.Resource):
+        pass  # custom methods
+
+    assert isinstance(custom_api, clients.Resource)
+    assert custom_api.url == url

@@ -64,13 +64,13 @@ Avant-garde Usage
 
 ``Resources`` support operator overloaded syntax wherever sensible.
 
-   * ``getattr``: alternate path concatenation
-   * ``getitem``: GET content
-   * ``setitem``: PUT
-   * ``delitem``: DELETE
-   * ``contains``: HEAD ok
-   * ``iter``: GET streamed lines or content
-   * ``call``: GET with params
+   * ``__getattr__``: alternate path concatenation
+   * ``__getitem__``: GET content
+   * ``__setitem__``: PUT json
+   * ``__delitem__``: DELETE
+   * ``__contains__``: HEAD ok
+   * ``__iter__``: GET streamed lines or content
+   * ``__call__``: GET with params
 
 .. literalinclude:: ../tests/test_remote.py
    :pyobject: test_syntax
@@ -87,6 +87,14 @@ Higher-level methods for common requests.
 .. literalinclude:: ../tests/test_remote.py
    :pyobject: test_methods
    :start-after: methods
+   :dedent: 4
+
+A `singleton <reference.html#singleton>`_ decorator can be used on subclasses,
+conveniently creating a single custom instance.
+
+.. literalinclude:: ../tests/test_local.py
+   :pyobject: test_singleton
+   :start-after: singleton
    :dedent: 4
 
 Contents:

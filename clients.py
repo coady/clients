@@ -121,3 +121,8 @@ class Resource(Client):
         for chunk in response:
             file.write(chunk)
         return file
+
+
+def singleton(*args, **kwargs):
+    """Return a decorator for singleton class instances."""
+    return lambda cls: cls(*args, **kwargs)

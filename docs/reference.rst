@@ -14,3 +14,7 @@ Resource
    :show-inheritance:
    :members:
    :special-members:
+
+singleton
+=============
+.. autofunction:: singleton

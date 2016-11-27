@@ -11,7 +11,7 @@ env:
   - REQUESTS="requests"
 
 install:
-  - pip install $REQUESTS pytest-cov codecov
+  - pip install -U $REQUESTS pytest-cov codecov
 
 script:
   - py.test -v --cov

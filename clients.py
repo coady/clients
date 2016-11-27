@@ -98,7 +98,7 @@ class Resource(Client):
 
     def __contains__(self, path):
         """Return whether endpoint exists according to HEAD request."""
-        return super(Resource, self).request('HEAD', path, allow_redirects=False)
+        return super(Resource, self).request('HEAD', path, allow_redirects=False).ok
 
     def __call__(self, path='', **params):
         """GET request with params."""

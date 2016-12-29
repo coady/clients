@@ -12,16 +12,12 @@ particularly always using Sessions to connect to the same host or api endpoint.
 
 Usage
 =========================
-*Requests*
-
 Typical `requests`_ usage is redundant and inefficient, by not taking advantage of connection pooling.
 
 .. code-block:: python
 
    r = requests.get('https://api.github.com/user', headers={'authorization': token})
    r = requests.get('https://api.github.com/user/repos', headers={'authorization': token})
-
-*Sessions*
 
 Using sessions is the better approach, but more verbose and in practice requires manual url joining.
 
@@ -32,8 +28,6 @@ Using sessions is the better approach, but more verbose and in practice requires
    r = s.get('https://api.github.com/user')
    r = s.get('https://api.github.com/user/repos')
 
-*Clients*
-
 Clients make using sessions easier, with implicit url joining.
 
 .. code-block:: python
@@ -41,8 +35,6 @@ Clients make using sessions easier, with implicit url joining.
    client = clients.Client('https://api.github.com/', headers={'authorization': token})
    r = client.get('user')
    r = client.get('user/repos')
-
-*Resources*
 
 Resources extend Clients to implicitly handle response content, with proper checking of `status_code` and `content-type`.
 
@@ -71,7 +63,7 @@ Tests
 =========================
 100% branch coverage. ::
 
-   $ py.test [--cov]
+   $ pytest [--cov]
 
 Changes
 =========================

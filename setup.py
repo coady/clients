@@ -12,7 +12,7 @@ setup(
     py_modules=['clients'],
     install_requires=['requests>=2.4.2'],
     tests_require=['pytest-cov'],
-    keywords=['requests', 'sessions', 'responses', 'resources'],
+    keywords='requests sessions responses resources',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -24,6 +24,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Internet :: WWW/HTTP :: Session',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],

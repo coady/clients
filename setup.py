@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='clients',
-    version='0.2',
+    version='0.3',
     description='HTTP for lazy, impatient, hubristic humans.',
     long_description=open('README.rst').read(),
     author='Aric Coady',

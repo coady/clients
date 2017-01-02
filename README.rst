@@ -67,6 +67,10 @@ Tests
 
 Changes
 =========================
+0.3
+
+* ``singleton`` decorator
+
 0.2
 
 * Resource attribute upcasts back to a ``client``

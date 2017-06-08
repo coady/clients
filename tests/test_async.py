@@ -1,11 +1,11 @@
 import pytest
-asyncio = pytest.importorskip('asyncio')
-from clients import AsyncClient  # noqa
+asyncio = pytest.importorskip('asyncio')  # noqa
+from clients import AsyncClient
 
 
 def results(coros):
     loop = asyncio.get_event_loop()
-    fs = [asyncio.ensure_future(coro, loop=loop) for coro in coros]
+    fs = list(map(loop.create_task, coros))
     return map(loop.run_until_complete, fs)
 
 

@@ -2,7 +2,6 @@ language: python
 
 python:
   - "2.7"
-  - "3.3"
   - "3.4"
   - "3.5"
   - "3.6"
@@ -13,6 +12,7 @@ env:
 
 install:
   - pip install -U $REQUESTS pytest-cov codecov
+  - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; then pip install aiohttp; fi
 
 script:
   - pytest -v --cov

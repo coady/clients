@@ -2,8 +2,6 @@ import requests
 from requests.compat import json, urljoin
 from requests.packages.urllib3.packages.six.moves import map
 
-__version__ = '0.3'
-
 
 class Client(requests.Session):
     """A Session which sends requests to a base url.
@@ -121,8 +119,3 @@ class Resource(Client):
         for chunk in response:
             file.write(chunk)
         return file
-
-
-def singleton(*args, **kwargs):
-    """Return a decorator for singleton class instances."""
-    return lambda cls: cls(*args, **kwargs)

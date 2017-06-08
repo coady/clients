@@ -46,6 +46,8 @@ Resources extend Clients to implicitly handle response content, with proper chec
 
 Being session based, Clients also work seamlessly with other `requests`_ adapters, such as `CacheControl`_.
 
+Asynchronous Clients are also provided, using `aiohttp`_ instead of `requests`_.
+
 See `documentation`_ for more examples.
 
 Installation
@@ -56,8 +58,9 @@ Installation
 
 Dependencies
 =========================
-* Requests 2.4.2+
-* Python 2.7, 3.3+
+* Python 2.7, 3.4+
+* requests 2.4.2+
+* aiohttp (optional)
 
 Tests
 =========================
@@ -80,5 +83,6 @@ Changes
 * ``__call__`` implements GET request with params
 
 .. _requests: https://python-requests.org
+.. _aiohttp: http://aiohttp.readthedocs.io
 .. _documentation: http://pythonhosted.org/clients/
 .. _CacheControl: https://cachecontrol.readthedocs.org/en/latest/

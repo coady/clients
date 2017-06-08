@@ -5,8 +5,7 @@ Client
 .. autoclass:: Client
    :show-inheritance:
    :members:
-   :special-members:
-   :exclude-members: __truediv__
+   :special-members: __truediv__
 
 Resource
 =============
@@ -14,6 +13,13 @@ Resource
    :show-inheritance:
    :members:
    :special-members:
+
+AsyncClient
+=============
+.. autoclass:: AsyncClient
+   :show-inheritance:
+   :members:
+   :special-members: __truediv__
 
 singleton
 =============

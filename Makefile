@@ -16,5 +16,5 @@ dist: html
 check:
 	python setup.py $@ -mrs
 	flake8
-	pytest-2.7 tests/test_local.py --cov --cov-fail-under=100
-	pytest
+	pytest-2.7 tests/test_local.py --cov=clients/syncs.py --cov-fail-under=100
+	pytest --cov --cov-fail-under=100

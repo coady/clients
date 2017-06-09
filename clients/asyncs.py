@@ -1,7 +1,7 @@
 import asyncio
 import aiohttp
 from urllib.parse import urljoin
-from .syncs import Client
+from .syncs import Client, Resource
 
 
 class AsyncClient(aiohttp.ClientSession):
@@ -9,7 +9,6 @@ class AsyncClient(aiohttp.ClientSession):
 
     :param url: base url for requests
     :param trailing: trailing chars (e.g. /) appended to the url
-    :param loop: asyncio event loop
     :param attrs: additional ClientSession options, e.g., loop
     """
     __del__ = aiohttp.ClientSession.close
@@ -28,7 +27,6 @@ class AsyncClient(aiohttp.ClientSession):
         return cls(urljoin(other.url, path), other.trailing, **other._attrs)
 
     def _request(self, method, path, **kwargs):
-        """Send request with relative or absolute path and return response."""
         url = urljoin(self.url, path).rstrip('/') + self.trailing
         return super()._request(method, url, **kwargs)
 
@@ -59,3 +57,26 @@ class AsyncClient(aiohttp.ClientSession):
     def delete(self, path='', **kwargs):
         """DELETE request with optional path."""
         return super().delete(path, **kwargs)
+
+
+class AsyncResource(AsyncClient):
+    """An `AsyncClient`_ which returns json content and has syntactic support for requests."""
+    client = property(AsyncClient.clone, doc="Upcasted `AsyncClient`_.")
+    __getattr__ = AsyncClient.__truediv__
+    __getitem__ = AsyncClient.get
+    __call__ = Resource.__call__
+    update = Resource.update
+
+    def __init__(self, url, trailing='', **attrs):
+        super().__init__(url, trailing, **attrs)
+        self._raise_for_status = True
+
+    @asyncio.coroutine
+    def _request(self, method, path, **kwargs):
+        """Send request with relative or absolute path and return response."""
+        response = yield from super()._request(method, path, **kwargs)
+        if response.headers['content-type'].startswith('application/json'):
+            return (yield from response.json())
+        if response.headers['content-type'].startswith('text/'):
+            return (yield from response.text())
+        return (yield from response.read())

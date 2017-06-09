@@ -1,6 +1,7 @@
 import pytest
 asyncio = pytest.importorskip('asyncio')  # noqa
-from clients import AsyncClient
+import aiohttp
+from clients import AsyncClient, AsyncResource
 
 
 def results(coros):
@@ -17,3 +18,15 @@ def test_client():
         assert r.status == 200
     data, = results([r.json()])
     assert set(data) == {'origin'}
+
+
+def test_resource():
+    resource = AsyncResource('http://httpbin.org/')
+    assert isinstance(resource.client, AsyncClient)
+    it = results([resource['robots.txt'], resource.bytes('1'),
+                  resource.update('patch', key='value'), resource.status('404')])
+    assert isinstance(next(it), str)
+    assert isinstance(next(it), bytes)
+    assert next(it)['json'] == {'key': 'value'}
+    with pytest.raises(aiohttp.ClientError):
+        next(it)

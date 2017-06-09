@@ -1,7 +1,7 @@
 from .syncs import Client, Resource  # noqa
 try:
-    from .asyncs import AsyncClient  # noqa
-except ImportError:  # pragma: no cover
+    from .asyncs import AsyncClient, AsyncResource  # noqa
+except (SyntaxError, ImportError):  # pragma: no cover
     pass
 
 __version__ = '0.3'

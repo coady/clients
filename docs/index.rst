@@ -59,8 +59,8 @@ Note ``trailing`` doesn't technically have to be a slash.  This can be useful fo
 
 Asyncio
 ^^^^^^^^^^^^^^
-Using `aiohttp`_ instead of `requests`_, `AsyncClients <reference.html#asyncclient>`_ implement the same interface,
-except the request methods return asyncio `coroutines`_.
+Using `aiohttp`_ instead of `requests`_, `AsyncClients <reference.html#asyncclient>`_ and `AsyncResources <reference.html#asyncresource>`_
+implement the same interface, except the request methods return asyncio `coroutines`_.
 
 Avant-garde Usage
 ^^^^^^^^^^^^^^^^^

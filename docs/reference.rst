@@ -21,6 +21,13 @@ AsyncClient
    :members:
    :special-members: __truediv__
 
+AsyncResource
+=============
+.. autoclass:: AsyncResource
+   :show-inheritance:
+   :members:
+   :special-members:
+
 singleton
 =============
 .. autofunction:: singleton

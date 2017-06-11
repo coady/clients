@@ -70,6 +70,10 @@ Tests
 
 Changes
 =========================
+0.4
+
+* Asynchronous clients and resources
+
 0.3
 
 * ``singleton`` decorator

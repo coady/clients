@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='clients',
-    version='0.3',
+    version='0.4',
     description='HTTP for lazy, impatient, hubristic humans.',
     long_description=open('README.rst').read(),
     author='Aric Coady',
@@ -15,7 +15,7 @@ setup(
     tests_require=['pytest-cov'],
     keywords='requests sessions responses resources asyncio',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',

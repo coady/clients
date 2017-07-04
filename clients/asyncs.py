@@ -11,7 +11,6 @@ class AsyncClient(aiohttp.ClientSession):
     :param trailing: trailing chars (e.g. /) appended to the url
     :param attrs: additional ClientSession options, e.g., loop
     """
-    __del__ = aiohttp.ClientSession.close
     __truediv__ = Client.__truediv__
 
     def __init__(self, url, trailing='', **attrs):
@@ -21,6 +20,10 @@ class AsyncClient(aiohttp.ClientSession):
         self._attrs = attrs
         self.trailing = trailing
         self.url = url.rstrip('/') + '/'
+
+    def __del__(self):  # avoids warning and race condition in parent
+        if self._connector_owner:  # pragma: no branch
+            self._connector.close()
 
     @classmethod
     def clone(cls, other, path=''):

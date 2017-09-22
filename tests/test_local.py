@@ -53,6 +53,15 @@ def test_resource(local):
     assert file.tell() == 2
 
 
+def test_proxy(local):
+    proxy = clients.Proxy([url])
+    assert proxy.get().ok
+    assert not proxy.get(status_code=500).ok
+    with pytest.raises(IOError):
+        proxy.get(status_code=None)
+    assert (proxy / 'path').get().url.endswith('path')
+
+
 def test_singleton():
     @clients.singleton(url)
     class custom_api(clients.Resource):

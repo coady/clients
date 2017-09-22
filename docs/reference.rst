@@ -14,6 +14,12 @@ Resource
    :members:
    :special-members:
 
+Proxy
+=============
+.. autoclass:: Proxy
+   :show-inheritance:
+   :members:
+
 AsyncClient
 =============
 .. autoclass:: AsyncClient

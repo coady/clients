@@ -102,6 +102,9 @@ conveniently creating a single custom instance.
    :start-after: singleton
    :dedent: 4
 
+A `Proxy <reference.html#proxy>`_ client provides load-balancing across multiple hosts,
+with an extensible interface for different algorithms.
+
 Contents:
 ==================
 .. toctree::

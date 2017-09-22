@@ -6,9 +6,11 @@ def pytest_report_header(config):
     return 'Requests ' + requests.__version__
 
 
-def request(self, method, url, allow_redirects=True, stream=False, **kwargs):
+def request(self, method, url, status_code=200, allow_redirects=True, stream=False, **kwargs):
+    if status_code is None:
+        raise IOError
     response = requests.Response()
-    response.__setstate__({'url': url, '_content': b'{}', 'status_code': 200})
+    response.__setstate__({'url': url, '_content': b'{}', 'status_code': status_code})
     response.request = requests.PreparedRequest()
     response.request.prepare(method, url, hooks=(), **kwargs)
     accept = self.headers['accept']

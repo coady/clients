@@ -70,6 +70,10 @@ Tests
 
 Changes
 =========================
+dev
+
+* ``Proxy`` client
+
 0.4
 
 * Asynchronous clients and resources

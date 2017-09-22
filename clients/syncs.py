@@ -1,3 +1,6 @@
+import collections
+import random
+import threading
 import requests
 from requests.compat import json, urljoin
 from requests.packages.urllib3.packages.six.moves import map
@@ -119,3 +122,69 @@ class Resource(Client):
         for chunk in response:
             file.write(chunk)
         return file
+
+
+class Stats(collections.Counter):
+    """Thread-safe Counter."""
+    def __init__(self):
+        self.lock = threading.Lock()
+
+    def update(self, **kwargs):
+        with self.lock:
+            super(Stats, self).update(kwargs)
+
+
+class Proxy(Client):
+    """An extensible embedded proxy client to multiple hosts.
+
+    The default implementation provides load balancing based on active connections.
+    It does not provide error handling or retrying.
+
+    :param urls: base urls for requests
+    :param kwargs: same options as `Client`_
+    """
+    def __init__(self, urls, trailing='', headers=(), **attrs):
+        super(Client, self).__init__()
+        self.__setstate__(attrs)
+        self.headers.update(headers)
+        self.trailing = trailing
+        self.urls = {(url.rstrip('/') + '/'): Stats() for url in urls}
+
+    @classmethod
+    def clone(cls, other, path=''):
+        urls = (urljoin(url, path) for url in other.urls)
+        return cls(urls, other.trailing, **other.__getstate__())
+
+    def priority(self, url):
+        """Return comparable priority for url.
+
+        Minimizes errors, failures (500s), and active connections.
+        None may be used to eliminate from consideration.
+        """
+        stats = self.urls[url]
+        return tuple(stats[key] for key in ('errors', 'failures', 'connections'))
+
+    def choice(self, method):
+        """Return chosen url according to priority.
+
+        :param method: placeholder for extensions which distinguish read/write requests
+        """
+        priorities = collections.defaultdict(list)
+        for url in self.urls:
+            priorities[self.priority(url)].append(url)
+        priorities.pop(None, None)
+        return random.choice(priorities[min(priorities)])
+
+    def request(self, method, path, **kwargs):
+        """Send request with relative or absolute path and return response."""
+        url = self.choice(method)
+        stats = self.urls[url]
+        url = urljoin(url, path).rstrip('/') + self.trailing
+        stats.update(connections=1)
+        try:
+            response = super(Client, self).request(method, url, **kwargs)
+        except IOError:
+            stats.update(connections=-1, errors=1)
+            raise
+        stats.update(connections=-1, failures=int(response.status_code >= 500))
+        return response

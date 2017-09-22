@@ -11,7 +11,7 @@ env:
   - REQUESTS="requests"
 
 install:
-  - pip install -U $REQUESTS pytest-cov codecov
+  - pip install $REQUESTS pytest-cov codecov
   - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; then pip install aiohttp; fi
 
 script:

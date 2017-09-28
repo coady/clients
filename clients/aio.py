@@ -1,7 +1,7 @@
 import asyncio
 import aiohttp
 from urllib.parse import urljoin
-from .syncs import Client, Resource
+from .base import Client, Resource
 
 
 class AsyncClient(aiohttp.ClientSession):

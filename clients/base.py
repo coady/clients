@@ -25,10 +25,10 @@ class Client(requests.Session):
     def clone(cls, other, path=''):
         return cls(urljoin(other.url, path), other.trailing, **other.__getstate__())
 
-    def __div__(self, path):
+    def __truediv__(self, path):
         """Return a cloned `Client`_ with appended path."""
         return type(self).clone(self, path)
-    __truediv__ = __div__
+    __div__ = __truediv__
 
     def request(self, method, path, **kwargs):
         """Send request with relative or absolute path and return response."""
@@ -143,17 +143,14 @@ class Proxy(Client):
     :param urls: base urls for requests
     :param kwargs: same options as `Client`_
     """
-    def __init__(self, urls, trailing='', headers=(), **attrs):
-        super(Client, self).__init__()
-        self.__setstate__(attrs)
-        self.headers.update(headers)
-        self.trailing = trailing
+    def __init__(self, urls, **kwargs):
+        super(Proxy, self).__init__('', **kwargs)
         self.urls = {(url.rstrip('/') + '/'): Stats() for url in urls}
 
     @classmethod
     def clone(cls, other, path=''):
         urls = (urljoin(url, path) for url in other.urls)
-        return cls(urls, other.trailing, **other.__getstate__())
+        return cls(urls, trailing=other.trailing, **other.__getstate__())
 
     def priority(self, url):
         """Return comparable priority for url.
@@ -179,10 +176,9 @@ class Proxy(Client):
         """Send request with relative or absolute path and return response."""
         url = self.choice(method)
         stats = self.urls[url]
-        url = urljoin(url, path).rstrip('/') + self.trailing
         stats.update(connections=1)
         try:
-            response = super(Client, self).request(method, url, **kwargs)
+            response = super(Proxy, self).request(method, urljoin(url, path), **kwargs)
         except IOError:
             stats.update(connections=-1, errors=1)
             raise

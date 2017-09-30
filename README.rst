@@ -73,6 +73,7 @@ Changes
 dev
 
 * ``Proxy`` client
+* ``AsyncClient`` default params
 
 0.4
 

@@ -1,5 +1,6 @@
 import asyncio
 import aiohttp
+from multidict import MultiDict
 from urllib.parse import urljoin
 from .base import Client, Resource
 
@@ -9,15 +10,17 @@ class AsyncClient(aiohttp.ClientSession):
 
     :param url: base url for requests
     :param trailing: trailing chars (e.g. /) appended to the url
+    :param params: default query params
     :param attrs: additional ClientSession options, e.g., loop
     """
     __truediv__ = Client.__truediv__
 
-    def __init__(self, url, trailing='', **attrs):
+    def __init__(self, url, *, trailing='', params=(), **attrs):
         if {'connector', 'loop'}.isdisjoint(attrs):
             attrs['loop'] = asyncio.get_event_loop()
         super().__init__(**attrs)
         self._attrs = attrs
+        self.params = MultiDict(params)
         self.trailing = trailing
         self.url = url.rstrip('/') + '/'
 
@@ -27,11 +30,14 @@ class AsyncClient(aiohttp.ClientSession):
 
     @classmethod
     def clone(cls, other, path=''):
-        return cls(urljoin(other.url, path), other.trailing, **other._attrs)
+        url = urljoin(other.url, path)
+        return cls(url, trailing=other.trailing, params=other.params, **other._attrs)
 
-    def _request(self, method, path, **kwargs):
+    def _request(self, method, path, params=(), **kwargs):
+        params = MultiDict(params)
+        params.extend(self.params)
         url = urljoin(self.url, path).rstrip('/') + self.trailing
-        return super()._request(method, url, **kwargs)
+        return super()._request(method, url, params=params, **kwargs)
 
     def get(self, path='', **kwargs):
         """GET request with optional path."""
@@ -70,8 +76,8 @@ class AsyncResource(AsyncClient):
     __call__ = Resource.__call__
     update = Resource.update
 
-    def __init__(self, url, trailing='', **attrs):
-        super().__init__(url, trailing, **attrs)
+    def __init__(self, url, **kwargs):
+        super().__init__(url, **kwargs)
         self._raise_for_status = True
 
     @asyncio.coroutine

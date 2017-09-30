@@ -13,11 +13,12 @@ def results(coros):
 
 
 def test_client():
-    client = clients.AsyncClient('http://httpbin.org/')
+    client = clients.AsyncClient('http://httpbin.org/', params={'q': 0})
     coros = (client.head(), client.options(), client.post('post'), client.put('put'),
-             client.patch('patch'), client.delete('delete'), (client / 'ip').get())
+             client.patch('patch'), client.delete('delete'), (client / 'ip').get(params={'q': 1}))
     for r in results(coros):
-        assert r.status == 200
+        assert r.status == 200 and r.url.query_string.endswith('q=0')
+    assert r.url.query_string == 'q=1&q=0'
     data, = results([r.json()])
     assert set(data) == {'origin'}
 

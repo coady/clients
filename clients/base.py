@@ -26,7 +26,7 @@ class Client(requests.Session):
         return cls(urljoin(other.url, path), other.trailing, **other.__getstate__())
 
     def __truediv__(self, path):
-        """Return a cloned `Client`_ with appended path."""
+        """Return a cloned client with appended path."""
         return type(self).clone(self, path)
     __div__ = __truediv__
 

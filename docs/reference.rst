@@ -14,6 +14,13 @@ Resource
    :members:
    :special-members:
 
+Remote
+=============
+.. autoclass:: Remote
+   :show-inheritance:
+   :members:
+   :special-members:
+
 Proxy
 =============
 .. autoclass:: Proxy

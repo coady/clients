@@ -1,4 +1,4 @@
-from .base import Client, Proxy, Resource  # noqa
+from .base import Client, Proxy, Remote, Resource  # noqa
 try:
     from .aio import AsyncClient, AsyncResource  # noqa
 except (SyntaxError, ImportError):  # pragma: no cover

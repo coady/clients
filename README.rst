@@ -74,6 +74,7 @@ dev
 
 * ``Proxy`` client
 * ``AsyncClient`` default params
+* ``Remote`` procedure calls
 
 0.4
 

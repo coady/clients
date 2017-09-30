@@ -29,7 +29,7 @@ def test_resource(local):
     with pytest.raises(AttributeError):
         clients.Resource(url).prefetch
     resource = clients.Resource(url).path
-    assert isinstance(resource, clients.Client)
+    assert type(resource) is clients.Resource
     assert type(resource.client) is clients.Client
 
     assert resource[''] == resource.get() == {}
@@ -38,7 +38,7 @@ def test_resource(local):
     assert 'endpoint' in resource
     assert list(resource) == [{}]
     assert resource(name='value') == {}
-    assert resource.update(name='value') == {}
+    assert resource.update(name='value') == {'name': 'value'}
     assert resource.create(json={'name': 'value'}).endswith('/id')
 
     resource.headers['accept'] = 'application/octet-stream'
@@ -51,6 +51,13 @@ def test_resource(local):
 
     file = resource.download(io.BytesIO())
     assert file.tell() == 2
+
+
+def test_remote(local):
+    remote = clients.Remote(url, json={'key': 'value'}).path
+    assert type(remote) is clients.Remote
+    assert type(remote.client) is clients.Client
+    assert remote(name='value') == {'key': 'value', 'name': 'value'}
 
 
 def test_proxy(local):

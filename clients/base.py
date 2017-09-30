@@ -22,8 +22,9 @@ class Client(requests.Session):
         self.url = url.rstrip('/') + '/'
 
     @classmethod
-    def clone(cls, other, path=''):
-        return cls(urljoin(other.url, path), other.trailing, **other.__getstate__())
+    def clone(cls, other, path='', **kwargs):
+        kwargs.update(other.__getstate__())
+        return cls(urljoin(other.url, path), trailing=other.trailing, **kwargs)
 
     def __truediv__(self, path):
         """Return a cloned client with appended path."""
@@ -72,10 +73,10 @@ class Resource(Client):
     __delitem__ = Client.delete
 
     def __getattr__(self, name):
-        """Return a cloned `Resource`_ with appended path."""
         if name in type(self).__attrs__:
             raise AttributeError(name)
         return self / name
+    __getattr__.__doc__ = Client.__truediv__.__doc__
 
     def request(self, method, path, **kwargs):
         """Send request with path and return processed content."""
@@ -122,6 +123,36 @@ class Resource(Client):
         for chunk in response:
             file.write(chunk)
         return file
+
+
+class Remote(Client):
+    """A `Client`_ which defaults to posts with json bodies, i.e., RPC.
+
+    :param url: base url for requests
+    :param json: default json body for all calls
+    :param kwargs: same options as `Client`_
+    """
+    client = Resource.client
+    __getattr__ = Resource.__dict__['__getattr__']
+
+    def __init__(self, url, json=(), **kwargs):
+        super(Remote, self).__init__(url, **kwargs)
+        self.json = dict(json)
+
+    @classmethod
+    def clone(cls, other, path=''):
+        return Client.clone.__func__(cls, other, path, json=other.json)
+
+    def __call__(self, path='', **json):
+        """POST request with json body and :meth:`check` result."""
+        response = self.post(path, json=dict(self.json, **json))
+        response.raise_for_status()
+        return self.check(response.json())
+
+    @staticmethod
+    def check(result):
+        """Override to return result or raise error, for APIs which don't use status codes."""
+        return result
 
 
 class Stats(collections.Counter):

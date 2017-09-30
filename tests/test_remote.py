@@ -1,3 +1,4 @@
+import operator
 import io
 import pytest
 import clients
@@ -63,3 +64,10 @@ def test_methods():
     assert resource.create('post', {'name': 'value'}) is None
     file = resource.download(io.BytesIO(), 'image/png')
     assert file.tell()
+
+
+def test_remote():
+    remote = clients.Remote('http://httpbin.org/', json={'key': 'value'})
+    assert remote('post')['json'] == {'key': 'value'}
+    clients.Remote.check = operator.methodcaller('pop', 'json')
+    assert (remote / 'post')(name='value') == {'key': 'value', 'name': 'value'}

@@ -1,3 +1,4 @@
+import json
 import pytest
 import requests
 
@@ -10,7 +11,8 @@ def request(self, method, url, status_code=200, allow_redirects=True, stream=Fal
     if status_code is None:
         raise IOError
     response = requests.Response()
-    response.__setstate__({'url': url, '_content': b'{}', 'status_code': status_code})
+    content = json.dumps(kwargs.get('json', {})).encode('utf8')
+    response.__setstate__({'url': url, '_content': content, 'status_code': status_code})
     response.request = requests.PreparedRequest()
     response.request.prepare(method, url, hooks=(), **kwargs)
     accept = self.headers['accept']

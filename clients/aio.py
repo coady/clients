@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 from multidict import MultiDict
 from urllib.parse import urljoin
-from .base import Client, Remote, Resource
+from .base import Client, Proxy, Remote, Resource
 
 
 class AsyncClient(aiohttp.ClientSession):
@@ -83,7 +83,6 @@ class AsyncResource(AsyncClient):
 
     @asyncio.coroutine
     def _request(self, method, path, **kwargs):
-        """Send request with relative or absolute path and return response."""
         response = yield from super()._request(method, path, **kwargs)
         if response.headers['content-type'].startswith('application/json'):
             return (yield from response.json())
@@ -118,3 +117,35 @@ class AsyncRemote(AsyncClient):
         response = yield from self.post(path, json=dict(self.json, **json))
         result = yield from response.json()
         return self.check(result)
+
+
+class AsyncProxy(AsyncClient):
+    """An extensible embedded proxy client to multiple hosts.
+
+    The default implementation provides load balancing based on active connections.
+    It does not provide error handling or retrying.
+
+    :param urls: base urls for requests
+    :param kwargs: same options as `AsyncClient`_
+    """
+    Stats = Proxy.Stats
+    clone = Proxy.clone.__func__
+    priority = Proxy.priority
+    choice = Proxy.choice
+
+    def __init__(self, urls, **kwargs):
+        super().__init__('', **kwargs)
+        self.urls = {(url.rstrip('/') + '/'): self.Stats() for url in urls}
+
+    @classmethod
+    def clone(cls, other, path=''):
+        urls = (urljoin(url, path) for url in other.urls)
+        return cls(urls, trailing=other.trailing, params=other.params, **other._attrs)
+
+    @asyncio.coroutine
+    def _request(self, method, path, **kwargs):
+        url = self.choice(method)
+        with self.urls[url] as stats:
+            response = yield from super()._request(method, urljoin(url, path), **kwargs)
+        stats.update(failures=int(response.status >= 500))
+        return response

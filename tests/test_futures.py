@@ -54,3 +54,10 @@ def test_proxy():
     scheme = urlparse(future.result().url).scheme
     assert scheme != urlparse(response.url).scheme
     assert scheme == urlparse(proxy.get().url).scheme
+
+    proxy = clients.AsyncProxy(['http://httpbin.org/', 'https://httpbin.org/']) / '/'
+    it = results([proxy.get('delay/0.1'), proxy.get('status/500')])
+    scheme = next(it).url.scheme
+    assert scheme != next(it).url.scheme
+    response, = results([proxy.get()])
+    assert scheme == response.url.scheme

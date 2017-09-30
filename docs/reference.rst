@@ -48,6 +48,12 @@ AsyncRemote
    :members:
    :special-members:
 
+AsyncProxy
+=============
+.. autoclass:: AsyncProxy
+   :show-inheritance:
+   :members:
+
 singleton
 =============
 .. autofunction:: singleton

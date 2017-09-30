@@ -105,7 +105,7 @@ conveniently creating a single custom instance.
 `Remote <reference.html#remote>`_ and `AsyncRemote <reference.html#asyncremote>`_ clients default to POSTs with json bodies,
 for APIs which are more RPC than REST.
 
-A `Proxy <reference.html#proxy>`_ client provides load-balancing across multiple hosts,
+`Proxy <reference.html#proxy>`_  and `AsyncProxy <reference.html#asyncproxy>`_ clients provide load-balancing across multiple hosts,
 with an extensible interface for different algorithms.
 
 Contents:

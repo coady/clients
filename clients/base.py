@@ -164,6 +164,13 @@ class Stats(collections.Counter):
         with self.lock:
             super(Stats, self).update(kwargs)
 
+    def __enter__(self):
+        self.update(connections=1)
+        return self
+
+    def __exit__(self, *args):
+        self.update(connections=-1, errors=int(any(args)))
+
 
 class Proxy(Client):
     """An extensible embedded proxy client to multiple hosts.
@@ -174,9 +181,11 @@ class Proxy(Client):
     :param urls: base urls for requests
     :param kwargs: same options as `Client`_
     """
+    Stats = Stats
+
     def __init__(self, urls, **kwargs):
         super(Proxy, self).__init__('', **kwargs)
-        self.urls = {(url.rstrip('/') + '/'): Stats() for url in urls}
+        self.urls = {(url.rstrip('/') + '/'): self.Stats() for url in urls}
 
     @classmethod
     def clone(cls, other, path=''):
@@ -206,12 +215,7 @@ class Proxy(Client):
     def request(self, method, path, **kwargs):
         """Send request with relative or absolute path and return response."""
         url = self.choice(method)
-        stats = self.urls[url]
-        stats.update(connections=1)
-        try:
+        with self.urls[url] as stats:
             response = super(Proxy, self).request(method, urljoin(url, path), **kwargs)
-        except IOError:
-            stats.update(connections=-1, errors=1)
-            raise
-        stats.update(connections=-1, failures=int(response.status_code >= 500))
+        stats.update(failures=int(response.status_code >= 500))
         return response

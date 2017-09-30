@@ -72,9 +72,9 @@ Changes
 =========================
 dev
 
-* ``Proxy`` client
 * ``AsyncClient`` default params
 * ``Remote`` and ``AsyncRemote`` procedure calls
+* ``Proxy`` and ``AsyncProxy`` clients
 
 0.4
 

@@ -1,3 +1,4 @@
+import operator
 import pytest
 asyncio = pytest.importorskip('asyncio')  # noqa
 from concurrent import futures
@@ -33,6 +34,15 @@ def test_resource():
     assert next(it)['json'] == {'key': 'value'}
     with pytest.raises(aiohttp.ClientError):
         next(it)
+
+
+def test_remote():
+    remote = clients.AsyncRemote('http://httpbin.org/', json={'key': 'value'})
+    result, = results([remote('post')])
+    assert result['json'] == {'key': 'value'}
+    clients.AsyncRemote.check = operator.methodcaller('pop', 'json')
+    result, = results([(remote / 'post')(name='value')])
+    assert result == {'key': 'value', 'name': 'value'}
 
 
 def test_proxy():

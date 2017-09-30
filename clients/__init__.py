@@ -1,6 +1,6 @@
 from .base import Client, Proxy, Remote, Resource  # noqa
 try:
-    from .aio import AsyncClient, AsyncResource  # noqa
+    from .aio import AsyncClient, AsyncRemote, AsyncResource  # noqa
 except (SyntaxError, ImportError):  # pragma: no cover
     pass
 

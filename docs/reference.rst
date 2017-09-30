@@ -41,6 +41,13 @@ AsyncResource
    :members:
    :special-members:
 
+AsyncRemote
+=============
+.. autoclass:: AsyncRemote
+   :show-inheritance:
+   :members:
+   :special-members:
+
 singleton
 =============
 .. autofunction:: singleton

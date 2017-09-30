@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 from multidict import MultiDict
 from urllib.parse import urljoin
-from .base import Client, Resource
+from .base import Client, Remote, Resource
 
 
 class AsyncClient(aiohttp.ClientSession):
@@ -29,9 +29,10 @@ class AsyncClient(aiohttp.ClientSession):
             self._connector.close()
 
     @classmethod
-    def clone(cls, other, path=''):
+    def clone(cls, other, path='', **kwargs):
         url = urljoin(other.url, path)
-        return cls(url, trailing=other.trailing, params=other.params, **other._attrs)
+        kwargs.update(other._attrs)
+        return cls(url, trailing=other.trailing, params=other.params, **kwargs)
 
     def _request(self, method, path, params=(), **kwargs):
         params = MultiDict(params)
@@ -89,3 +90,31 @@ class AsyncResource(AsyncClient):
         if response.headers['content-type'].startswith('text/'):
             return (yield from response.text())
         return (yield from response.read())
+
+
+class AsyncRemote(AsyncClient):
+    """An `AsyncClient`_ which defaults to posts with json bodies, i.e., RPC.
+
+    :param url: base url for requests
+    :param json: default json body for all calls
+    :param kwargs: same options as `AsyncClient`_
+    """
+    client = AsyncResource.client
+    __getattr__ = AsyncResource.__getattr__
+    check = staticmethod(Remote.check)
+
+    def __init__(self, url, json=(), **kwargs):
+        super().__init__(url, **kwargs)
+        self._raise_for_status = True
+        self.json = dict(json)
+
+    @classmethod
+    def clone(cls, other, path=''):
+        return AsyncClient.clone.__func__(cls, other, path, json=other.json)
+
+    @asyncio.coroutine
+    def __call__(self, path='', **json):
+        """POST request with json body and check result."""
+        response = yield from self.post(path, json=dict(self.json, **json))
+        result = yield from response.json()
+        return self.check(result)

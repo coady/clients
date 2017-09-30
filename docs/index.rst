@@ -102,7 +102,7 @@ conveniently creating a single custom instance.
    :start-after: singleton
    :dedent: 4
 
-A `Remote <reference.html#remote>`_ client defaults to POSTs with json bodies,
+`Remote <reference.html#remote>`_ and `AsyncRemote <reference.html#asyncremote>`_ clients default to POSTs with json bodies,
 for APIs which are more RPC than REST.
 
 A `Proxy <reference.html#proxy>`_ client provides load-balancing across multiple hosts,

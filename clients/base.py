@@ -26,6 +26,9 @@ class Client(requests.Session):
         kwargs.update(other.__getstate__())
         return cls(urljoin(other.url, path), trailing=other.trailing, **kwargs)
 
+    def __repr__(self):
+        return '{}({}... {})'.format(type(self).__name__, self.url, self.trailing)
+
     def __truediv__(self, path):
         """Return a cloned client with appended path."""
         return type(self).clone(self, path)

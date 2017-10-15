@@ -54,8 +54,8 @@ Some api endpoints require trailing slashes; some forbid them.  Set it and forge
    :start-after: trailing
    :dedent: 4
 
-Note ``trailing`` doesn't technically have to be a slash.  This can be useful for static paths below a parameter:
-``.../<user>/profile``.
+Note ``trailing`` isn't limited to only being a slash.  This can be useful for static paths below a parameter:
+``api/v1/{query}.json``.
 
 Asyncio
 ^^^^^^^^^^^^^^

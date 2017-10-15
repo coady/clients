@@ -9,6 +9,7 @@ methods = 'get', 'options', 'head', 'post', 'put', 'patch', 'delete'
 
 def test_client(local):
     client = clients.Client(url, trailing='/')
+    assert str(client) == 'Client(http://localhost/... /)'
     assert isinstance(client, requests.Session)
     for method in methods:
         response = getattr(client, method)()
@@ -29,6 +30,7 @@ def test_resource(local):
     with pytest.raises(AttributeError):
         clients.Resource(url).prefetch
     resource = clients.Resource(url).path
+    assert str(resource) == 'Resource(http://localhost/path/... )'
     assert type(resource) is clients.Resource
     assert type(resource.client) is clients.Client
 

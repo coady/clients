@@ -14,6 +14,7 @@ class AsyncClient(aiohttp.ClientSession):
     :param attrs: additional ClientSession options, e.g., loop
     """
     __truediv__ = Client.__truediv__
+    __repr__ = Client.__repr__
 
     def __init__(self, url, *, trailing='', params=(), **attrs):
         if {'connector', 'loop'}.isdisjoint(attrs):

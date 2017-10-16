@@ -75,6 +75,7 @@ class AsyncResource(AsyncClient):
     client = property(AsyncClient.clone, doc="Upcasted `AsyncClient`_.")
     __getattr__ = AsyncClient.__truediv__
     __getitem__ = AsyncClient.get
+    content_type = Resource.content_type
     __call__ = Resource.__call__
     update = Resource.update
 
@@ -85,11 +86,8 @@ class AsyncResource(AsyncClient):
     @asyncio.coroutine
     def _request(self, method, path, **kwargs):
         response = yield from super()._request(method, path, **kwargs)
-        if response.headers['content-type'].startswith('application/json'):
-            return (yield from response.json())
-        if response.headers['content-type'].startswith('text/'):
-            return (yield from response.text())
-        return (yield from response.read())
+        result = getattr(response, self.content_type(response), response.read)
+        return (yield from result())
 
 
 class AsyncRemote(AsyncClient):

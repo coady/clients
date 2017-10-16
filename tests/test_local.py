@@ -44,12 +44,11 @@ def test_resource(local):
     assert resource.create(json={'name': 'value'}).endswith('/id')
 
     resource.headers['accept'] = 'application/octet-stream'
-    assert resource.get() == b'{}'
-    assert list(resource) == [b'{}']
-
+    assert list(resource) == [resource.get()] == [b'{}']
     resource.headers['accept'] = 'text/html'
-    assert resource.get() == '{}'
-    assert list(resource) == ['{}']
+    assert list(resource) == [resource.get()] == ['{}']
+    resource.headers['accept'] = 'application/vnd.geo+json'
+    assert list(resource) == [resource.get()] == [{}]
 
     file = resource.download(io.BytesIO())
     assert file.tell() == 2

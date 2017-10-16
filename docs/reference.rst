@@ -14,6 +14,10 @@ Resource
    :members:
    :special-members:
 
+   .. function:: content_type(response)
+
+      Return name {*json*, *text*,... } of response's content_type.
+
 Remote
 =============
 .. autoclass:: Remote

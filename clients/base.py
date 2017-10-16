@@ -1,9 +1,18 @@
 import collections
+import functools
 import random
+import re
 import threading
 import requests
 from requests.compat import json, urljoin
 from requests.packages.urllib3.packages.six.moves import map
+
+
+def content_type(response, **patterns):
+    """Return name for response's content-type based on regular expression matches."""
+    ct = response.headers['content-type']
+    matches = (name for name, pattern in patterns.items() if re.match(pattern, ct))
+    return next(matches, '')
 
 
 class Client(requests.Session):
@@ -74,6 +83,7 @@ class Resource(Client):
     __getitem__ = Client.get
     __setitem__ = Client.put
     __delitem__ = Client.delete
+    content_type = functools.partial(content_type, text='text/', json='application/(\w|\.)*\+?json')
 
     def __getattr__(self, name):
         if name in type(self).__attrs__:
@@ -85,7 +95,7 @@ class Resource(Client):
         """Send request with path and return processed content."""
         response = super(Resource, self).request(method, path, **kwargs)
         response.raise_for_status()
-        if response.headers['content-type'].startswith('application/json'):
+        if self.content_type(response) == 'json':
             return response.json()
         return response.text if response.encoding else response.content
 
@@ -93,10 +103,11 @@ class Resource(Client):
         """Iterate lines or chunks from streamed GET request."""
         response = super(Resource, self).request('GET', path, stream=True, **kwargs)
         response.raise_for_status()
-        if response.headers['content-type'].startswith('application/json'):
+        content_type = self.content_type(response)
+        if content_type == 'json':
             response.encoding = response.encoding or 'utf8'
             return map(json.loads, response.iter_lines(decode_unicode=True))
-        if response.encoding or response.headers['content-type'].startswith('text/'):
+        if response.encoding or content_type == 'text':
             return response.iter_lines(decode_unicode=response.encoding)
         return iter(response)
     __iter__ = iter

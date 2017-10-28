@@ -17,8 +17,9 @@ As great as `requests`_ is, typical usage is falling into some anti-patterns.
    * Using `Sessions`_ requires assigning every setting individually, and still requires url joining.
 
 `Clients <reference.html#client>`_ aim to be encourage best practices by making Sessions even easier to use than the module methods.
+Examples use the `httpbin`_ client testing service.
 
-.. literalinclude:: ../tests/test_remote.py
+.. literalinclude:: ../tests/test_base.py
    :pyobject: test_cookies
    :start-after: cookies
    :dedent: 4
@@ -31,7 +32,7 @@ naturally the most common use case is to access the content.  But the onus is on
 Their primary feature is to allow direct content access without silencing errors.
 Response content type is inferred from headers: ``json``, ``content``, or ``text``.
 
-.. literalinclude:: ../tests/test_remote.py
+.. literalinclude:: ../tests/test_base.py
    :pyobject: test_content
    :start-after: content
    :dedent: 4
@@ -42,14 +43,14 @@ Advanced Usage
 Following the semantics of ``urljoin`` however, absolute paths and urls are treated as such.
 Hence there's no need to parse a url retrieved from an api.
 
-.. literalinclude:: ../tests/test_remote.py
+.. literalinclude:: ../tests/test_base.py
    :pyobject: test_path
    :start-after: path
    :dedent: 4
 
 Some api endpoints require trailing slashes; some forbid them.  Set it and forget it.
 
-.. literalinclude:: ../tests/test_remote.py
+.. literalinclude:: ../tests/test_base.py
    :pyobject: test_trailing
    :start-after: trailing
    :dedent: 4
@@ -77,7 +78,7 @@ Avant-garde Usage
    * ``__iter__``: GET streamed lines or content
    * ``__call__``: GET with params
 
-.. literalinclude:: ../tests/test_remote.py
+.. literalinclude:: ../tests/test_base.py
    :pyobject: test_syntax
    :start-after: syntax
    :dedent: 4
@@ -89,7 +90,7 @@ Higher-level methods for common requests.
    * ``create``: POST and return location
    * ``download``: GET streamed content to file
 
-.. literalinclude:: ../tests/test_remote.py
+.. literalinclude:: ../tests/test_base.py
    :pyobject: test_methods
    :start-after: methods
    :dedent: 4
@@ -97,7 +98,7 @@ Higher-level methods for common requests.
 A `singleton <reference.html#singleton>`_ decorator can be used on subclasses,
 conveniently creating a single custom instance.
 
-.. literalinclude:: ../tests/test_local.py
+.. literalinclude:: ../tests/test_base.py
    :pyobject: test_singleton
    :start-after: singleton
    :dedent: 4
@@ -126,3 +127,4 @@ Indices and tables
 .. _coroutines: https://docs.python.org/3/library/asyncio-task.html#coroutines
 .. _Sessions: http://docs.python-requests.org/en/master/user/advanced/#session-objects
 .. _Responses: http://docs.python-requests.org/en/master/user/quickstart/#response-content
+.. _httpbin: http://httpbin.org

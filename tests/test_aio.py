@@ -1,8 +1,6 @@
 import operator
 import pytest
 asyncio = pytest.importorskip('asyncio')  # noqa
-from concurrent import futures
-from urllib.parse import urlparse
 import aiohttp
 import clients
 
@@ -15,7 +13,6 @@ def results(coros):
 
 def test_client():
     client = clients.AsyncClient('http://httpbin.org/', params={'q': 0})
-    assert str(client) == 'AsyncClient(http://httpbin.org/... )'
     coros = (client.head(), client.options(), client.post('post'), client.put('put'),
              client.patch('patch'), client.delete('delete'), (client / 'ip').get(params={'q': 1}))
     for r in results(coros):
@@ -27,7 +24,6 @@ def test_client():
 
 def test_resource():
     resource = clients.AsyncResource('http://httpbin.org/')
-    assert isinstance(resource.client, clients.AsyncClient)
     it = results([resource['robots.txt'], resource.bytes('1'),
                   resource.update('patch', key='value'), resource.status('404')])
     assert isinstance(next(it), str)
@@ -37,8 +33,8 @@ def test_resource():
         next(it)
 
 
-def test_remote():
-    remote = clients.AsyncRemote('http://httpbin.org/', json={'key': 'value'})
+def test_remote(url):
+    remote = clients.AsyncRemote(url, json={'key': 'value'})
     result, = results([remote('post')])
     assert result['json'] == {'key': 'value'}
     clients.AsyncRemote.check = operator.methodcaller('pop', 'json')
@@ -46,19 +42,27 @@ def test_remote():
     assert result == {'key': 'value', 'name': 'value'}
 
 
-def test_proxy():
-    threader = futures.ThreadPoolExecutor(1)
-    proxy = clients.Proxy(['http://httpbin.org/', 'https://httpbin.org/'])
-    future = threader.submit(proxy.get, 'delay/0.1')
-    response = proxy.get('status/500')
-    assert not response.ok
-    scheme = urlparse(future.result().url).scheme
-    assert scheme != urlparse(response.url).scheme
-    assert scheme == urlparse(proxy.get().url).scheme
-
-    proxy = clients.AsyncProxy(['http://httpbin.org/', 'https://httpbin.org/']) / '/'
+def test_proxy(httpbin):
+    proxy = clients.AsyncProxy([httpbin.url, 'http://localhost:{}'.format(httpbin.port)])
     it = results([proxy.get('delay/0.1'), proxy.get('status/500')])
-    scheme = next(it).url.scheme
-    assert scheme != next(it).url.scheme
+    host = next(it).url.host
+    assert host != next(it).url.host
     response, = results([proxy.get()])
-    assert scheme == response.url.scheme
+    assert host == response.url.host
+
+
+def test_clones():
+    client = clients.AsyncClient('http://localhost/', trailing='/')
+    assert str(client) == 'AsyncClient(http://localhost/... /)'
+    assert str(client / 'path') == 'AsyncClient(http://localhost/path/... /)'
+
+    resource = clients.AsyncResource('http://localhost/').path
+    assert str(resource) == 'AsyncResource(http://localhost/path/... )'
+    assert type(resource.client) is clients.AsyncClient
+
+    remote = clients.AsyncRemote('http://localhost/').path
+    assert str(remote) == 'AsyncRemote(http://localhost/path/... )'
+    assert type(remote.client) is clients.AsyncClient
+
+    proxy = clients.AsyncProxy(['http://localhost/', 'http://127.0.0.1']) / 'path'
+    assert str(proxy) == 'AsyncProxy(/... )'

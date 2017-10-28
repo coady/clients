@@ -15,6 +15,13 @@ def content_type(response, **patterns):
     return next(matches, '')
 
 
+def validate(response):
+    """Return validation headers from response translated for modification."""
+    headers = response.headers
+    validators = {'etag': 'if-match', 'last-modified': 'if-unmodified-since'}
+    return {validators[key]: headers[key] for key in validators if key in headers}
+
+
 class Client(requests.Session):
     """A Session which sends requests to a base url.
 
@@ -120,9 +127,26 @@ class Resource(Client):
         """GET request with params."""
         return self.get(path, params=params)
 
-    def update(self, path='', **json):
-        """PATCH request with json params."""
-        return self.patch(path, json=json)
+    def updater(self, path='', **kwargs):
+        response = super(Resource, self).request('GET', path, **kwargs)
+        headers = dict(kwargs.pop('headers', {}))
+        while True:
+            response.raise_for_status()
+            kwargs['json'] = yield response.json()
+            headers.update(validate(response))
+            response = super(Resource, self).request('PUT', path, headers=headers, **kwargs)
+
+    def update(self, path='', callback=None, **json):
+        """PATCH request with json params.
+
+        :param callback: optionally update with GET and validated PUT.
+            ``callback`` is called on the json result with keyword params, i.e.,
+            ``dict`` correctly implements the simple update case.
+        """
+        if callback is None:
+            return self.patch(path, json=json)
+        updater = self.updater(path)
+        return updater.send(callback(next(updater), **json))
 
     def create(self, path='', json=None, **kwargs):
         """POST request and return location."""

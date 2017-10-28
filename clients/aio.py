@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 from multidict import MultiDict
 from urllib.parse import urljoin
-from .base import Client, Proxy, Remote, Resource
+from .base import validate, Client, Proxy, Remote, Resource
 
 
 class AsyncClient(aiohttp.ClientSession):
@@ -77,7 +77,6 @@ class AsyncResource(AsyncClient):
     __getitem__ = AsyncClient.get
     content_type = Resource.content_type
     __call__ = Resource.__call__
-    update = Resource.update
 
     def __init__(self, url, **kwargs):
         super().__init__(url, **kwargs)
@@ -86,6 +85,14 @@ class AsyncResource(AsyncClient):
     async def _request(self, method, path, **kwargs):
         response = await super()._request(method, path, **kwargs)
         return await getattr(response, self.content_type(response), response.read)()
+
+    async def update(self, path='', callback=None, **json):
+        if callback is None:
+            return await self._request('PATCH', path, json=json)
+        response = await super()._request('GET', path)
+        json = callback(await response.json(), **json)
+        return await self._request('PUT', path, json=json, headers=validate(response))
+    update.__doc__ = Resource.update.__doc__
 
 
 class AsyncRemote(AsyncClient):

@@ -5,7 +5,7 @@ import pytest
 import clients
 
 
-def results(coros):
+def results(*coros):
     loop = asyncio.get_event_loop()
     fs = [asyncio.ensure_future(coro, loop=loop) for coro in coros]
     return map(loop.run_until_complete, fs)
@@ -15,48 +15,52 @@ def test_client():
     client = clients.AsyncClient('http://httpbin.org/', params={'q': 0})
     coros = (client.head(), client.options(), client.post('post'), client.put('put'),
              client.patch('patch'), client.delete('delete'), (client / 'ip').get(params={'q': 1}))
-    for r in results(coros):
+    for r in results(*coros):
         assert r.status == 200 and r.url.query_string.endswith('q=0')
     assert r.url.query_string == 'q=1&q=0'
-    data, = results([r.json()])
+    data, = results(r.json())
     assert set(data) == {'origin'}
 
 
 def test_resource():
-    resource = clients.AsyncResource('http://httpbin.org/')
-    it = results([resource['robots.txt'], resource.bytes('1'),
-                  resource.update('patch', key='value'), resource.status('404')])
+    params = {'etag': 'W/0', 'last-modified': 'now'}
+    resource = clients.AsyncResource('http://httpbin.org/', params=params)
+    it = results(resource['robots.txt'], resource.bytes('1'),
+                 resource.update('patch', key='value'), resource.status('404'),
+                 resource.update('response-headers', callback=dict, key='value'))
     assert isinstance(next(it), str)
     assert isinstance(next(it), bytes)
     assert next(it)['json'] == {'key': 'value'}
-    with pytest.raises(aiohttp.ClientError):
+    with pytest.raises(aiohttp.ClientError, match='404'):
+        next(it)
+    with pytest.raises(aiohttp.ClientError, match='405'):
         next(it)
 
 
 def test_remote(url):
     remote = clients.AsyncRemote(url, json={'key': 'value'})
-    result, = results([remote('post')])
+    result, = results(remote('post'))
     assert result['json'] == {'key': 'value'}
     clients.AsyncRemote.check = operator.methodcaller('pop', 'json')
-    result, = results([(remote / 'post')(name='value')])
+    result, = results((remote / 'post')(name='value'))
     assert result == {'key': 'value', 'name': 'value'}
 
 
 def test_proxy(url):
     proxy = clients.AsyncProxy([url, 'http://httpbin.org/'])
-    responses = results(proxy.get('delay/0.1') for _ in proxy.urls)
+    responses = results(*(proxy.get('get') for _ in proxy.urls))
     urls = {response.url: response.json() for response in responses}
     assert len(urls) == len(proxy.urls)
-    assert all(results(urls.values()))
+    assert all(results(*urls.values()))
 
     fs = (proxy.get('status/500') for _ in proxy.urls)
-    response, = results([next(fs)])
-    assert next(results(fs)).url != response.url
+    response, = results(next(fs))
+    assert next(results(*fs)).url != response.url
 
     proxy = clients.AsyncProxy(['http://localhost/', 'http://httpbin.org/'])
     with pytest.raises(aiohttp.ClientError):
-        list(results(proxy.get() for _ in proxy.urls))
-    response, = results([proxy.get()])
+        list(results(*(proxy.get() for _ in proxy.urls)))
+    response, = results(proxy.get())
     assert response.status == 200
 
 

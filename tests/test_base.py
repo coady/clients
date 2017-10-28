@@ -65,6 +65,14 @@ def test_methods(url):
     assert file.tell()
 
 
+def test_callback(url):
+    resource = clients.Resource(url, params={'etag': 'W/0', 'last-modified': 'now'})
+    with pytest.raises(IOError, match='405') as exc:
+        resource.update('response-headers', callback=dict, name='value')
+    headers = exc.value.request.headers
+    assert headers['if-match'] == 'W/0' and headers['if-unmodified-since'] == 'now'
+
+
 def test_meta(url):
     client = clients.Client(url)
     response = client.options('get')

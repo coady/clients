@@ -1,13 +1,13 @@
+import asyncio
 import operator
-import pytest
-asyncio = pytest.importorskip('asyncio')  # noqa
 import aiohttp
+import pytest
 import clients
 
 
 def results(coros):
     loop = asyncio.get_event_loop()
-    fs = list(map(loop.create_task, coros))
+    fs = [asyncio.ensure_future(coro, loop=loop) for coro in coros]
     return map(loop.run_until_complete, fs)
 
 
@@ -42,13 +42,22 @@ def test_remote(url):
     assert result == {'key': 'value', 'name': 'value'}
 
 
-def test_proxy(httpbin):
-    proxy = clients.AsyncProxy([httpbin.url, 'http://localhost:{}'.format(httpbin.port)])
-    it = results([proxy.get('delay/0.1'), proxy.get('status/500')])
-    host = next(it).url.host
-    assert host != next(it).url.host
+def test_proxy(url):
+    proxy = clients.AsyncProxy([url, 'http://httpbin.org/'])
+    responses = results(proxy.get('delay/0.1') for _ in proxy.urls)
+    urls = {response.url: response.json() for response in responses}
+    assert len(urls) == len(proxy.urls)
+    assert all(results(urls.values()))
+
+    fs = (proxy.get('status/500') for _ in proxy.urls)
+    response, = results([next(fs)])
+    assert next(results(fs)).url != response.url
+
+    proxy = clients.AsyncProxy(['http://localhost/', 'http://httpbin.org/'])
+    with pytest.raises(aiohttp.ClientError):
+        list(results(proxy.get() for _ in proxy.urls))
     response, = results([proxy.get()])
-    assert host == response.url.host
+    assert response.status == 200
 
 
 def test_clones():

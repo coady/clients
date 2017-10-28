@@ -83,11 +83,9 @@ class AsyncResource(AsyncClient):
         super().__init__(url, **kwargs)
         self._raise_for_status = True
 
-    @asyncio.coroutine
-    def _request(self, method, path, **kwargs):
-        response = yield from super()._request(method, path, **kwargs)
-        result = getattr(response, self.content_type(response), response.read)
-        return (yield from result())
+    async def _request(self, method, path, **kwargs):
+        response = await super()._request(method, path, **kwargs)
+        return await getattr(response, self.content_type(response), response.read)()
 
 
 class AsyncRemote(AsyncClient):
@@ -110,12 +108,10 @@ class AsyncRemote(AsyncClient):
     def clone(cls, other, path=''):
         return AsyncClient.clone.__func__(cls, other, path, json=other.json)
 
-    @asyncio.coroutine
-    def __call__(self, path='', **json):
+    async def __call__(self, path='', **json):
         """POST request with json body and check result."""
-        response = yield from self.post(path, json=dict(self.json, **json))
-        result = yield from response.json()
-        return self.check(result)
+        response = await self.post(path, json=dict(self.json, **json))
+        return self.check(await response.json())
 
 
 class AsyncProxy(AsyncClient):
@@ -141,10 +137,9 @@ class AsyncProxy(AsyncClient):
         urls = (urljoin(url, path) for url in other.urls)
         return cls(urls, trailing=other.trailing, params=other.params, **other._attrs)
 
-    @asyncio.coroutine
-    def _request(self, method, path, **kwargs):
+    async def _request(self, method, path, **kwargs):
         url = self.choice(method)
         with self.urls[url] as stats:
-            response = yield from super()._request(method, urljoin(url, path), **kwargs)
+            response = await super()._request(method, urljoin(url, path), **kwargs)
         stats.update(failures=int(response.status >= 500))
         return response

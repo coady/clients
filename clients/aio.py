@@ -84,13 +84,16 @@ class AsyncResource(AsyncClient):
 
     async def _request(self, method, path, **kwargs):
         response = await super()._request(method, path, **kwargs)
-        return await getattr(response, self.content_type(response), response.read)()
+        content_type = self.content_type(response)
+        if content_type == 'json':
+            return await response.json(content_type='')
+        return await (response.text() if content_type == 'text' else response.read())
 
     async def update(self, path='', callback=None, **json):
         if callback is None:
             return await self._request('PATCH', path, json=json)
         response = await super()._request('GET', path)
-        json = callback(await response.json(), **json)
+        json = callback(await response.json(content_type=''), **json)
         return await self._request('PUT', path, json=json, headers=validate(response))
     update.__doc__ = Resource.update.__doc__
 
@@ -118,7 +121,7 @@ class AsyncRemote(AsyncClient):
     async def __call__(self, path='', **json):
         """POST request with json body and check result."""
         response = await self.post(path, json=dict(self.json, **json))
-        return self.check(await response.json())
+        return self.check(await response.json(content_type=''))
 
 
 class AsyncProxy(AsyncClient):

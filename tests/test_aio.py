@@ -37,6 +37,13 @@ def test_resource():
         next(it)
 
 
+def test_content(url):
+    resource = clients.AsyncResource(url)
+    resource.content_type = lambda response: 'json'
+    with pytest.raises(ValueError):
+        data, = results(resource.get('robots.txt'))
+
+
 def test_remote(url):
     remote = clients.AsyncRemote(url, json={'key': 'value'})
     result, = results(remote('post'))

@@ -7,7 +7,7 @@
 .. image:: https://img.shields.io/codecov/c/github/coady/clients.svg
    :target: https://codecov.io/github/coady/clients
 
-Clients provide `requests`_ wrappers which encourage best practices,
+Clients provide `requests`_ (or `aiohttp`_) wrappers which encourage best practices,
 particularly always using Sessions to connect to the same host or api endpoint.
 
 Usage
@@ -40,15 +40,23 @@ Resources extend Clients to implicitly handle response content, with proper chec
 
 .. code-block:: python
 
-   resource = clients.Resource('https://api.github.com/', headers={'authorization': token})
-   for repo in resource.get('user/repos'):
+   github = clients.Resource('https://api.github.com/', headers={'authorization': token})
+   for repo in github.get('user/repos', params={'visibility': 'public'}):
       ...
 
-Being session based, Clients also work seamlessly with other `requests`_ adapters, such as `CacheControl`_.
+Resources also implement syntactic support for methods like `__getattr__` and `__call__`,
+providing many of the benefits of custom clients, with no differences from the actual API.
 
-Asynchronous Clients are also provided in Python 3.5+, using `aiohttp`_ instead of `requests`_.
+.. code-block:: python
 
-See `documentation`_ for more examples.
+   for repo in github.user.repos(visibility='public'):
+      ...
+
+Being session based, Clients work seamlessly with other `requests`_ adapters, such as `CacheControl`_.
+
+Asynchronous variants of all client types are provided in Python 3.5+, using `aiohttp`_ instead of `requests`_.
+
+See `documentation`_ for more examples, and clients for RPC, GraphQL, and proxies.
 
 Installation
 =========================
@@ -74,6 +82,7 @@ dev
 
 * ``AsyncClient`` default params
 * ``Remote`` and ``AsyncRemote`` procedure calls
+* ``Graph`` and ``AsyncGraph`` execute GraphQL queries
 * ``Proxy`` and ``AsyncProxy`` clients
 
 0.4

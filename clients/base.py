@@ -193,6 +193,22 @@ class Remote(Client):
         return result
 
 
+class Graph(Remote):
+    """A `Remote`_ client which executes GraphQL queries."""
+    Error = requests.HTTPError
+
+    @classmethod
+    def check(cls, result):
+        """Return `data` or raise `errors`."""
+        for error in result.get('errors', ()):
+            raise cls.Error(error)
+        return result.get('data')
+
+    def execute(self, query, **variables):
+        """Execute query over POST."""
+        return self(query=query, variables=variables)
+
+
 class Stats(collections.Counter):
     """Thread-safe Counter."""
     def __init__(self):

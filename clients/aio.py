@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 from multidict import MultiDict
 from urllib.parse import urljoin
-from .base import validate, Client, Proxy, Remote, Resource
+from .base import validate, Client, Graph, Proxy, Remote, Resource
 
 
 class AsyncClient(aiohttp.ClientSession):
@@ -122,6 +122,13 @@ class AsyncRemote(AsyncClient):
         """POST request with json body and check result."""
         response = await self.post(path, json=dict(self.json, **json))
         return self.check(await response.json(content_type=''))
+
+
+class AsyncGraph(AsyncRemote):
+    """An `AsyncRemote`_ client which executes GraphQL queries."""
+    Error = aiohttp.ClientPayloadError
+    check = classmethod(Graph.check.__func__)
+    execute = Graph.execute
 
 
 class AsyncProxy(AsyncClient):

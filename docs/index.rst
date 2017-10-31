@@ -106,6 +106,8 @@ conveniently creating a single custom instance.
 `Remote <reference.html#remote>`_ and `AsyncRemote <reference.html#asyncremote>`_ clients default to POSTs with json bodies,
 for APIs which are more RPC than REST.
 
+`Graph <reference.html#graph>`_ and `AsyncGraph <reference.html#asyncgraph>`_ remote clients execute GraphQL queries.
+
 `Proxy <reference.html#proxy>`_  and `AsyncProxy <reference.html#asyncproxy>`_ clients provide load-balancing across multiple hosts,
 with an extensible interface for different algorithms.
 

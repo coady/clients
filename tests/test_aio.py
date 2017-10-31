@@ -1,4 +1,5 @@
 import asyncio
+import json
 import operator
 import aiohttp
 import pytest
@@ -51,6 +52,14 @@ def test_remote(url):
     clients.AsyncRemote.check = operator.methodcaller('pop', 'json')
     result, = results((remote / 'post')(name='value'))
     assert result == {'key': 'value', 'name': 'value'}
+
+
+def test_graph(url):
+    graph = clients.AsyncGraph(url).anything
+    data, = results(graph.execute('{ viewer { login }}'))
+    assert json.loads(data) == {'query': '{ viewer { login }}', 'variables': {}}
+    with pytest.raises(aiohttp.ClientPayloadError, match='reason'):
+        clients.AsyncGraph.check({'errors': ['reason']})
 
 
 def test_proxy(url):

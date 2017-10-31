@@ -1,3 +1,4 @@
+import json
 import operator
 import io
 import pytest
@@ -86,6 +87,14 @@ def test_remote(url):
     assert remote('post')['json'] == {'key': 'value'}
     clients.Remote.check = operator.methodcaller('pop', 'json')
     assert (remote / 'post')(name='value') == {'key': 'value', 'name': 'value'}
+
+
+def test_graph(url):
+    graph = clients.Graph(url).anything
+    data = graph.execute('{ viewer { login }}')
+    assert json.loads(data) == {'query': '{ viewer { login }}', 'variables': {}}
+    with pytest.raises(IOError, match='reason'):
+        clients.Graph.check({'errors': ['reason']})
 
 
 def test_proxy(httpbin):

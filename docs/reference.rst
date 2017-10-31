@@ -25,6 +25,12 @@ Remote
    :members:
    :special-members:
 
+Graph
+=============
+.. autoclass:: Graph
+   :show-inheritance:
+   :members:
+
 Proxy
 =============
 .. autoclass:: Proxy
@@ -51,6 +57,12 @@ AsyncRemote
    :show-inheritance:
    :members:
    :special-members:
+
+AsyncGraph
+=============
+.. autoclass:: AsyncGraph
+   :show-inheritance:
+   :members:
 
 AsyncProxy
 =============

@@ -7,7 +7,7 @@ python:
   - 3.6
 
 env:
-  - REQUESTS="requests==2.4.2"
+  - REQUESTS="requests<2.5"
   - REQUESTS="requests"
 
 install:

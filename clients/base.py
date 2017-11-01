@@ -5,7 +5,10 @@ import re
 import threading
 import requests
 from requests.compat import json, urljoin
-from requests.packages.urllib3.packages.six.moves import map
+try:
+    from future_builtins import map
+except ImportError:  # pragma: no cover
+    pass
 
 
 def content_type(response, **patterns):

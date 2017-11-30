@@ -6,6 +6,8 @@
    :target: https://travis-ci.org/coady/clients
 .. image:: https://img.shields.io/codecov/c/github/coady/clients.svg
    :target: https://codecov.io/github/coady/clients
+.. image:: https://readthedocs.org/projects/clients/badge
+   :target: `documentation`_
 
 Clients provide `requests`_ (or `aiohttp`_) wrappers which encourage best practices,
 particularly always using Sessions to connect to the same host or api endpoint.
@@ -44,8 +46,8 @@ Resources extend Clients to implicitly handle response content, with proper chec
    for repo in github.get('user/repos', params={'visibility': 'public'}):
       ...
 
-Resources also implement syntactic support for methods like `__getattr__` and `__call__`,
-providing many of the benefits of custom clients, with no differences from the actual API.
+Resources also implement syntactic support for methods such as `__getattr__` and `__call__`,
+providing most of the benefits of custom clients, without having to define a schema.
 
 .. code-block:: python
 
@@ -53,10 +55,10 @@ providing many of the benefits of custom clients, with no differences from the a
       ...
 
 Being session based, Clients work seamlessly with other `requests`_ adapters, such as `CacheControl`_.
+Asynchronous variants of all client types are provided in Python >=3.5, using `aiohttp`_ instead of `requests`_.
+Additional clients for `RPC`_, `GraphQL`_, and proxies also provided.
 
-Asynchronous variants of all client types are provided in Python 3.5+, using `aiohttp`_ instead of `requests`_.
-
-See `documentation`_ for more examples, and clients for RPC, GraphQL, and proxies.
+Read the `documentation`_.
 
 Installation
 =========================
@@ -66,9 +68,9 @@ Installation
 
 Dependencies
 =========================
-* Python 2.7, 3.4+
-* requests 2.4.2+
-* aiohttp (optional)
+* Python ~=2.7, >=3.4
+* requests >=2.4.2
+* aiohttp (if Python >=3.5)
 
 Tests
 =========================
@@ -103,5 +105,7 @@ dev
 
 .. _requests: https://python-requests.org
 .. _aiohttp: http://aiohttp.readthedocs.io
-.. _documentation: http://pythonhosted.org/clients/
-.. _CacheControl: https://cachecontrol.readthedocs.org/en/latest/
+.. _documentation: http://clients.readthedocs.io
+.. _CacheControl: https://cachecontrol.readthedocs.org
+.. _RPC: https://en.wikipedia.org/wiki/Remote_procedure_call
+.. _GraphQL: http://graphql.org

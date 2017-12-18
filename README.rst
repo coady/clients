@@ -1,5 +1,5 @@
 .. image:: https://img.shields.io/pypi/v/clients.svg
-   :target: https://pypi.python.org/pypi/clients/
+   :target: https://pypi.org/project/clients/
 .. image:: https://img.shields.io/pypi/pyversions/clients.svg
 .. image:: https://img.shields.io/pypi/status/clients.svg
 .. image:: https://img.shields.io/travis/coady/clients.svg
@@ -9,7 +9,7 @@
 .. image:: https://readthedocs.org/projects/clients/badge
    :target: `documentation`_
 
-Clients provide `requests`_ (or `aiohttp`_) wrappers which encourage best practices,
+Clients provide `requests`_ and `aiohttp`_ wrappers which encourage best practices,
 particularly always using Sessions to connect to the same host or api endpoint.
 
 Usage
@@ -68,7 +68,6 @@ Installation
 
 Dependencies
 =========================
-* Python ~=2.7, >=3.4
 * requests >=2.4.2
 * aiohttp (if Python >=3.5)
 

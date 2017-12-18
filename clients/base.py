@@ -213,20 +213,24 @@ class Graph(Remote):
 
 
 class Stats(collections.Counter):
-    """Thread-safe Counter."""
+    """Thread-safe Counter.
+
+    Context manager tracks number of active connections and errors.
+    """
     def __init__(self):
         self.lock = threading.Lock()
 
-    def update(self, **kwargs):
+    def add(self, **kwargs):
+        """Atomically add data."""
         with self.lock:
-            super(Stats, self).update(kwargs)
+            self.update(kwargs)
 
     def __enter__(self):
-        self.update(connections=1)
+        self.add(connections=1)
         return self
 
     def __exit__(self, *args):
-        self.update(connections=-1, errors=int(any(args)))
+        self.add(connections=-1, errors=int(any(args)))
 
 
 class Proxy(Client):
@@ -240,14 +244,14 @@ class Proxy(Client):
     """
     Stats = Stats
 
-    def __init__(self, urls, **kwargs):
+    def __init__(self, *urls, **kwargs):
         super(Proxy, self).__init__('', **kwargs)
         self.urls = {(url.rstrip('/') + '/'): self.Stats() for url in urls}
 
     @classmethod
     def clone(cls, other, path=''):
         urls = (urljoin(url, path) for url in other.urls)
-        return cls(urls, trailing=other.trailing, **other.__getstate__())
+        return cls(*urls, trailing=other.trailing, **other.__getstate__())
 
     def priority(self, url):
         """Return comparable priority for url.
@@ -274,5 +278,5 @@ class Proxy(Client):
         url = self.choice(method)
         with self.urls[url] as stats:
             response = super(Proxy, self).request(method, urljoin(url, path), **kwargs)
-        stats.update(failures=int(response.status_code >= 500))
+        stats.add(failures=int(response.status_code >= 500))
         return response

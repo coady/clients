@@ -145,18 +145,18 @@ class AsyncProxy(AsyncClient):
     priority = Proxy.priority
     choice = Proxy.choice
 
-    def __init__(self, urls, **kwargs):
+    def __init__(self, *urls, **kwargs):
         super().__init__('', **kwargs)
         self.urls = {(url.rstrip('/') + '/'): self.Stats() for url in urls}
 
     @classmethod
     def clone(cls, other, path=''):
         urls = (urljoin(url, path) for url in other.urls)
-        return cls(urls, trailing=other.trailing, params=other.params, **other._attrs)
+        return cls(*urls, trailing=other.trailing, params=other.params, **other._attrs)
 
     async def _request(self, method, path, **kwargs):
         url = self.choice(method)
         with self.urls[url] as stats:
             response = await super()._request(method, urljoin(url, path), **kwargs)
-        stats.update(failures=int(response.status >= 500))
+        stats.add(failures=int(response.status >= 500))
         return response

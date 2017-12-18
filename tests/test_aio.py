@@ -63,7 +63,7 @@ def test_graph(url):
 
 
 def test_proxy(url):
-    proxy = clients.AsyncProxy([url, 'http://httpbin.org/'])
+    proxy = clients.AsyncProxy(url, 'http://httpbin.org/')
     responses = results(*(proxy.get('get') for _ in proxy.urls))
     urls = {response.url: response.json() for response in responses}
     assert len(urls) == len(proxy.urls)
@@ -73,7 +73,7 @@ def test_proxy(url):
     response, = results(next(fs))
     assert next(results(*fs)).url != response.url
 
-    proxy = clients.AsyncProxy(['http://localhost/', 'http://httpbin.org/'])
+    proxy = clients.AsyncProxy('http://localhost/', 'http://httpbin.org/')
     with pytest.raises(aiohttp.ClientError):
         list(results(*(proxy.get() for _ in proxy.urls)))
     response, = results(proxy.get())
@@ -93,5 +93,5 @@ def test_clones():
     assert str(remote) == 'AsyncRemote(http://localhost/path/... )'
     assert type(remote.client) is clients.AsyncClient
 
-    proxy = clients.AsyncProxy(['http://localhost/', 'http://127.0.0.1']) / 'path'
+    proxy = clients.AsyncProxy('http://localhost/', 'http://127.0.0.1') / 'path'
     assert str(proxy) == 'AsyncProxy(/... )'

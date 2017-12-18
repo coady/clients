@@ -98,7 +98,7 @@ def test_graph(url):
 
 
 def test_proxy(httpbin):
-    proxy = clients.Proxy([httpbin.url, 'http://localhost:{}'.format(httpbin.port)])
+    proxy = clients.Proxy(httpbin.url, 'http://localhost:{}'.format(httpbin.port))
     urls = {proxy.get('status/500').url for _ in proxy.urls}
     assert len(urls) == len(proxy.urls)
 
@@ -116,7 +116,7 @@ def test_clones():
     assert str(remote) == 'Remote(http://localhost/path/... )'
     assert type(remote.client) is clients.Client
 
-    proxy = clients.Proxy(['http://localhost/', 'http://127.0.0.1']) / 'path'
+    proxy = clients.Proxy('http://localhost/', 'http://127.0.0.1') / 'path'
     assert str(proxy) == 'Proxy(/... )'
 
 

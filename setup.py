@@ -12,7 +12,7 @@ setup(
     packages=['clients'],
     install_requires=['requests>=2.4.2'],
     extras_require={':python_version>="3.5"': ['aiohttp']},
-    python_requires='~=2.7, >=3.4',
+    python_requires='>=2.7',
     tests_require=['pytest-cov', 'pytest-httpbin'],
     keywords='requests sessions responses resources asyncio',
     classifiers=[

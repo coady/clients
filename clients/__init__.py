@@ -1,10 +1,10 @@
 from .base import Client, Graph, Proxy, Remote, Resource  # noqa
 try:
     from .aio import AsyncClient, AsyncGraph, AsyncProxy, AsyncRemote, AsyncResource  # noqa
-except (SyntaxError, ImportError):  # pragma: no cover
+except SyntaxError:  # pragma: no cover
     pass
 
-__version__ = '0.4'
+__version__ = '0.5'
 
 
 def singleton(*args, **kwargs):

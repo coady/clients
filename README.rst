@@ -79,7 +79,7 @@ Tests
 
 Changes
 =========================
-dev
+0.5
 
 * ``AsyncClient`` default params
 * ``Remote`` and ``AsyncRemote`` procedure calls

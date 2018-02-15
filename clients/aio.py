@@ -141,7 +141,6 @@ class AsyncProxy(AsyncClient):
     :param kwargs: same options as `AsyncClient`_
     """
     Stats = Proxy.Stats
-    clone = Proxy.clone.__func__
     priority = Proxy.priority
     choice = Proxy.choice
 

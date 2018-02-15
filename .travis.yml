@@ -1,18 +1,18 @@
 language: python
 
-python:
-  - 2.7
-  - 3.4
-  - 3.5
-  - 3.6
-
-env:
-  - REQUESTS="requests<2.5"
-  - REQUESTS="requests"
+matrix:
+  include:
+    - python: 2.7
+      env: REQUESTS="requests<2.5" AIOHTTP=""
+    - python: 3.4
+      env: REQUESTS="requests<2.10" AIOHTTP=""
+    - python: 3.5
+      env: REQUESTS="requests<2.15" AIOHTTP="aiohttp<3"
+    - python: 3.6
+      env: REQUESTS="requests" AIOHTTP="aiohttp"
 
 install:
-  - pip install $REQUESTS pytest-cov pytest-httpbin codecov
-  - if [[ $TRAVIS_PYTHON_VERSION == 3* ]]; then pip install aiohttp; fi
+  - pip install $REQUESTS $AIOHTTP pytest-cov pytest-httpbin codecov
 
 script:
   - pytest -v --cov

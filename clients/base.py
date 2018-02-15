@@ -13,7 +13,7 @@ except ImportError:  # pragma: no cover
 
 def content_type(response, **patterns):
     """Return name for response's content-type based on regular expression matches."""
-    ct = response.headers['content-type']
+    ct = response.headers.get('content-type', '')
     matches = (name for name, pattern in patterns.items() if re.match(pattern, ct))
     return next(matches, '')
 

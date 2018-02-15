@@ -80,6 +80,8 @@ def test_meta(url):
     assert response.ok and not response.content
     response = client.head('get')
     assert response.ok and not response.content
+    del response.headers['content-type']
+    assert clients.Resource.content_type(response) == ''
 
 
 def test_remote(url):

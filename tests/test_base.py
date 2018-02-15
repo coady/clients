@@ -66,6 +66,15 @@ def test_methods(url):
     assert file.tell()
 
 
+def test_authorize(monkeypatch):
+    resource = clients.Resource('')
+    result = {'access_token': 'abc123', 'token_type': 'Bearer', 'expires_in': 0}
+    monkeypatch.setattr(clients.Resource, 'request', lambda *args, **kwargs: result)
+    for key in ('params', 'data', 'json'):
+        assert resource.authorize('oauth/token', **{key: {}}) == result
+        assert resource.headers['authorization'] == 'Bearer abc123'
+
+
 def test_callback(url):
     resource = clients.Resource(url, params={'etag': 'W/0', 'last-modified': 'now'})
     with pytest.raises(IOError, match='405') as exc:

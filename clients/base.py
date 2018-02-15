@@ -165,6 +165,13 @@ class Resource(Client):
             file.write(chunk)
         return file
 
+    def authorize(self, path='', **kwargs):
+        """Acquire oauth access token and set authorization header."""
+        method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
+        result = self.request(method, path, **kwargs)
+        self.headers['authorization'] = '{token_type} {access_token}'.format(**result)
+        return result
+
 
 class Remote(Client):
     """A `Client`_ which defaults to posts with json bodies, i.e., RPC.

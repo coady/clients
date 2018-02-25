@@ -40,6 +40,7 @@ def test_resource():
 
 def test_content(url):
     resource = clients.AsyncResource(url)
+    assert resource.oauth('abc123') == {'authorization': 'token abc123'}
     resource.content_type = lambda response: 'json'
     with pytest.raises(ValueError):
         data, = results(resource.get('robots.txt'))

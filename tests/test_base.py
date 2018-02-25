@@ -68,6 +68,7 @@ def test_methods(url):
 
 def test_authorize(monkeypatch):
     resource = clients.Resource('')
+    assert resource.oauth('abc123') == {'authorization': 'token abc123'}
     result = {'access_token': 'abc123', 'token_type': 'Bearer', 'expires_in': 0}
     monkeypatch.setattr(clients.Resource, 'request', lambda *args, **kwargs: result)
     for key in ('params', 'data', 'json'):

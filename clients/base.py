@@ -86,6 +86,11 @@ class Client(requests.Session):
         """DELETE request with optional path."""
         return super(Client, self).delete(path, **kwargs)
 
+    @staticmethod
+    def oauth(access_token, token_type='token', **extra):
+        """Return authorization header from an oauth token, or any compatible credentials."""
+        return {'authorization': '{} {}'.format(token_type, access_token)}
+
 
 class Resource(Client):
     """A `Client`_ which returns json content and has syntactic support for requests."""
@@ -166,10 +171,10 @@ class Resource(Client):
         return file
 
     def authorize(self, path='', **kwargs):
-        """Acquire oauth access token and set authorization header."""
+        """Acquire :meth:`Client.oauth` access token and set authorization header."""
         method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
         result = self.request(method, path, **kwargs)
-        self.headers['authorization'] = '{token_type} {access_token}'.format(**result)
+        self.headers.update(self.oauth(**result))
         return result
 
 

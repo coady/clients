@@ -15,6 +15,7 @@ class AsyncClient(aiohttp.ClientSession):
     """
     __truediv__ = Client.__truediv__
     __repr__ = Client.__repr__
+    oauth = staticmethod(Client.oauth)
 
     def __init__(self, url, *, trailing='', params=(), **attrs):
         if {'connector', 'loop'}.isdisjoint(attrs):

@@ -1,4 +1,5 @@
 import asyncio
+import operator
 import aiohttp
 from multidict import MultiDict
 from urllib.parse import urljoin
@@ -16,6 +17,7 @@ class AsyncClient(aiohttp.ClientSession):
     __truediv__ = Client.__truediv__
     __repr__ = Client.__repr__
     oauth = staticmethod(Client.oauth)
+    headers = property(operator.attrgetter('_default_headers'), doc="default headers")
 
     def __init__(self, url, *, trailing='', params=(), **attrs):
         if {'connector', 'loop'}.isdisjoint(attrs):
@@ -70,10 +72,14 @@ class AsyncClient(aiohttp.ClientSession):
         """DELETE request with optional path."""
         return super().delete(path, **kwargs)
 
+    def run(self, func, *args, **kwargs):
+        """Synchronously call and run coroutine."""
+        return self.loop.run_until_complete(func(*args, **kwargs))
+
 
 class AsyncResource(AsyncClient):
     """An `AsyncClient`_ which returns json content and has syntactic support for requests."""
-    client = property(AsyncClient.clone, doc="Upcasted `AsyncClient`_.")
+    client = property(AsyncClient.clone, doc="upcasted `AsyncClient`_")
     __getattr__ = AsyncClient.__truediv__
     __getitem__ = AsyncClient.get
     content_type = Resource.content_type
@@ -97,6 +103,13 @@ class AsyncResource(AsyncClient):
         json = callback(await response.json(content_type=''), **json)
         return await self._request('PUT', path, json=json, headers=validate(response))
     update.__doc__ = Resource.update.__doc__
+
+    async def authorize(self, path='', **kwargs):
+        """Acquire :meth:`AsyncClient.oauth` access token and set authorization header."""
+        method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
+        result = await self._request(method, path, **kwargs)
+        self.headers.update(self.oauth(**result))
+        return result
 
 
 class AsyncRemote(AsyncClient):

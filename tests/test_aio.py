@@ -46,6 +46,16 @@ def test_content(url):
         data, = results(resource.get('robots.txt'))
 
 
+def test_authorize(monkeypatch):
+    resource = clients.AsyncResource('')
+    future = asyncio.Future()
+    future.set_result({'access_token': 'abc123', 'token_type': 'Bearer', 'expires_in': 0})
+    monkeypatch.setattr(clients.AsyncResource, '_request', lambda *args, **kwargs: future)
+    for key in ('params', 'data', 'json'):
+        assert resource.run(resource.authorize, 'oauth/token', **{key: {}}) == future.result()
+        assert resource.headers['authorization'] == 'Bearer abc123'
+
+
 def test_remote(url):
     remote = clients.AsyncRemote(url, json={'key': 'value'})
     result, = results(remote('post'))

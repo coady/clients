@@ -86,9 +86,10 @@ Avant-garde Usage
 Higher-level methods for common requests.
 
    * ``iter``: __iter__ with args
-   * ``update``: PATCH with json params
+   * ``update``: PATCH with json params, or GET with conditional PUT
    * ``create``: POST and return location
    * ``download``: GET streamed content to file
+   * ``authorize``: acquire oauth token
 
 .. literalinclude:: ../tests/test_base.py
    :pyobject: test_methods

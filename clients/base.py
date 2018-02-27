@@ -94,7 +94,7 @@ class Client(requests.Session):
 
 class Resource(Client):
     """A `Client`_ which returns json content and has syntactic support for requests."""
-    client = property(Client.clone, doc="Upcasted `Client`_.")
+    client = property(Client.clone, doc="upcasted `Client`_")
     __getitem__ = Client.get
     __setitem__ = Client.put
     __delitem__ = Client.delete

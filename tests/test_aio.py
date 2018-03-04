@@ -40,20 +40,29 @@ def test_resource():
 
 def test_content(url):
     resource = clients.AsyncResource(url)
-    assert resource.oauth('abc123') == {'authorization': 'token abc123'}
     resource.content_type = lambda response: 'json'
     with pytest.raises(ValueError):
         data, = results(resource.get('robots.txt'))
 
 
-def test_authorize(monkeypatch):
-    resource = clients.AsyncResource('')
+def test_authorize(url, monkeypatch):
+    resource = clients.AsyncResource(url, auth=aiohttp.BasicAuth('', ''))
+    basic, token = results(resource.get('headers'), resource.get('headers', auth={'token': 'abc123'}))
+    assert basic['headers']['Authorization'].startswith('Basic ')
+    assert token['headers']['Authorization'] == 'token abc123'
+    resource = clients.AsyncResource(url, auth={'token': 'abc123'})
+    assert resource.headers == {} and resource.auth == ('token', 'abc123')
+    basic, token = results(resource.get('headers', auth=aiohttp.BasicAuth('', '')), resource.get('headers'))
+    assert basic['headers']['Authorization'].startswith('Basic ')
+    assert token['headers']['Authorization'] == 'token abc123'
+
+    resource = clients.AsyncResource(url)
     future = asyncio.Future()
     future.set_result({'access_token': 'abc123', 'token_type': 'Bearer', 'expires_in': 0})
     monkeypatch.setattr(clients.AsyncResource, '_request', lambda *args, **kwargs: future)
     for key in ('params', 'data', 'json'):
-        assert resource.run(resource.authorize, 'oauth/token', **{key: {}}) == future.result()
-        assert resource.headers['authorization'] == 'Bearer abc123'
+        assert resource.run('authorize', **{key: {}}) == future.result()
+        assert resource.auth == ('Bearer', 'abc123')
 
 
 def test_remote(url):

@@ -66,14 +66,21 @@ def test_methods(url):
     assert file.tell()
 
 
-def test_authorize(monkeypatch):
-    resource = clients.Resource('')
-    assert resource.oauth('abc123') == {'authorization': 'token abc123'}
+def test_authorize(url, monkeypatch):
+    resource = clients.Resource(url, auth=('', ''))
+    assert resource.get('headers')['headers']['Authorization'].startswith('Basic ')
+    assert resource.get('headers', auth={'token': 'abc123'})['headers']['Authorization'] == 'token abc123'
+    resource = clients.Resource(url, auth={'token': 'abc123'})
+    assert resource.auth == {'token': 'abc123'}
+    assert resource.get('headers')['headers']['Authorization'] == 'token abc123'
+    assert resource.get('headers', auth=('', ''))['headers']['Authorization'].startswith('Basic ')
+
+    resource = clients.Resource(url)
     result = {'access_token': 'abc123', 'token_type': 'Bearer', 'expires_in': 0}
     monkeypatch.setattr(clients.Resource, 'request', lambda *args, **kwargs: result)
     for key in ('params', 'data', 'json'):
-        assert resource.authorize('oauth/token', **{key: {}}) == result
-        assert resource.headers['authorization'] == 'Bearer abc123'
+        assert resource.authorize(**{key: {}}) == result
+        assert resource.auth == {'Bearer': 'abc123'}
 
 
 def test_callback(url):

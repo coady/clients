@@ -25,17 +25,26 @@ def validate(response):
     return {validators[key]: headers[key] for key in validators if key in headers}
 
 
+class TokenAuth(dict):
+    def __call__(self, req):
+        req.headers['Authorization'] = ' '.join(*self.items())
+        return req
+
+
 class Client(requests.Session):
     """A Session which sends requests to a base url.
 
     :param url: base url for requests
     :param trailing: trailing chars (e.g. /) appended to the url
     :param headers: additional headers to include in requests
+    :param auth: additional authorization support for ``{token_type: access_token}``,
+        available per request as well
     :param attrs: additional Session attributes
     """
-    def __init__(self, url, trailing='', headers=(), **attrs):
+    def __init__(self, url, trailing='', headers=(), auth=None, **attrs):
         super(Client, self).__init__()
         self.__setstate__(attrs)
+        self.auth = TokenAuth(auth) if isinstance(auth, dict) else auth
         self.headers.update(headers)
         self.trailing = trailing
         self.url = url.rstrip('/') + '/'
@@ -53,8 +62,9 @@ class Client(requests.Session):
         return type(self).clone(self, path)
     __div__ = __truediv__
 
-    def request(self, method, path, **kwargs):
+    def request(self, method, path, auth=None, **kwargs):
         """Send request with relative or absolute path and return response."""
+        kwargs['auth'] = TokenAuth(auth) if isinstance(auth, dict) else auth
         url = urljoin(self.url, path).rstrip('/') + self.trailing
         return super(Client, self).request(method, url, **kwargs)
 
@@ -85,11 +95,6 @@ class Client(requests.Session):
     def delete(self, path='', **kwargs):
         """DELETE request with optional path."""
         return super(Client, self).delete(path, **kwargs)
-
-    @staticmethod
-    def oauth(access_token, token_type='token', **extra):
-        """Return authorization header from an oauth token, or any compatible credentials."""
-        return {'authorization': '{} {}'.format(token_type, access_token)}
 
 
 class Resource(Client):
@@ -171,10 +176,10 @@ class Resource(Client):
         return file
 
     def authorize(self, path='', **kwargs):
-        """Acquire :meth:`Client.oauth` access token and set authorization header."""
+        """Acquire oauth access token and set ``auth``."""
         method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
         result = self.request(method, path, **kwargs)
-        self.headers.update(self.oauth(**result))
+        self.auth = TokenAuth({result['token_type']: result['access_token']})
         return result
 
 

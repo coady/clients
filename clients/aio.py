@@ -6,22 +6,34 @@ from urllib.parse import urljoin
 from .base import validate, Client, Graph, Proxy, Remote, Resource
 
 
+class TokenAuth(aiohttp.BasicAuth):
+    def __new__(cls, auth):
+        return tuple.__new__(cls, *auth.items())
+
+    def encode(self):
+        return ' '.join(self)
+    __repr__ = encode
+
+
 class AsyncClient(aiohttp.ClientSession):
     """An asynchronous ClientSession which sends requests to a base url.
 
     :param url: base url for requests
     :param trailing: trailing chars (e.g. /) appended to the url
     :param params: default query params
+    :param auth: additional authorization support for ``{token_type: access_token}``,
+        available per request as well
     :param attrs: additional ClientSession options, e.g., loop
     """
     __truediv__ = Client.__truediv__
     __repr__ = Client.__repr__
-    oauth = staticmethod(Client.oauth)
     headers = property(operator.attrgetter('_default_headers'), doc="default headers")
+    auth = property(operator.attrgetter('_default_auth'), doc="default auth")
 
-    def __init__(self, url, *, trailing='', params=(), **attrs):
+    def __init__(self, url, *, trailing='', params=(), auth=None, **attrs):
         if {'connector', 'loop'}.isdisjoint(attrs):
             attrs['loop'] = asyncio.get_event_loop()
+        attrs['auth'] = TokenAuth(auth) if isinstance(auth, dict) else auth
         super().__init__(**attrs)
         self._attrs = attrs
         self.params = MultiDict(params)
@@ -38,7 +50,8 @@ class AsyncClient(aiohttp.ClientSession):
         kwargs.update(other._attrs)
         return cls(url, trailing=other.trailing, params=other.params, **kwargs)
 
-    def _request(self, method, path, params=(), **kwargs):
+    def _request(self, method, path, params=(), auth=None, **kwargs):
+        kwargs['auth'] = TokenAuth(auth) if isinstance(auth, dict) else auth
         params = MultiDict(params)
         params.extend(self.params)
         url = urljoin(self.url, path).rstrip('/') + self.trailing
@@ -72,9 +85,9 @@ class AsyncClient(aiohttp.ClientSession):
         """DELETE request with optional path."""
         return super().delete(path, **kwargs)
 
-    def run(self, func, *args, **kwargs):
-        """Synchronously call and run coroutine."""
-        return self.loop.run_until_complete(func(*args, **kwargs))
+    def run(self, name, *args, **kwargs):
+        """Synchronously call method and run coroutine."""
+        return self.loop.run_until_complete(getattr(self, name)(*args, **kwargs))
 
 
 class AsyncResource(AsyncClient):
@@ -105,11 +118,11 @@ class AsyncResource(AsyncClient):
     update.__doc__ = Resource.update.__doc__
 
     async def authorize(self, path='', **kwargs):
-        """Acquire :meth:`AsyncClient.oauth` access token and set authorization header."""
         method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
         result = await self._request(method, path, **kwargs)
-        self.headers.update(self.oauth(**result))
+        self._default_auth = TokenAuth({result['token_type']: result['access_token']})
         return result
+    authorize.__doc__ = Resource.authorize.__doc__
 
 
 class AsyncRemote(AsyncClient):

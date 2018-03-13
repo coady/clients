@@ -4,7 +4,7 @@
 
 Welcome to Clients' documentation.
 ==================================
-HTTP for lazy, impatient, hubristic humans.
+HTTP for humanitarians.
 
 Quickstart
 ^^^^^^^^^^

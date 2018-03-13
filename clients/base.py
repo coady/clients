@@ -219,7 +219,7 @@ class Graph(Remote):
 
     @classmethod
     def check(cls, result):
-        """Return `data` or raise `errors`."""
+        """Return ``data`` or raise ``errors``."""
         for error in result.get('errors', ()):
             raise cls.Error(error)
         return result.get('data')

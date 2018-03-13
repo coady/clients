@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='clients',
     version='0.5',
-    description='HTTP for lazy, impatient, hubristic humans.',
+    description='HTTP for humanitarians.',
     long_description=open('README.rst').read(),
     author='Aric Coady',
     author_email='aric.coady@gmail.com',

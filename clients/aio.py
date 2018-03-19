@@ -1,4 +1,5 @@
 import asyncio
+import functools
 import operator
 import aiohttp
 from multidict import MultiDict
@@ -7,12 +8,10 @@ from .base import validate, Client, Graph, Proxy, Remote, Resource
 
 
 class TokenAuth(aiohttp.BasicAuth):
+    __repr__ = encode = functools.partialmethod(' '.join)
+
     def __new__(cls, auth):
         return tuple.__new__(cls, *auth.items())
-
-    def encode(self):
-        return ' '.join(self)
-    __repr__ = encode
 
 
 class AsyncClient(aiohttp.ClientSession):
@@ -27,6 +26,13 @@ class AsyncClient(aiohttp.ClientSession):
     """
     __truediv__ = Client.__truediv__
     __repr__ = Client.__repr__
+    get = Client.get
+    options = Client.options
+    head = Client.head
+    post = Client.post
+    put = Client.put
+    patch = Client.patch
+    delete = Client.delete
     headers = property(operator.attrgetter('_default_headers'), doc="default headers")
     auth = property(operator.attrgetter('_default_auth'), doc="default auth")
 
@@ -50,40 +56,13 @@ class AsyncClient(aiohttp.ClientSession):
         kwargs.update(other._attrs)
         return cls(url, trailing=other.trailing, params=other.params, **kwargs)
 
-    def _request(self, method, path, params=(), auth=None, **kwargs):
+    def request(self, method, path, params=(), auth=None, **kwargs):
         kwargs['auth'] = TokenAuth(auth) if isinstance(auth, dict) else auth
         params = MultiDict(params)
         params.extend(self.params)
         url = urljoin(self.url, path).rstrip('/') + self.trailing
-        return super()._request(method, url, params=params, **kwargs)
-
-    def get(self, path='', **kwargs):
-        """GET request with optional path."""
-        return super().get(path, **kwargs)
-
-    def options(self, path='', **kwargs):
-        """OPTIONS request with optional path."""
-        return super().options(path, **kwargs)
-
-    def head(self, path='', **kwargs):
-        """HEAD request with optional path."""
-        return super().head(path, **kwargs)
-
-    def post(self, path='', json=None, **kwargs):
-        """POST request with optional path and json body."""
-        return super().post(path, json=json, **kwargs)
-
-    def put(self, path='', json=None, **kwargs):
-        """PUT request with optional path and json body."""
-        return super().put(path, json=json, **kwargs)
-
-    def patch(self, path='', json=None, **kwargs):
-        """PATCH request with optional path and json body."""
-        return super().patch(path, json=json, **kwargs)
-
-    def delete(self, path='', **kwargs):
-        """DELETE request with optional path."""
-        return super().delete(path, **kwargs)
+        return super().request(method, url, params=params, **kwargs)
+    request.__doc__ = Client.request.__doc__
 
     def run(self, name, *args, **kwargs):
         """Synchronously call method and run coroutine."""
@@ -102,24 +81,25 @@ class AsyncResource(AsyncClient):
         super().__init__(url, **kwargs)
         self._raise_for_status = True
 
-    async def _request(self, method, path, **kwargs):
-        response = await super()._request(method, path, **kwargs)
+    async def request(self, method, path, **kwargs):
+        response = await super().request(method, path, **kwargs)
         content_type = self.content_type(response)
         if content_type == 'json':
             return await response.json(content_type='')
         return await (response.text() if content_type == 'text' else response.read())
+    request.__doc__ = Resource.request.__doc__
 
     async def update(self, path='', callback=None, **json):
         if callback is None:
-            return await self._request('PATCH', path, json=json)
-        response = await super()._request('GET', path)
+            return await self.request('PATCH', path, json=json)
+        response = await super().request('GET', path)
         json = callback(await response.json(content_type=''), **json)
-        return await self._request('PUT', path, json=json, headers=validate(response))
+        return await self.request('PUT', path, json=json, headers=validate(response))
     update.__doc__ = Resource.update.__doc__
 
     async def authorize(self, path='', **kwargs):
         method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
-        result = await self._request(method, path, **kwargs)
+        result = await self.request(method, path, **kwargs)
         self._default_auth = TokenAuth({result['token_type']: result['access_token']})
         return result
     authorize.__doc__ = Resource.authorize.__doc__
@@ -180,9 +160,10 @@ class AsyncProxy(AsyncClient):
         urls = (urljoin(url, path) for url in other.urls)
         return cls(*urls, trailing=other.trailing, params=other.params, **other._attrs)
 
-    async def _request(self, method, path, **kwargs):
+    async def request(self, method, path, **kwargs):
         url = self.choice(method)
         with self.urls[url] as stats:
-            response = await super()._request(method, urljoin(url, path), **kwargs)
+            response = await super().request(method, urljoin(url, path), **kwargs)
         stats.add(failures=int(response.status >= 500))
         return response
+    request.__doc__ = Proxy.request.__doc__

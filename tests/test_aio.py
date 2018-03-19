@@ -41,8 +41,10 @@ def test_resource():
 def test_content(url):
     resource = clients.AsyncResource(url)
     resource.content_type = lambda response: 'json'
+    coro = resource.get('robots.txt')
+    assert not hasattr(coro, '__aenter__')
     with pytest.raises(ValueError):
-        data, = results(resource.get('robots.txt'))
+        data, = results(coro)
 
 
 def test_authorize(url, monkeypatch):
@@ -59,7 +61,7 @@ def test_authorize(url, monkeypatch):
     resource = clients.AsyncResource(url)
     future = asyncio.Future()
     future.set_result({'access_token': 'abc123', 'token_type': 'Bearer', 'expires_in': 0})
-    monkeypatch.setattr(clients.AsyncResource, '_request', lambda *args, **kwargs: future)
+    monkeypatch.setattr(clients.AsyncResource, 'request', lambda *args, **kwargs: future)
     for key in ('params', 'data', 'json'):
         assert resource.run('authorize', **{key: {}}) == future.result()
         assert resource.auth == ('Bearer', 'abc123')

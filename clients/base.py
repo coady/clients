@@ -70,31 +70,31 @@ class Client(requests.Session):
 
     def get(self, path='', **kwargs):
         """GET request with optional path."""
-        return super(Client, self).get(path, **kwargs)
+        return self.request('GET', path, **kwargs)
 
     def options(self, path='', **kwargs):
         """OPTIONS request with optional path."""
-        return super(Client, self).options(path, **kwargs)
+        return self.request('OPTIONS', path, **kwargs)
 
-    def head(self, path='', **kwargs):
+    def head(self, path='', allow_redirects=False, **kwargs):
         """HEAD request with optional path."""
-        return super(Client, self).head(path, **kwargs)
+        return self.request('HEAD', path, allow_redirects=allow_redirects, **kwargs)
 
     def post(self, path='', json=None, **kwargs):
         """POST request with optional path and json body."""
-        return super(Client, self).post(path, json=json, **kwargs)
+        return self.request('POST', path, json=json, **kwargs)
 
     def put(self, path='', json=None, **kwargs):
         """PUT request with optional path and json body."""
-        return super(Client, self).put(path, json=json, **kwargs)
+        return self.request('PUT', path, json=json, **kwargs)
 
     def patch(self, path='', json=None, **kwargs):
         """PATCH request with optional path and json body."""
-        return super(Client, self).patch(path, json=json, **kwargs)
+        return self.request('PATCH', path, json=json, **kwargs)
 
     def delete(self, path='', **kwargs):
         """DELETE request with optional path."""
-        return super(Client, self).delete(path, **kwargs)
+        return self.request('DELETE', path, **kwargs)
 
 
 class Resource(Client):

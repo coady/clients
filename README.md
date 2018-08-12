@@ -3,7 +3,7 @@
 ![image](https://img.shields.io/pypi/status/clients.svg)
 [![image](https://img.shields.io/travis/coady/clients.svg)](https://travis-ci.org/coady/clients)
 [![image](https://img.shields.io/codecov/c/github/coady/clients.svg)](https://codecov.io/github/coady/clients)
-[![image](https://readthedocs.org/projects/clients/badge)](%60documentation%60_)
+[![image](https://readthedocs.org/projects/clients/badge)](https://clients.readthedocs.io)
 
 Clients provide [requests](https://python-requests.org) and
 [aiohttp](http://aiohttp.readthedocs.io) wrappers which encourage best practices,
@@ -60,7 +60,7 @@ using[aiohttp](http://aiohttp.readthedocs.io) instead of [requests](https://pyth
 Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call),
 [GraphQL](http://graphql.org), and proxies also provided.
 
-Read the [documentation](http://clients.readthedocs.io).
+Read the [documentation](https://clients.readthedocs.io).
 
 # Installation
 
@@ -76,6 +76,10 @@ Read the [documentation](http://clients.readthedocs.io).
     $ pytest [--cov]
 
 # Changes
+dev
+* Allow missing content-type
+* Oauth access tokens supported in authorization header
+
 0.5
 * `AsyncClient` default params
 * `Remote` and `AsyncRemote` procedure calls

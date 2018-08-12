@@ -18,6 +18,7 @@ setup(
     keywords='requests sessions responses resources asyncio',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
+        'Framework :: AsyncIO',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',

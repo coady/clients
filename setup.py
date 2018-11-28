@@ -8,13 +8,16 @@ setup(
     long_description_content_type='text/markdown',
     author='Aric Coady',
     author_email='aric.coady@gmail.com',
-    url='https://bitbucket.org/coady/clients',
+    url='https://github.com/coady/clients',
+    project_urls={
+        'Documentation': 'https://clients.readthedocs.io',
+    },
     license='Apache Software License',
     packages=['clients'],
     install_requires=['requests>=2.4.2'],
     extras_require={':python_version>="3.5"': ['aiohttp']},
     python_requires='>=2.7',
-    tests_require=['pytest-cov', 'pytest-httpbin'],
+    tests_require=['pytest>=3.7.2', 'pytest-cov', 'pytest-httpbin'],
     keywords='requests sessions responses resources asyncio',
     classifiers=[
         'Development Status :: 5 - Production/Stable',

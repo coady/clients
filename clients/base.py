@@ -103,7 +103,7 @@ class Resource(Client):
     __getitem__ = Client.get
     __setitem__ = Client.put
     __delitem__ = Client.delete
-    content_type = functools.partial(content_type, text='text/', json='application/(\w|\.)*\+?json')
+    content_type = functools.partial(content_type, text='text/', json=r'application/(\w|\.)*\+?json')
 
     def __getattr__(self, name):
         if name in type(self).__attrs__:

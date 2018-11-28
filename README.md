@@ -4,6 +4,8 @@
 [![image](https://img.shields.io/travis/coady/clients.svg)](https://travis-ci.org/coady/clients)
 [![image](https://img.shields.io/codecov/c/github/coady/clients.svg)](https://codecov.io/github/coady/clients)
 [![image](https://readthedocs.org/projects/clients/badge)](https://clients.readthedocs.io)
+[![image](https://requires.io/github/coady/clients/requirements.svg)](https://requires.io/github/coady/clients/requirements/)
+[![image](https://api.codeclimate.com/v1/badges/8e4159e02ab75e76af4f/maintainability)](https://codeclimate.com/github/coady/clients/maintainability)
 
 Clients provide [requests](https://python-requests.org) and
 [aiohttp](http://aiohttp.readthedocs.io) wrappers which encourage best practices,
@@ -56,11 +58,9 @@ for repo in github.user.repos(visibility='public'):
 Being session based, Clients work seamlessly with other [requests](https://python-requests.org) adapters,
 such as [CacheControl](https://cachecontrol.readthedocs.org).
 Asynchronous variants of all client types are provided in Python 3,
-using[aiohttp](http://aiohttp.readthedocs.io) instead of [requests](https://python-requests.org).
+using [aiohttp](http://aiohttp.readthedocs.io) instead of [requests](https://python-requests.org).
 Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call),
 [GraphQL](http://graphql.org), and proxies also provided.
-
-Read the [documentation](https://clients.readthedocs.io).
 
 # Installation
 

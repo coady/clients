@@ -1,3 +1,4 @@
+dist: xenial
 language: python
 
 matrix:
@@ -7,13 +8,25 @@ matrix:
     - python: 3.5
       env: PACKAGES="requests<2.15 aiohttp<3"
     - python: 3.6
+      env: PACKAGES="requests<2.20 aiohttp<3.4"
+    - python: 3.7
       env: PACKAGES="requests aiohttp"
 
 install:
-  - pip install $PACKAGES pytest-cov pytest-httpbin codecov
+  - pip install $PACKAGES "pytest>=3.7.2" pytest-cov pytest-httpbin codecov
 
 script:
   - pytest -v --cov
 
 after_success:
   - codecov
+
+deploy:
+  provider: pypi
+  user: coady
+  password:
+    secure: s57LhvWUdwagf5aV9JosyUhcnYugvJRxBbNvUSi8r7Osmnyj155BudMNPAJeKuNeXXvO3epuUwAjZB4AbrPfv5Wg5RXbt63zfoBXHzD20tuPHrYJaA29GtDJNNey0BHqQxoj6PFuaxW2vJDd5xcpf5uhyuYnCwdBjHgpZWDY0iFkfI8CHeBLOO5MHaflt35nZTzXsCdLlvnFzPaLJ43AdS4qcaMqVt3zmwLl2ig6XJcghwh54SkEtQW+JDC8Fhth0k78N8VZlbJYjfg6QUBxa1/8kHDbAJBV6DbrwbhoEO/2RPEJuTyK+0SLGgoF+wvvMZDv/jJK7aBAWgSnWG5V5b6LDwEBEyVo8YWasjYvxRIimif2qf1sUMQJE//hUqwvXQPR7GTphVmEaEZWqIGK27hHIhAYMlFO3bbCeGSaIHANOJ+tkmVx2hTuDg3Y4U4eajngLu7XFE7Amg5TjxjP+Oe4JrAK7SfXSNDz2X+dPLj2XZ+V7/ut7UqX3LqXEbigSiBVjm7JmNYcGLovoNRDmoaqVR1689vZ3LLJ4ewHUO3CZWPdjEy8se3PwEeAujfCY+VWC5wBbxjg85uhRD77ClX/FtoPK5aj/k3HCAVTaYR3KSP/emj/ebu5kJT15MXV5dMqyuUzbxVLdVPP2A6edZzVETKvZqq+qHt2zNsII0Q=
+  on:
+    tags: true
+  distributions: "sdist bdist_wheel"
+  skip_existing: true

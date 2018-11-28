@@ -86,7 +86,7 @@ class AsyncResource(AsyncClient):
         content_type = self.content_type(response)
         if content_type == 'json':
             return await response.json(content_type='')
-        return await (response.text() if content_type == 'text' else response.read())
+        return await getattr(response, content_type or 'read')()
     request.__doc__ = Resource.request.__doc__
 
     async def update(self, path='', callback=None, **json):

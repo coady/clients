@@ -65,10 +65,9 @@ implement the same interface, except the request methods return asyncio `corouti
 
 Avant-garde Usage
 ^^^^^^^^^^^^^^^^^
-.. note::
-   These experimental interfaces may obviate the need for custom clients altogether.
-
 ``Resources`` support operator overloaded syntax wherever sensible.
+These interfaces often obviate the need for writing custom clients specific to an API.
+
 
    * ``__getattr__``: alternate path concatenation
    * ``__getitem__``: GET content

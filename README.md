@@ -1,5 +1,5 @@
 [![image](https://img.shields.io/pypi/v/clients.svg)](https://pypi.org/project/clients/)
-![image](https://img.shields.io/pypi/pyversions/clients.svg)
+[![image](https://img.shields.io/pypi/pyversions/clients.svg)](https://python3statement.org)
 ![image](https://img.shields.io/pypi/status/clients.svg)
 [![image](https://img.shields.io/travis/coady/clients.svg)](https://travis-ci.org/coady/clients)
 [![image](https://img.shields.io/codecov/c/github/coady/clients.svg)](https://codecov.io/github/coady/clients)
@@ -30,6 +30,7 @@ r = s.get('https://api.github.com/user')
 r = s.get('https://api.github.com/user/repos')
 ```
 
+## Client
 Clients make using sessions easier, with implicit url joining.
 
 ```python
@@ -47,8 +48,9 @@ for repo in github.get('user/repos', params={'visibility': 'public'}):
     ...
 ```
 
+## Resource
 Resources also implement syntactic support for methods such as __getattr__ and __call__,
-providing most of the benefits of custom clients, without having to define a schema.
+providing most of the benefits of custom clients with no further defintion.
 
 ```python
 for repo in github.user.repos(visibility='public'):
@@ -57,7 +59,7 @@ for repo in github.user.repos(visibility='public'):
 
 Being session based, Clients work seamlessly with other [requests](https://python-requests.org) adapters,
 such as [CacheControl](https://cachecontrol.readthedocs.org).
-Asynchronous variants of all client types are provided in Python 3,
+Asynchronous variants of all client types are provided in [Python 3](https://python3statement.org),
 using [aiohttp](http://aiohttp.readthedocs.io) instead of [requests](https://python-requests.org).
 Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call),
 [GraphQL](http://graphql.org), and proxies also provided.

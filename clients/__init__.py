@@ -4,7 +4,7 @@ try:
 except SyntaxError:  # pragma: no cover
     pass
 
-__version__ = '0.5'
+__version__ = '1.0'
 
 
 def singleton(*args, **kwargs):

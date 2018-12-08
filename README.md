@@ -78,7 +78,7 @@ Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call
     $ pytest [--cov]
 
 # Changes
-dev
+1.0
 * Allow missing content-type
 * Oauth access tokens supported in authorization header
 

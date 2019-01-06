@@ -7,6 +7,10 @@ from urllib.parse import urljoin
 from .base import validate, Client, Graph, Proxy, Remote, Resource
 
 
+async def acall(func, *args, **kwargs):
+    return func(*args, **kwargs)
+
+
 class TokenAuth(aiohttp.BasicAuth):
     __repr__ = encode = functools.partialmethod(' '.join)
 
@@ -36,11 +40,10 @@ class AsyncClient(aiohttp.ClientSession):
     headers = property(operator.attrgetter('_default_headers'), doc="default headers")
     auth = property(operator.attrgetter('_default_auth'), doc="default auth")
 
-    def __init__(self, url, *, trailing='', params=(), auth=None, **attrs):
-        if {'connector', 'loop'}.isdisjoint(attrs):
-            attrs['loop'] = asyncio.get_event_loop()
+    def __init__(self, url, *, trailing='', params=(), auth=None, loop=None, **attrs):
+        loop = loop or asyncio.get_event_loop()
         attrs['auth'] = TokenAuth(auth) if isinstance(auth, dict) else auth
-        super().__init__(**attrs)
+        loop.run_until_complete(acall(super().__init__, loop=loop, **attrs))
         self._attrs = attrs
         self.params = MultiDict(params)
         self.trailing = trailing
@@ -48,7 +51,7 @@ class AsyncClient(aiohttp.ClientSession):
 
     def __del__(self):  # avoids warning and race condition in parent
         if self._connector_owner:  # pragma: no branch
-            self._connector.close()
+            getattr(self._connector, '_close', self._connector.close)()
 
     @classmethod
     def clone(cls, other, path='', **kwargs):
@@ -66,7 +69,7 @@ class AsyncClient(aiohttp.ClientSession):
 
     def run(self, name, *args, **kwargs):
         """Synchronously call method and run coroutine."""
-        return self.loop.run_until_complete(getattr(self, name)(*args, **kwargs))
+        return self._loop.run_until_complete(getattr(self, name)(*args, **kwargs))
 
 
 class AsyncResource(AsyncClient):

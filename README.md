@@ -39,6 +39,7 @@ r = client.get('user')
 r = client.get('user/repos')
 ```
 
+## Resource
 Resources extend Clients to implicitly handle response content,
 with proper checking of status_code and content-type.
 
@@ -48,7 +49,6 @@ for repo in github.get('user/repos', params={'visibility': 'public'}):
     ...
 ```
 
-## Resource
 Resources also implement syntactic support for methods such as __getattr__ and __call__,
 providing most of the benefits of custom clients with no further defintion.
 

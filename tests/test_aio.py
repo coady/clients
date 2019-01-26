@@ -12,7 +12,13 @@ def results(*coros):
     return map(loop.run_until_complete, fs)
 
 
+async def contextual():
+    async with clients.AsyncClient('http://httpbin.org/') as client:
+        assert (client / 'ip')._connector is client._connector
+
+
 def test_client():
+    assert list(results(contextual()))
     client = clients.AsyncClient('http://httpbin.org/', params={'q': 0})
     coros = (client.head(), client.options(), client.post('post'), client.put('put'),
              client.patch('patch'), client.delete('delete'), (client / 'ip').get(params={'q': 1}))

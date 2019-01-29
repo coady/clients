@@ -1,5 +1,6 @@
 [![image](https://img.shields.io/pypi/v/clients.svg)](https://pypi.org/project/clients/)
 [![image](https://img.shields.io/pypi/pyversions/clients.svg)](https://python3statement.org)
+[![image](https://pepy.tech/badge/clients)](https://pepy.tech/project/clients)
 ![image](https://img.shields.io/pypi/status/clients.svg)
 [![image](https://img.shields.io/travis/coady/clients.svg)](https://travis-ci.org/coady/clients)
 [![image](https://img.shields.io/codecov/c/github/coady/clients.svg)](https://codecov.io/github/coady/clients)
@@ -70,7 +71,7 @@ Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call
 
 # Dependencies
 * requests >=2.4.2
-* aiohttp (if Python 3)
+* aiohttp >=3.1 (if Python 3)
 
 # Tests
 100% branch coverage.
@@ -78,6 +79,9 @@ Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call
     $ pytest [--cov]
 
 # Changes
+dev
+* Async connector reuse
+
 1.0
 * Allow missing content-type
 * Oauth access tokens supported in authorization header

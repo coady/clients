@@ -3,7 +3,7 @@ import requests
 import clients
 
 aio = getattr(clients, 'aio', None)
-pytest_plugins = 'httpbin',
+pytest_plugins = ('httpbin',)
 
 
 def pytest_ignore_collect(path, config):

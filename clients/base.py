@@ -5,6 +5,7 @@ import re
 import threading
 import requests
 from requests.compat import json, urljoin
+
 try:
     from future_builtins import map
 except ImportError:  # pragma: no cover
@@ -41,6 +42,7 @@ class Client(requests.Session):
         available per request as well
     :param attrs: additional Session attributes
     """
+
     def __init__(self, url, trailing='', headers=(), auth=None, **attrs):
         super(Client, self).__init__()
         self.__setstate__(attrs)
@@ -60,6 +62,7 @@ class Client(requests.Session):
     def __truediv__(self, path):
         """Return a cloned client with appended path."""
         return type(self).clone(self, path)
+
     __div__ = __truediv__
 
     def request(self, method, path, auth=None, **kwargs):
@@ -99,6 +102,7 @@ class Client(requests.Session):
 
 class Resource(Client):
     """A `Client`_ which returns json content and has syntactic support for requests."""
+
     client = property(Client.clone, doc="upcasted `Client`_")
     __getitem__ = Client.get
     __setitem__ = Client.put
@@ -109,6 +113,7 @@ class Resource(Client):
         if name in type(self).__attrs__:
             raise AttributeError(name)
         return self / name
+
     __getattr__.__doc__ = Client.__truediv__.__doc__
 
     def request(self, method, path, **kwargs):
@@ -130,6 +135,7 @@ class Resource(Client):
         if response.encoding or content_type == 'text':
             return response.iter_lines(decode_unicode=response.encoding)
         return iter(response)
+
     __iter__ = iter
 
     def __contains__(self, path):
@@ -190,6 +196,7 @@ class Remote(Client):
     :param json: default json body for all calls
     :param kwargs: same options as `Client`_
     """
+
     client = Resource.client
     __getattr__ = Resource.__dict__['__getattr__']
 
@@ -215,6 +222,7 @@ class Remote(Client):
 
 class Graph(Remote):
     """A `Remote`_ client which executes GraphQL queries."""
+
     Error = requests.HTTPError
 
     @classmethod
@@ -234,6 +242,7 @@ class Stats(collections.Counter):
 
     Context manager tracks number of active connections and errors.
     """
+
     def __init__(self):
         self.lock = threading.Lock()
 
@@ -259,6 +268,7 @@ class Proxy(Client):
     :param urls: base urls for requests
     :param kwargs: same options as `Client`_
     """
+
     Stats = Stats
 
     def __init__(self, *urls, **kwargs):

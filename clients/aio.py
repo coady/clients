@@ -41,6 +41,7 @@ class AsyncClient(aiohttp.ClientSession):
         available per request as well
     :param attrs: additional ClientSession options, e.g., loop
     """
+
     __truediv__ = Client.__truediv__
     __repr__ = Client.__repr__
     get = Client.get
@@ -57,7 +58,7 @@ class AsyncClient(aiohttp.ClientSession):
         attrs['auth'] = TokenAuth(auth) if isinstance(auth, dict) else auth
         loop = loop or getattr(connector, '_loop', asyncio.get_event_loop())
         attrs['connector'] = connector or run(Connector, loop)
-        run(super().__init__, loop, **attrs)
+        run(super().__init__, loop, connector_owner=attrs.pop('connector_owner', not connector), **attrs)
         self._attrs = attrs
         self.params = MultiDict(params)
         self.trailing = trailing
@@ -87,6 +88,7 @@ class AsyncClient(aiohttp.ClientSession):
 
 class AsyncResource(AsyncClient):
     """An `AsyncClient`_ which returns json content and has syntactic support for requests."""
+
     client = property(AsyncClient.clone, doc="upcasted `AsyncClient`_")
     __getattr__ = AsyncClient.__truediv__
     __getitem__ = AsyncClient.get
@@ -128,6 +130,7 @@ class AsyncRemote(AsyncClient):
     :param json: default json body for all calls
     :param kwargs: same options as `AsyncClient`_
     """
+
     client = AsyncResource.client
     __getattr__ = AsyncResource.__getattr__
     check = staticmethod(Remote.check)
@@ -149,6 +152,7 @@ class AsyncRemote(AsyncClient):
 
 class AsyncGraph(AsyncRemote):
     """An `AsyncRemote`_ client which executes GraphQL queries."""
+
     Error = aiohttp.ClientPayloadError
     check = classmethod(Graph.check.__func__)
     execute = Graph.execute
@@ -163,6 +167,7 @@ class AsyncProxy(AsyncClient):
     :param urls: base urls for requests
     :param kwargs: same options as `AsyncClient`_
     """
+
     Stats = Proxy.Stats
     priority = Proxy.priority
     choice = Proxy.choice

@@ -20,8 +20,15 @@ async def contextual():
 def test_client():
     assert list(results(contextual()))
     client = clients.AsyncClient('http://httpbin.org/', params={'q': 0})
-    coros = (client.head(), client.options(), client.post('post'), client.put('put'),
-             client.patch('patch'), client.delete('delete'), (client / 'ip').get(params={'q': 1}))
+    coros = (
+        client.head(),
+        client.options(),
+        client.post('post'),
+        client.put('put'),
+        client.patch('patch'),
+        client.delete('delete'),
+        (client / 'ip').get(params={'q': 1}),
+    )
     for r in results(*coros):
         assert r.status == 200 and r.url.query_string.endswith('q=0')
     assert r.url.query_string == 'q=1&q=0'
@@ -32,9 +39,13 @@ def test_client():
 def test_resource():
     params = {'etag': 'W/0', 'last-modified': 'now'}
     resource = clients.AsyncResource('http://httpbin.org/', params=params)
-    it = results(resource['robots.txt'], resource.bytes('1'),
-                 resource.update('patch', key='value'), resource.status('404'),
-                 resource.update('response-headers', callback=dict, key='value'))
+    it = results(
+        resource['robots.txt'],
+        resource.bytes('1'),
+        resource.update('patch', key='value'),
+        resource.status('404'),
+        resource.update('response-headers', callback=dict, key='value'),
+    )
     assert isinstance(next(it), str)
     assert isinstance(next(it), bytes)
     assert next(it)['json'] == {'key': 'value'}

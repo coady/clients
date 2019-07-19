@@ -89,6 +89,10 @@ def test_callback(url):
         resource.update('response-headers', callback=dict, name='value')
     headers = exc.value.request.headers
     assert headers['if-match'] == 'W/0' and headers['if-unmodified-since'] == 'now'
+    with pytest.raises(IOError, match='405') as exc:
+        with resource.updating('response-headers') as data:
+            data['name'] = 'value'
+    assert b'"name": "value"' in exc.value.request.body
 
 
 def test_meta(url):

@@ -1,4 +1,5 @@
 import collections
+import contextlib
 import functools
 import random
 import re
@@ -148,12 +149,17 @@ class Resource(Client):
 
     def updater(self, path='', **kwargs):
         response = super(Resource, self).request('GET', path, **kwargs)
-        headers = dict(kwargs.pop('headers', {}))
-        while True:
-            response.raise_for_status()
-            kwargs['json'] = yield response.json()
-            headers.update(validate(response))
-            response = super(Resource, self).request('PUT', path, headers=headers, **kwargs)
+        response.raise_for_status()
+        kwargs['headers'] = dict(kwargs.get('headers', {}), **validate(response))
+        yield self.put(path, (yield response.json()), **kwargs)
+
+    @contextlib.contextmanager
+    def updating(self, path='', **kwargs):
+        """Provisional context manager to GET and conditionally PUT json data."""
+        updater = self.updater(path, **kwargs)
+        json = next(updater)
+        yield json
+        updater.send(json)
 
     def update(self, path='', callback=None, **json):
         """PATCH request with json params.

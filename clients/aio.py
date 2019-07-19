@@ -110,10 +110,10 @@ class AsyncResource(AsyncClient):
     @inherit_doc(Resource)
     async def update(self, path='', callback=None, **json):
         if callback is None:
-            return await self.request('PATCH', path, json=json)
+            return await self.patch(path, json)
         response = await super().request('GET', path)
         json = callback(await response.json(content_type=''), **json)
-        return await self.request('PUT', path, json=json, headers=validate(response))
+        return await self.put(path, json, headers=validate(response))
 
     @inherit_doc(Resource)
     async def authorize(self, path='', **kwargs):

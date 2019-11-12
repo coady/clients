@@ -10,7 +10,7 @@
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
 
 Clients provide [requests](https://python-requests.org) and
-[aiohttp](http://aiohttp.readthedocs.io) wrappers which encourage best practices,
+[httpx](https://www.encode.io/httpx) wrappers which encourage best practices,
 particularly always using Sessions to connect to the same host or api endpoint.
 
 # Usage
@@ -62,7 +62,7 @@ for repo in github.user.repos(visibility='public'):
 Being session based, Clients work seamlessly with other [requests](https://python-requests.org) adapters,
 such as [CacheControl](https://cachecontrol.readthedocs.org).
 Asynchronous variants of all client types are provided in [Python 3](https://python3statement.org),
-using [aiohttp](http://aiohttp.readthedocs.io) instead of [requests](https://python-requests.org).
+using [httpx](https://www.encode.io/httpx) instead of [requests](https://python-requests.org).
 Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call),
 [GraphQL](http://graphql.org), and proxies also provided.
 
@@ -72,16 +72,23 @@ Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call
 
 # Dependencies
 * requests >=2.4.2
-* aiohttp >=3.1 (if Python 3)
+* httpx >=0.7.5 (if Python >=3.6)
 
 # Tests
 100% branch coverage.
 
     $ pytest [--cov]
 
+# Roadmap
+`aiohttp` has made several incompatible changes, including forbidding subclassing.
+So the async client has switched to `httpx`, which has emerged as a replacement for `requests`.
+
+There are no interface changes to the async client itself, other than the different response object.
+In the future `clients` will likely switch to only `httpx` or `requests3`, whichever gains traction.
+
 # Changes
 dev
-* Async connector reuse
+* Async switched to httpx
 
 1.0
 * Allow missing content-type

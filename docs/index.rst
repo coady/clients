@@ -60,7 +60,7 @@ Note ``trailing`` isn't limited to only being a slash.  This can be useful for s
 
 Asyncio
 ^^^^^^^^^^^^^^
-Using `aiohttp`_ instead of `requests`_, `AsyncClients <reference.html#asyncclient>`_ and `AsyncResources <reference.html#asyncresource>`_
+Using `httpx`_ instead of `requests`_, `AsyncClients <reference.html#asyncclient>`_ and `AsyncResources <reference.html#asyncresource>`_
 implement the same interface, except the request methods return asyncio `coroutines`_.
 
 Avant-garde Usage
@@ -125,7 +125,7 @@ Indices and tables
 * :ref:`search`
 
 .. _requests: https://python-requests.org
-.. _aiohttp: http://aiohttp.readthedocs.io
+.. _httpx: https://www.encode.io/httpx
 .. _coroutines: https://docs.python.org/3/library/asyncio-task.html#coroutines
 .. _Sessions: http://docs.python-requests.org/en/master/user/advanced/#session-objects
 .. _Responses: http://docs.python-requests.org/en/master/user/quickstart/#response-content

@@ -11,7 +11,7 @@ def pytest_ignore_collect(path, config):
 
 
 def pytest_report_header(config):
-    modules = {requests, getattr(aio, 'aiohttp', requests)}
+    modules = {requests, getattr(aio, 'httpx', requests)}
     return ', '.join('{} {}'.format(module.__name__, module.__version__) for module in modules)
 
 

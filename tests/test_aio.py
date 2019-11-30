@@ -57,7 +57,7 @@ def test_content(url):
 
 
 def test_authorize(url, monkeypatch):
-    auth = httpx.client.BasicAuthMiddleware('', '')
+    auth = '', ''
     resource = clients.AsyncResource(url, auth=auth)
     basic, token = results(resource.get('headers'), resource.get('headers', auth={'token': 'abc123'}))
     assert basic['headers']['Authorization'].startswith('Basic ')

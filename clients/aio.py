@@ -11,8 +11,8 @@ def inherit_doc(cls, func):
     return func
 
 
-class AsyncClient(httpx.AsyncClient):
-    """An asynchronous ClientSession which sends requests to a base url.
+class AsyncClient(httpx.Client):
+    """An asynchronous Client which sends requests to a base url.
 
     :param url: base url for requests
     :param trailing: trailing chars (e.g. /) appended to the url

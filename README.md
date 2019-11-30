@@ -52,7 +52,7 @@ for repo in github.get('user/repos', params={'visibility': 'public'}):
 ```
 
 Resources also implement syntactic support for methods such as __getattr__ and __call__,
-providing most of the benefits of custom clients with no further defintion.
+providing most of the benefits of custom clients as is.
 
 ```python
 for repo in github.user.repos(visibility='public'):
@@ -81,10 +81,10 @@ Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call
 
 # Roadmap
 `aiohttp` has made several incompatible changes, including forbidding subclassing.
-So the async client has switched to `httpx`, which has emerged as a replacement for `requests`.
+So the async client has switched to `httpx`.
 
 There are no interface changes to the async client itself, other than the different response object.
-In the future `clients` will likely switch to only `httpx` or `requests3`, whichever gains traction.
+In the future `clients` may switch to only `httpx` or `requests3`.
 
 # Changes
 dev

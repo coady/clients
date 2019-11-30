@@ -4,12 +4,14 @@ language: python
 matrix:
   include:
     - python: 2.7
-      env: PACKAGES="requests<2.5"
+      env: PACKAGES="requests<2.16"
     - python: 3.5
-      env: PACKAGES="requests<2.15"
+      env: PACKAGES="requests<2.18"
     - python: 3.6
       env: PACKAGES="requests<2.20 httpx"
     - python: 3.7
+      env: PACKAGES="requests<2.22 httpx"
+    - python: 3.8
       env: PACKAGES="requests httpx"
 
 install:

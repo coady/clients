@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 import functools
 import httpx
 from urllib.parse import urljoin
@@ -81,6 +82,16 @@ class AsyncResource(AsyncClient):
         response.raise_for_status()
         kwargs['headers'] = dict(kwargs.get('headers', {}), **validate(response))
         yield await self.put(path, (yield response.json()), **kwargs)
+
+    async def updating(self, path='', **kwargs):
+        updater = self.updater(path, **kwargs)
+        json = await updater.__anext__()
+        yield json
+        await updater.asend(json)
+
+    if hasattr(contextlib, 'asynccontextmanager'):  # pragma: no branch
+        updating = contextlib.asynccontextmanager(updating)
+        updating.__doc__ = Resource.updating.__doc__
 
     @inherit_doc(Resource)
     async def update(self, path='', callback=None, **json):

@@ -45,6 +45,12 @@ def test_resource():
         next(it)
     with pytest.raises(httpx.HTTPError, match='405'):
         next(it)
+    cm = resource.updating('response-headers')
+    if hasattr(cm, '__aenter__'):
+        (data,) = results(cm.__aenter__())
+        assert data['etag'] == 'W/0'
+        with pytest.raises(httpx.HTTPError, match='405'):
+            (data,) = results(cm.__aexit__(None, None, None))
 
 
 def test_content(url):

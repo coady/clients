@@ -87,7 +87,7 @@ There are no interface changes to the async client itself, other than the differ
 In the future `clients` may switch to only `httpx` or `requests3`.
 
 # Changes
-dev
+1.1
 * Async switched to httpx
 
 1.0

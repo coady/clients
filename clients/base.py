@@ -1,16 +1,12 @@
 import collections
 import contextlib
 import functools
+import json
 import random
 import re
 import threading
 import requests
-from requests.compat import json, urljoin
-
-try:
-    from future_builtins import map
-except ImportError:  # pragma: no cover
-    pass
+from urllib.parse import urljoin
 
 
 def content_type(response, **patterns):
@@ -63,8 +59,6 @@ class Client(requests.Session):
     def __truediv__(self, path):
         """Return a cloned client with appended path."""
         return type(self).clone(self, path)
-
-    __div__ = __truediv__
 
     def request(self, method, path, auth=None, **kwargs):
         """Send request with relative or absolute path and return response."""

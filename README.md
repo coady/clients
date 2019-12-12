@@ -1,5 +1,5 @@
 [![image](https://img.shields.io/pypi/v/clients.svg)](https://pypi.org/project/clients/)
-[![image](https://img.shields.io/pypi/pyversions/clients.svg)](https://python3statement.org)
+![image](https://img.shields.io/pypi/pyversions/clients.svg)
 [![image](https://pepy.tech/badge/clients)](https://pepy.tech/project/clients)
 ![image](https://img.shields.io/pypi/status/clients.svg)
 [![image](https://img.shields.io/travis/coady/clients.svg)](https://travis-ci.org/coady/clients)
@@ -87,6 +87,9 @@ There are no interface changes to the async client itself, other than the differ
 In the future `clients` may switch to only `httpx` or `requests3`.
 
 # Changes
+dev
+* Python 3 required
+
 1.1
 * Async switched to httpx
 

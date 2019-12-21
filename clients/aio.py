@@ -1,15 +1,8 @@
 import asyncio
 import contextlib
-import functools
-import httpx
 from urllib.parse import urljoin
+import httpx
 from .base import validate, Client, Graph, Proxy, Remote, Resource, TokenAuth
-
-
-@functools.partial(functools.partial, functools.partial)
-def inherit_doc(cls, func):
-    func.__doc__ = getattr(cls, func.__name__).__doc__
-    return func
 
 
 class AsyncClient(httpx.Client):
@@ -24,16 +17,16 @@ class AsyncClient(httpx.Client):
     """
 
     __truediv__ = Client.__truediv__
-    __repr__ = Client.__repr__
-    get = Client.get
-    options = Client.options
-    head = Client.head
-    post = Client.post
-    put = Client.put
-    patch = Client.patch
-    delete = Client.delete
+    __repr__ = Client.__repr__  # type: ignore
+    get = Client.get  # type: ignore
+    options = Client.options  # type: ignore
+    head = Client.head  # type: ignore
+    post = Client.post  # type: ignore
+    put = Client.put  # type: ignore
+    patch = Client.patch  # type: ignore
+    delete = Client.delete  # type: ignore
 
-    def __init__(self, url, *, trailing='', auth=None, **attrs):
+    def __init__(self, url: str, *, trailing: str = '', auth=None, **attrs):
         attrs['auth'] = TokenAuth(auth) if isinstance(auth, dict) else auth
         super().__init__(base_url=url.rstrip('/') + '/', **attrs)
         self._attrs = attrs
@@ -49,13 +42,13 @@ class AsyncClient(httpx.Client):
         kwargs.update(other._attrs)
         return cls(url, trailing=other.trailing, **kwargs)
 
-    @inherit_doc(Client)
     def request(self, method, path, auth=None, **kwargs):
+        """Send request with relative or absolute path and return response."""
         kwargs['auth'] = TokenAuth(auth) if isinstance(auth, dict) else auth
         url = str(self.base_url.join(path)).rstrip('/') + self.trailing
         return super().request(method, url, **kwargs)
 
-    def run(self, name, *args, **kwargs):
+    def run(self, name: str, *args, **kwargs):
         """Synchronously call method and run coroutine."""
         return asyncio.get_event_loop().run_until_complete(getattr(self, name)(*args, **kwargs))
 
@@ -65,12 +58,12 @@ class AsyncResource(AsyncClient):
 
     client = property(AsyncClient.clone, doc="upcasted `AsyncClient`_")
     __getattr__ = AsyncClient.__truediv__
-    __getitem__ = AsyncClient.get
+    __getitem__ = AsyncClient.get  # type: ignore
     content_type = Resource.content_type
     __call__ = Resource.__call__
 
-    @inherit_doc(Resource)
     async def request(self, method, path, **kwargs):
+        """Send request with path and return processed content."""
         response = await super().request(method, path, **kwargs)
         response.raise_for_status()
         if self.content_type(response) == 'json':
@@ -83,7 +76,7 @@ class AsyncResource(AsyncClient):
         kwargs['headers'] = dict(kwargs.get('headers', {}), **validate(response))
         yield await self.put(path, (yield response.json()), **kwargs)
 
-    async def updating(self, path='', **kwargs):
+    async def updating(self, path: str = '', **kwargs):
         updater = self.updater(path, **kwargs)
         json = await updater.__anext__()
         yield json
@@ -93,15 +86,20 @@ class AsyncResource(AsyncClient):
         updating = contextlib.asynccontextmanager(updating)
         updating.__doc__ = Resource.updating.__doc__
 
-    @inherit_doc(Resource)
     async def update(self, path='', callback=None, **json):
+        """PATCH request with json params.
+
+        :param callback: optionally update with GET and validated PUT.
+            ``callback`` is called on the json result with keyword params, i.e.,
+            ``dict`` correctly implements the simple update case.
+        """
         if callback is None:
             return await self.patch(path, json)
         updater = self.updater(path)
         return await updater.asend(callback(await updater.__anext__(), **json))
 
-    @inherit_doc(Resource)
-    async def authorize(self, path='', **kwargs):
+    async def authorize(self, path: str = '', **kwargs) -> dict:
+        """Acquire oauth access token and set ``auth``."""
         method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
         result = await self.request(method, path, **kwargs)
         self._attrs['auth'] = self.auth = TokenAuth({result['token_type']: result['access_token']})
@@ -120,7 +118,7 @@ class AsyncRemote(AsyncClient):
     __getattr__ = AsyncResource.__getattr__
     check = staticmethod(Remote.check)
 
-    def __init__(self, url, json=(), **kwargs):
+    def __init__(self, url: str, json=(), **kwargs):
         super().__init__(url, **kwargs)
         self.json = dict(json)
 
@@ -139,7 +137,7 @@ class AsyncGraph(AsyncRemote):
     """An `AsyncRemote`_ client which executes GraphQL queries."""
 
     Error = httpx.HTTPError
-    check = classmethod(Graph.check.__func__)
+    check = classmethod(Graph.check.__func__)  # type: ignore
     execute = Graph.execute
 
 
@@ -157,7 +155,7 @@ class AsyncProxy(AsyncClient):
     priority = Proxy.priority
     choice = Proxy.choice
 
-    def __init__(self, *urls, **kwargs):
+    def __init__(self, *urls: str, **kwargs):
         super().__init__('https://proxies', **kwargs)
         self.urls = {(url.rstrip('/') + '/'): self.Stats() for url in urls}
 
@@ -166,8 +164,8 @@ class AsyncProxy(AsyncClient):
         urls = (urljoin(url, path) for url in other.urls)
         return cls(*urls, trailing=other.trailing, **other._attrs)
 
-    @inherit_doc(Proxy)
     async def request(self, method, path, **kwargs):
+        """Send request with relative or absolute path and return response."""
         url = self.choice(method)
         with self.urls[url] as stats:
             response = await super().request(method, urljoin(url, path), **kwargs)

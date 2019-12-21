@@ -5,8 +5,9 @@ import json
 import random
 import re
 import threading
-import requests
+from typing import Callable, Iterator
 from urllib.parse import urljoin
+import requests
 
 
 def content_type(response, **patterns):
@@ -41,7 +42,7 @@ class Client(requests.Session):
     """
 
     def __init__(self, url, trailing='', headers=(), auth=None, **attrs):
-        super(Client, self).__init__()
+        super().__init__()
         self.__setstate__(attrs)
         self.auth = TokenAuth(auth) if isinstance(auth, dict) else auth
         self.headers.update(headers)
@@ -56,7 +57,7 @@ class Client(requests.Session):
     def __repr__(self):
         return '{}({}... {})'.format(type(self).__name__, self.url, self.trailing)
 
-    def __truediv__(self, path):
+    def __truediv__(self, path: str) -> 'Client':
         """Return a cloned client with appended path."""
         return type(self).clone(self, path)
 
@@ -64,7 +65,7 @@ class Client(requests.Session):
         """Send request with relative or absolute path and return response."""
         kwargs['auth'] = TokenAuth(auth) if isinstance(auth, dict) else auth
         url = urljoin(self.url, path).rstrip('/') + self.trailing
-        return super(Client, self).request(method, url, **kwargs)
+        return super().request(method, url, **kwargs)
 
     def get(self, path='', **kwargs):
         """GET request with optional path."""
@@ -104,7 +105,7 @@ class Resource(Client):
     __delitem__ = Client.delete
     content_type = functools.partial(content_type, text='text/', json=r'application/(\w|\.)*\+?json')
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Client:
         if name in type(self).__attrs__:
             raise AttributeError(name)
         return self / name
@@ -113,15 +114,15 @@ class Resource(Client):
 
     def request(self, method, path, **kwargs):
         """Send request with path and return processed content."""
-        response = super(Resource, self).request(method, path, **kwargs)
+        response = super().request(method, path, **kwargs)
         response.raise_for_status()
         if self.content_type(response) == 'json':
             return response.json()
         return response.text if response.encoding else response.content
 
-    def iter(self, path='', **kwargs):
+    def iter(self, path: str = '', **kwargs) -> Iterator:
         """Iterate lines or chunks from streamed GET request."""
-        response = super(Resource, self).request('GET', path, stream=True, **kwargs)
+        response = super().request('GET', path, stream=True, **kwargs)
         response.raise_for_status()
         content_type = self.content_type(response)
         if content_type == 'json':
@@ -133,29 +134,29 @@ class Resource(Client):
 
     __iter__ = iter
 
-    def __contains__(self, path):
+    def __contains__(self, path: str):
         """Return whether endpoint exists according to HEAD request."""
-        return super(Resource, self).request('HEAD', path, allow_redirects=False).ok
+        return super().request('HEAD', path, allow_redirects=False).ok
 
-    def __call__(self, path='', **params):
+    def __call__(self, path: str = '', **params):
         """GET request with params."""
         return self.get(path, params=params)
 
     def updater(self, path='', **kwargs):
-        response = super(Resource, self).request('GET', path, **kwargs)
+        response = super().request('GET', path, **kwargs)
         response.raise_for_status()
         kwargs['headers'] = dict(kwargs.get('headers', {}), **validate(response))
         yield self.put(path, (yield response.json()), **kwargs)
 
     @contextlib.contextmanager
-    def updating(self, path='', **kwargs):
+    def updating(self, path: str = '', **kwargs):
         """Provisional context manager to GET and conditionally PUT json data."""
         updater = self.updater(path, **kwargs)
         json = next(updater)
         yield json
         updater.send(json)
 
-    def update(self, path='', callback=None, **json):
+    def update(self, path: str = '', callback: Callable = None, **json):
         """PATCH request with json params.
 
         :param callback: optionally update with GET and validated PUT.
@@ -167,21 +168,21 @@ class Resource(Client):
         updater = self.updater(path)
         return updater.send(callback(next(updater), **json))
 
-    def create(self, path='', json=None, **kwargs):
+    def create(self, path: str = '', json=None, **kwargs) -> str:
         """POST request and return location."""
-        response = super(Resource, self).request('POST', path, json=json, **kwargs)
+        response = super().request('POST', path, json=json, **kwargs)
         response.raise_for_status()
         return response.headers.get('location')
 
-    def download(self, file, path='', **kwargs):
+    def download(self, file, path: str = '', **kwargs):
         """Output streamed GET request to file."""
-        response = super(Resource, self).request('GET', path, stream=True, **kwargs)
+        response = super().request('GET', path, stream=True, **kwargs)
         response.raise_for_status()
         for chunk in response:
             file.write(chunk)
         return file
 
-    def authorize(self, path='', **kwargs):
+    def authorize(self, path: str = '', **kwargs) -> dict:
         """Acquire oauth access token and set ``auth``."""
         method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
         result = self.request(method, path, **kwargs)
@@ -200,15 +201,15 @@ class Remote(Client):
     client = Resource.client
     __getattr__ = Resource.__dict__['__getattr__']
 
-    def __init__(self, url, json=(), **kwargs):
-        super(Remote, self).__init__(url, **kwargs)
+    def __init__(self, url: str, json=(), **kwargs):
+        super().__init__(url, **kwargs)
         self.json = dict(json)
 
     @classmethod
     def clone(cls, other, path=''):
         return Client.clone.__func__(cls, other, path, json=other.json)
 
-    def __call__(self, path='', **json):
+    def __call__(self, path: str = '', **json):
         """POST request with json body and :meth:`check` result."""
         response = self.post(path, json=dict(self.json, **json))
         response.raise_for_status()
@@ -226,13 +227,13 @@ class Graph(Remote):
     Error = requests.HTTPError
 
     @classmethod
-    def check(cls, result):
+    def check(cls, result: dict):
         """Return ``data`` or raise ``errors``."""
         for error in result.get('errors', ()):
             raise cls.Error(error)
         return result.get('data')
 
-    def execute(self, query, **variables):
+    def execute(self, query: str, **variables):
         """Execute query over POST."""
         return self(query=query, variables=variables)
 
@@ -271,8 +272,8 @@ class Proxy(Client):
 
     Stats = Stats
 
-    def __init__(self, *urls, **kwargs):
-        super(Proxy, self).__init__('', **kwargs)
+    def __init__(self, *urls: str, **kwargs):
+        super().__init__('', **kwargs)
         self.urls = {(url.rstrip('/') + '/'): self.Stats() for url in urls}
 
     @classmethod
@@ -280,7 +281,7 @@ class Proxy(Client):
         urls = (urljoin(url, path) for url in other.urls)
         return cls(*urls, trailing=other.trailing, **other.__getstate__())
 
-    def priority(self, url):
+    def priority(self, url: str):
         """Return comparable priority for url.
 
         Minimizes errors, failures (500s), and active connections.
@@ -289,12 +290,12 @@ class Proxy(Client):
         stats = self.urls[url]
         return tuple(stats[key] for key in ('errors', 'failures', 'connections'))
 
-    def choice(self, method):
+    def choice(self, method: str) -> str:
         """Return chosen url according to priority.
 
         :param method: placeholder for extensions which distinguish read/write requests
         """
-        priorities = collections.defaultdict(list)
+        priorities = collections.defaultdict(list)  # type: dict
         for url in self.urls:
             priorities[self.priority(url)].append(url)
         priorities.pop(None, None)
@@ -304,6 +305,6 @@ class Proxy(Client):
         """Send request with relative or absolute path and return response."""
         url = self.choice(method)
         with self.urls[url] as stats:
-            response = super(Proxy, self).request(method, urljoin(url, path), **kwargs)
+            response = super().request(method, urljoin(url, path), **kwargs)
         stats.add(failures=int(response.status_code >= 500))
         return response

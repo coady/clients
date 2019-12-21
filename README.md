@@ -8,6 +8,7 @@
 [![image](https://requires.io/github/coady/clients/requirements.svg)](https://requires.io/github/coady/clients/requirements/)
 [![image](https://api.codeclimate.com/v1/badges/8e4159e02ab75e76af4f/maintainability)](https://codeclimate.com/github/coady/clients/maintainability)
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
+[![image](http://mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 
 Clients provide [requests](https://python-requests.org) and
 [httpx](https://www.encode.io/httpx) wrappers which encourage best practices,

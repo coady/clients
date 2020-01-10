@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='clients',
-    version='1.1',
+    version='1.2',
     description='HTTP for humanitarians.',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',

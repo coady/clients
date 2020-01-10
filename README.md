@@ -90,7 +90,7 @@ There are no interface changes to the async client itself, other than the differ
 In the future `clients` may switch to only `httpx` or `requests3`.
 
 # Changes
-dev
+1.2
 * Python 3 required
 * httpx >=0.11 required
 

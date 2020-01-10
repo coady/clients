@@ -13,7 +13,7 @@ setup(
     license='Apache Software License',
     packages=['clients'],
     install_requires=['requests>=2.4.2'],
-    extras_require={':python_version>="3.6"': ['httpx>=0.8']},
+    extras_require={':python_version>="3.6"': ['httpx>=0.11']},
     python_requires='>=3.5',
     tests_require=['pytest>=3.7.2', 'pytest-cov', 'pytest-httpbin'],
     keywords='requests sessions responses resources asyncio',

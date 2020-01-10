@@ -68,17 +68,19 @@ Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call
 [GraphQL](http://graphql.org), and proxies also provided.
 
 # Installation
-
-    $ pip install clients
+```console
+% pip install clients
+```
 
 # Dependencies
 * requests >=2.4.2
-* httpx >=0.8 (if Python >=3.6)
+* httpx >=0.11 (if Python >=3.6)
 
 # Tests
 100% branch coverage.
-
-    $ pytest [--cov]
+```console
+% pytest [--cov]
+```
 
 # Roadmap
 `aiohttp` has made several incompatible changes, including forbidding subclassing.
@@ -90,6 +92,7 @@ In the future `clients` may switch to only `httpx` or `requests3`.
 # Changes
 dev
 * Python 3 required
+* httpx >=0.11 required
 
 1.1
 * Async switched to httpx

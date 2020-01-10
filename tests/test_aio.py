@@ -112,8 +112,10 @@ def test_proxy(url):
     assert next(results(*fs)).url != response.url
 
     proxy = clients.AsyncProxy('http://localhost/', 'http://httpbin.org/')
-    with pytest.raises(OSError):
-        list(results(*(proxy.get() for _ in proxy.urls)))
+    responses = results(*(proxy.get() for _ in proxy.urls))
+    with pytest.raises(httpx.HTTPError):
+        list(responses)
+    list(responses)  # only one error
     (response,) = results(proxy.get())
     assert response.status_code == 200
 

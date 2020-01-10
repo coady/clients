@@ -5,7 +5,7 @@ import httpx
 from .base import validate, Client, Graph, Proxy, Remote, Resource, TokenAuth
 
 
-class AsyncClient(httpx.Client):
+class AsyncClient(httpx.AsyncClient):
     """An asynchronous Client which sends requests to a base url.
 
     :param url: base url for requests

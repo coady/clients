@@ -2,7 +2,7 @@ import asyncio
 import contextlib
 from urllib.parse import urljoin
 import httpx
-from .base import validate, Client, Graph, Proxy, Remote, Resource, TokenAuth
+from .base import validate, Client, Graph, Proxy, Remote, Resource
 
 
 class AsyncClient(httpx.AsyncClient):
@@ -10,9 +10,6 @@ class AsyncClient(httpx.AsyncClient):
 
     :param url: base url for requests
     :param trailing: trailing chars (e.g. /) appended to the url
-    :param params: default query params
-    :param auth: additional authorization support for ``{token_type: access_token}``,
-        available per request as well
     :param attrs: additional AsyncClient options
     """
 
@@ -26,8 +23,7 @@ class AsyncClient(httpx.AsyncClient):
     patch = Client.patch  # type: ignore
     delete = Client.delete  # type: ignore
 
-    def __init__(self, url: str, *, trailing: str = '', auth=None, **attrs):
-        attrs['auth'] = TokenAuth(auth) if isinstance(auth, dict) else auth
+    def __init__(self, url: str, *, trailing: str = '', **attrs):
         super().__init__(base_url=url.rstrip('/') + '/', **attrs)
         self._attrs = attrs
         self.trailing = trailing
@@ -42,9 +38,8 @@ class AsyncClient(httpx.AsyncClient):
         kwargs.update(other._attrs)
         return cls(url, trailing=other.trailing, **kwargs)
 
-    def request(self, method, path, auth=None, **kwargs):
+    def request(self, method, path, **kwargs):
         """Send request with relative or absolute path and return response."""
-        kwargs['auth'] = TokenAuth(auth) if isinstance(auth, dict) else auth
         url = str(self.base_url.join(path)).rstrip('/') + self.trailing
         return super().request(method, url, **kwargs)
 
@@ -76,13 +71,15 @@ class AsyncResource(AsyncClient):
         kwargs['headers'] = dict(kwargs.get('headers', {}), **validate(response))
         yield await self.put(path, (yield response.json()), **kwargs)
 
-    @contextlib.asynccontextmanager
     async def updating(self, path: str = '', **kwargs):
         """Provisional context manager to GET and conditionally PUT json data."""
         updater = self.updater(path, **kwargs)
         json = await updater.__anext__()
         yield json
         await updater.asend(json)
+
+    if hasattr(contextlib, 'asynccontextmanager'):  # pragma: no branch
+        updating = contextlib.asynccontextmanager(updating)
 
     async def update(self, path='', callback=None, **json):
         """PATCH request with json params.
@@ -97,10 +94,11 @@ class AsyncResource(AsyncClient):
         return await updater.asend(callback(await updater.__anext__(), **json))
 
     async def authorize(self, path: str = '', **kwargs) -> dict:
-        """Acquire oauth access token and set ``auth``."""
+        """Acquire oauth access token and set ``Authorization`` header."""
         method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
         result = await self.request(method, path, **kwargs)
-        self._attrs['auth'] = self.auth = TokenAuth({result['token_type']: result['access_token']})
+        self.headers['authorization'] = f"{result['token_type']} {result['access_token']}"
+        self._attrs['headers'] = self.headers
         return result
 
 

@@ -67,20 +67,12 @@ def test_methods(url):
 
 
 def test_authorize(url, monkeypatch):
-    resource = clients.Resource(url, auth=('', ''))
-    assert resource.get('headers')['headers']['Authorization'].startswith('Basic ')
-    assert resource.get('headers', auth={'token': 'abc123'})['headers']['Authorization'] == 'token abc123'
-    resource = clients.Resource(url, auth={'token': 'abc123'})
-    assert resource.auth == {'token': 'abc123'}
-    assert resource.get('headers')['headers']['Authorization'] == 'token abc123'
-    assert resource.get('headers', auth=('', ''))['headers']['Authorization'].startswith('Basic ')
-
     resource = clients.Resource(url)
     result = {'access_token': 'abc123', 'token_type': 'Bearer', 'expires_in': 0}
     monkeypatch.setattr(clients.Resource, 'request', lambda *args, **kwargs: result)
     for key in ('params', 'data', 'json'):
         assert resource.authorize(**{key: {}}) == result
-        assert resource.auth == {'Bearer': 'abc123'}
+        assert resource.headers['authorization'] == 'Bearer abc123'
 
 
 def test_callback(url):
@@ -121,7 +113,7 @@ def test_graph(url):
 
 
 def test_proxy(httpbin):
-    proxy = clients.Proxy(httpbin.url, 'http://localhost:{}'.format(httpbin.port))
+    proxy = clients.Proxy(httpbin.url, f'http://localhost:{httpbin.port}')
     urls = {proxy.get('status/500').url for _ in proxy.urls}
     assert len(urls) == len(proxy.urls)
 

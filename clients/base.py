@@ -24,27 +24,18 @@ def validate(response):
     return {validators[key]: headers[key] for key in validators if key in headers}
 
 
-class TokenAuth(dict):
-    def __call__(self, req):
-        req.headers['Authorization'] = ' '.join(*self.items())
-        return req
-
-
 class Client(requests.Session):
     """A Session which sends requests to a base url.
 
     :param url: base url for requests
     :param trailing: trailing chars (e.g. /) appended to the url
     :param headers: additional headers to include in requests
-    :param auth: additional authorization support for ``{token_type: access_token}``,
-        available per request as well
     :param attrs: additional Session attributes
     """
 
-    def __init__(self, url, trailing='', headers=(), auth=None, **attrs):
+    def __init__(self, url, trailing='', headers=(), **attrs):
         super().__init__()
         self.__setstate__(attrs)
-        self.auth = TokenAuth(auth) if isinstance(auth, dict) else auth
         self.headers.update(headers)
         self.trailing = trailing
         self.url = url.rstrip('/') + '/'
@@ -55,15 +46,14 @@ class Client(requests.Session):
         return cls(urljoin(other.url, path), trailing=other.trailing, **kwargs)
 
     def __repr__(self):
-        return '{}({}... {})'.format(type(self).__name__, self.url, self.trailing)
+        return f'{type(self).__name__}({self.url}... {self.trailing})'
 
     def __truediv__(self, path: str) -> 'Client':
         """Return a cloned client with appended path."""
         return type(self).clone(self, path)
 
-    def request(self, method, path, auth=None, **kwargs):
+    def request(self, method, path, **kwargs):
         """Send request with relative or absolute path and return response."""
-        kwargs['auth'] = TokenAuth(auth) if isinstance(auth, dict) else auth
         url = urljoin(self.url, path).rstrip('/') + self.trailing
         return super().request(method, url, **kwargs)
 
@@ -183,10 +173,10 @@ class Resource(Client):
         return file
 
     def authorize(self, path: str = '', **kwargs) -> dict:
-        """Acquire oauth access token and set ``auth``."""
+        """Acquire oauth access token and set ``Authorization`` header."""
         method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
         result = self.request(method, path, **kwargs)
-        self.auth = TokenAuth({result['token_type']: result['access_token']})
+        self.headers['authorization'] = f"{result['token_type']} {result['access_token']}"
         return result
 
 

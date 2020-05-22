@@ -93,14 +93,8 @@ class Resource(Client):
     __getitem__ = Client.get
     __setitem__ = Client.put
     __delitem__ = Client.delete
+    __getattr__ = Client.__truediv__
     content_type = functools.partial(content_type, text='text/', json=r'application/(\w|\.)*\+?json')
-
-    def __getattr__(self, name: str) -> Client:
-        if name in type(self).__attrs__:
-            raise AttributeError(name)
-        return self / name
-
-    __getattr__.__doc__ = Client.__truediv__.__doc__
 
     def request(self, method, path, **kwargs):
         """Send request with path and return processed content."""
@@ -189,7 +183,7 @@ class Remote(Client):
     """
 
     client = Resource.client
-    __getattr__ = Resource.__dict__['__getattr__']
+    __getattr__ = Resource.__getattr__
 
     def __init__(self, url: str, json=(), **kwargs):
         super().__init__(url, **kwargs)

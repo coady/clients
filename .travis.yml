@@ -1,16 +1,12 @@
 language: python
 
-matrix:
-  include:
-    - python: 3.6
-      env: PACKAGES="requests<2.20 httpx"
-    - python: 3.7
-      env: PACKAGES="requests<2.22 httpx"
-    - python: 3.8
-      env: PACKAGES="requests httpx"
+python:
+  - 3.6
+  - 3.7
+  - 3.8
 
 install:
-  - pip install $PACKAGES pytest pytest-cov pytest-httpbin codecov
+  - pip install requests httpx pytest pytest-cov pytest-httpbin codecov
 
 script:
   - pytest -v --cov

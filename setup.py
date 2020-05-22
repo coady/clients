@@ -12,7 +12,7 @@ setup(
     project_urls={'Documentation': 'https://clients.readthedocs.io'},
     license='Apache Software License',
     packages=['clients'],
-    install_requires=['requests>=2.4.2', 'httpx>=0.13'],
+    install_requires=['requests>=2.23', 'httpx>=0.13'],
     python_requires='>=3.6',
     tests_require=['pytest-cov', 'pytest-httpbin'],
     keywords='requests sessions responses resources asyncio',

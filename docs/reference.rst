@@ -13,6 +13,7 @@ Resource
    :show-inheritance:
    :members:
    :special-members:
+   :exclude-members: content_type
 
    .. function:: content_type(response)
 

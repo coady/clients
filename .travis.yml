@@ -6,7 +6,7 @@ python:
   - 3.8
 
 install:
-  - pip install requests httpx pytest pytest-cov pytest-httpbin codecov
+  - pip install pytest-cov pytest-httpbin requests httpx codecov
 
 script:
   - pytest -v --cov

@@ -12,7 +12,9 @@ setup(
     project_urls={'Documentation': 'https://clients.readthedocs.io'},
     license='Apache Software License',
     packages=['clients'],
-    install_requires=['requests>=2.23', 'httpx>=0.13'],
+    package_data={'clients': ['py.typed']},
+    zip_safe=False,
+    install_requires=['requests>=2.23', 'httpx>=0.14'],
     python_requires='>=3.6',
     tests_require=['pytest-cov', 'pytest-httpbin'],
     keywords='requests sessions responses resources asyncio',
@@ -28,5 +30,6 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Topic :: Internet :: WWW/HTTP :: Session',
         'Topic :: Software Development :: Libraries :: Python Modules',
+        'Typing :: Typed',
     ],
 )

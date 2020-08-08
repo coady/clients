@@ -1,7 +1,6 @@
 import asyncio
 import json
 import operator
-import httpcore
 import httpx
 import pytest
 import clients
@@ -103,7 +102,7 @@ def test_proxy(url):
 
     proxy = clients.AsyncProxy('http://localhost/', 'http://httpbin.org/')
     responses = results(*(proxy.get() for _ in proxy.urls))
-    with pytest.raises(httpcore.ConnectError):
+    with pytest.raises(httpx.ConnectError):
         list(responses)
     list(responses)  # only one error
     (response,) = results(proxy.get())

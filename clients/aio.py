@@ -133,8 +133,14 @@ class AsyncGraph(AsyncRemote):
     """An `AsyncRemote`_ client which executes GraphQL queries."""
 
     Error = httpx.HTTPError
-    check = classmethod(Graph.check.__func__)  # type: ignore
     execute = Graph.execute
+
+    @classmethod
+    def check(cls, result: dict):  # type: ignore
+        """Return ``data`` or raise ``errors``."""
+        for error in result.get('errors', ()):
+            raise cls.Error(error, request=None)
+        return result.get('data')
 
 
 class AsyncProxy(AsyncClient):

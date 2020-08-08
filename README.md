@@ -62,7 +62,7 @@ for repo in github.user.repos(visibility='public'):
 
 Being session based, Clients work seamlessly with other [requests](https://python-requests.org) adapters,
 such as [CacheControl](https://cachecontrol.readthedocs.org).
-Asynchronous variants of all client types are provided in [Python 3](https://python3statement.org),
+Asynchronous variants of all client types are provided,
 using [httpx](https://www.encode.io/httpx) instead of [requests](https://python-requests.org).
 Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call),
 [GraphQL](http://graphql.org), and proxies also provided.
@@ -73,8 +73,8 @@ Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call
 ```
 
 # Dependencies
-* requests >=2.4.2
-* httpx >=0.11
+* requests >=2.23
+* httpx >=0.14
 
 # Tests
 100% branch coverage.
@@ -83,13 +83,13 @@ Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call
 ```
 
 # Roadmap
-`aiohttp` has made several incompatible changes, including forbidding subclassing.
-So the async client has switched to `httpx`.
-
-There are no interface changes to the async client itself, other than the different response object.
-In the future `clients` may switch to only `httpx` or `requests3`.
+`httpx` is on track to reach 1.0 status before `requests3` is available, and natively supports a base URL on its client.
+In the future `clients` may switch to only `httpx`.
 
 # Changes
+dev
+* httpx >=0.14 required
+
 1.2
 * Python 3 required
 * httpx >=0.11 required

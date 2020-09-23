@@ -28,6 +28,9 @@ class AsyncClient(httpx.AsyncClient):
         self._attrs = attrs
         self.trailing = trailing
 
+    def __del__(self):
+        pass
+
     @property
     def url(self):
         return str(self.base_url)
@@ -63,7 +66,7 @@ class AsyncResource(AsyncClient):
         response.raise_for_status()
         if self.content_type(response) == 'json':
             return response.json()
-        return response.text if response.charset_encoding else response.content
+        return response.text if response.encoding else response.content
 
     async def updater(self, path='', **kwargs):
         response = await super().request('GET', path, **kwargs)

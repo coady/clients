@@ -23,16 +23,16 @@ def test_client():
         client.delete('delete'),
     )
     for r in results(*coros):
-        assert r.status_code == 200 and r.url.query == 'q=0'
+        assert r.status_code == 200 and r.url.query == b'q=0'
     (r,) = results((client / 'ip').get(params={'q': 1}))
-    assert set(r.json()) == {'origin'} and r.url.query == 'q=1'
+    assert set(r.json()) == {'origin'} and r.url.query == b'q=1'
 
 
 def test_resource():
     params = {'etag': 'W/0', 'last-modified': 'now'}
     resource = clients.AsyncResource('http://httpbin.org/', params=params)
     it = results(
-        resource['robots.txt'],
+        resource['encoding/utf8'],
         resource.bytes('1'),
         resource.update('patch', key='value'),
         resource.status('404'),

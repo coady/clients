@@ -74,7 +74,7 @@ Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call
 
 # Dependencies
 * requests >=2.23
-* httpx >=0.14
+* httpx >=0.15
 
 # Tests
 100% branch coverage.
@@ -88,7 +88,7 @@ In the future `clients` may switch to only `httpx`.
 
 # Changes
 dev
-* httpx >=0.14 required
+* httpx >=0.15 required
 
 1.2
 * Python 3 required

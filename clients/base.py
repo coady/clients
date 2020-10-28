@@ -27,10 +27,11 @@ def validate(response):
 class Client(requests.Session):
     """A Session which sends requests to a base url.
 
-    :param url: base url for requests
-    :param trailing: trailing chars (e.g. /) appended to the url
-    :param headers: additional headers to include in requests
-    :param attrs: additional Session attributes
+    Args:
+        url: base url for requests
+        trailing: trailing chars (e.g. /) appended to the url
+        headers: additional headers to include in requests
+        **attrs: additional Session attributes
     """
 
     def __init__(self, url, trailing='', headers=(), **attrs):
@@ -143,9 +144,10 @@ class Resource(Client):
     def update(self, path: str = '', callback: Callable = None, **json):
         """PATCH request with json params.
 
-        :param callback: optionally update with GET and validated PUT.
-            ``callback`` is called on the json result with keyword params, i.e.,
-            ``dict`` correctly implements the simple update case.
+        Args:
+            callback: optionally update with GET and validated PUT.
+                ``callback`` is called on the json result with keyword params, i.e.,
+                ``dict`` correctly implements the simple update case.
         """
         if callback is None:
             return self.patch(path, json=json)
@@ -177,9 +179,10 @@ class Resource(Client):
 class Remote(Client):
     """A `Client`_ which defaults to posts with json bodies, i.e., RPC.
 
-    :param url: base url for requests
-    :param json: default json body for all calls
-    :param kwargs: same options as `Client`_
+    Args:
+        url: base url for requests
+        json: default json body for all calls
+        **kwargs: same options as `Client`_
     """
 
     client = Resource.client
@@ -250,8 +253,9 @@ class Proxy(Client):
     The default implementation provides load balancing based on active connections.
     It does not provide error handling or retrying.
 
-    :param urls: base urls for requests
-    :param kwargs: same options as `Client`_
+    Args:
+        *urls: base urls for requests
+        **kwargs: same options as `Client`_
     """
 
     Stats = Stats
@@ -277,7 +281,8 @@ class Proxy(Client):
     def choice(self, method: str) -> str:
         """Return chosen url according to priority.
 
-        :param method: placeholder for extensions which distinguish read/write requests
+        Args:
+            method: placeholder for extensions which distinguish read/write requests
         """
         priorities = collections.defaultdict(list)  # type: dict
         for url in self.urls:

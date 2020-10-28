@@ -2,9 +2,8 @@
 ![image](https://img.shields.io/pypi/pyversions/clients.svg)
 [![image](https://pepy.tech/badge/clients)](https://pepy.tech/project/clients)
 ![image](https://img.shields.io/pypi/status/clients.svg)
-[![image](https://img.shields.io/travis/coady/clients.svg)](https://travis-ci.org/coady/clients)
+[![image](https://github.com/coady/clients/workflows/build/badge.svg)](https://github.com/coady/clients/actions)
 [![image](https://img.shields.io/codecov/c/github/coady/clients.svg)](https://codecov.io/github/coady/clients)
-[![image](https://readthedocs.org/projects/clients/badge)](https://clients.readthedocs.io)
 [![image](https://requires.io/github/coady/clients/requirements.svg)](https://requires.io/github/coady/clients/requirements/)
 [![image](https://api.codeclimate.com/v1/badges/8e4159e02ab75e76af4f/maintainability)](https://codeclimate.com/github/coady/clients/maintainability)
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
@@ -14,7 +13,7 @@ Clients provide [requests](https://python-requests.org) and
 [httpx](https://www.encode.io/httpx) wrappers which encourage best practices,
 particularly always using Sessions to connect to the same host or api endpoint.
 
-# Usage
+## Usage
 Typical [requests](https://python-requests.org) usage is redundant and inefficient,
 by not taking advantage of connection pooling.
 
@@ -33,7 +32,7 @@ r = s.get('https://api.github.com/user')
 r = s.get('https://api.github.com/user/repos')
 ```
 
-## Client
+### Client
 Clients make using sessions easier, with implicit url joining.
 
 ```python
@@ -42,7 +41,7 @@ r = client.get('user')
 r = client.get('user/repos')
 ```
 
-## Resource
+### Resource
 Resources extend Clients to implicitly handle response content,
 with proper checking of status_code and content-type.
 
@@ -67,53 +66,61 @@ using [httpx](https://www.encode.io/httpx) instead of [requests](https://python-
 Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call),
 [GraphQL](http://graphql.org), and proxies also provided.
 
-# Installation
+## Installation
 ```console
 % pip install clients
 ```
 
-# Dependencies
+## Dependencies
 * requests >=2.23
 * httpx >=0.15
 
-# Tests
+## Tests
 100% branch coverage.
 ```console
 % pytest [--cov]
 ```
 
-# Roadmap
+## Roadmap
 `httpx` is on track to reach 1.0 status before `requests3` is available, and natively supports a base URL on its client.
 In the future `clients` may switch to only `httpx`.
 
-# Changes
+## Changes
 dev
+
 * httpx >=0.15 required
 
 1.2
+
 * Python 3 required
 * httpx >=0.11 required
 
 1.1
+
 * Async switched to httpx
 
 1.0
+
 * Allow missing content-type
 * Oauth access tokens supported in authorization header
 
 0.5
+
 * `AsyncClient` default params
 * `Remote` and `AsyncRemote` procedure calls
 * `Graph` and `AsyncGraph` execute GraphQL queries
 * `Proxy` and `AsyncProxy` clients
 
 0.4
+
 * Asynchronous clients and resources
 
 0.3
+
 * `singleton` decorator
 
 0.2
+
 * Resource attribute upcasts back to a `client`
 * `iter` and `download` implement GET requests with streamed content
 * `create` implements POST request and returns Location header

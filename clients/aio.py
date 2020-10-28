@@ -8,9 +8,10 @@ from .base import validate, Client, Graph, Proxy, Remote, Resource
 class AsyncClient(httpx.AsyncClient):
     """An asynchronous Client which sends requests to a base url.
 
-    :param url: base url for requests
-    :param trailing: trailing chars (e.g. /) appended to the url
-    :param attrs: additional AsyncClient options
+    Args:
+        url: base url for requests
+        trailing: trailing chars (e.g. /) appended to the url
+        **attrs: additional AsyncClient options
     """
 
     __truediv__ = Client.__truediv__
@@ -87,9 +88,10 @@ class AsyncResource(AsyncClient):
     async def update(self, path='', callback=None, **json):
         """PATCH request with json params.
 
-        :param callback: optionally update with GET and validated PUT.
-            ``callback`` is called on the json result with keyword params, i.e.,
-            ``dict`` correctly implements the simple update case.
+        Args:
+            callback: optionally update with GET and validated PUT.
+                ``callback`` is called on the json result with keyword params, i.e.,
+                ``dict`` correctly implements the simple update case.
         """
         if callback is None:
             return await self.patch(path, json)
@@ -108,9 +110,10 @@ class AsyncResource(AsyncClient):
 class AsyncRemote(AsyncClient):
     """An `AsyncClient`_ which defaults to posts with json bodies, i.e., RPC.
 
-    :param url: base url for requests
-    :param json: default json body for all calls
-    :param kwargs: same options as `AsyncClient`_
+    Args:
+        url: base url for requests
+        json: default json body for all calls
+        **kwargs: same options as `AsyncClient`_
     """
 
     client = AsyncResource.client
@@ -152,8 +155,9 @@ class AsyncProxy(AsyncClient):
     The default implementation provides load balancing based on active connections.
     It does not provide error handling or retrying.
 
-    :param urls: base urls for requests
-    :param kwargs: same options as `AsyncClient`_
+    Args:
+        *urls: base urls for requests
+        **kwargs: same options as `AsyncClient`_
     """
 
     Stats = Proxy.Stats

@@ -9,7 +9,7 @@ setup(
     author='Aric Coady',
     author_email='aric.coady@gmail.com',
     url='https://github.com/coady/clients',
-    project_urls={'Documentation': 'https://clients.readthedocs.io'},
+    project_urls={'Documentation': 'https://coady.github.io/clients'},
     license='Apache Software License',
     packages=['clients'],
     package_data={'clients': ['py.typed']},

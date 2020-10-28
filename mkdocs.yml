@@ -1,0 +1,19 @@
+site_name: clients
+site_description: HTTP for humanitarians.
+theme: material
+
+repo_name: coady/clients
+repo_url: https://github.com/coady/clients
+edit_uri: ""
+
+nav:
+  - Introduction: index.md
+  - Reference: reference.md
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          rendering:
+            show_root_heading: true

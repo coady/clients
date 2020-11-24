@@ -3,27 +3,22 @@
 [![image](https://pepy.tech/badge/clients)](https://pepy.tech/project/clients)
 ![image](https://img.shields.io/pypi/status/clients.svg)
 [![image](https://github.com/coady/clients/workflows/build/badge.svg)](https://github.com/coady/clients/actions)
-[![image](https://img.shields.io/codecov/c/github/coady/clients.svg)](https://codecov.io/github/coady/clients)
-[![image](https://requires.io/github/coady/clients/requirements.svg)](https://requires.io/github/coady/clients/requirements/)
-[![image](https://api.codeclimate.com/v1/badges/8e4159e02ab75e76af4f/maintainability)](https://codeclimate.com/github/coady/clients/maintainability)
+[![image](https://codecov.io/gh/coady/clients/branch/main/graph/badge.svg)](https://codecov.io/gh/coady/clients/)
+[![image](https://github.com/coady/clients/workflows/codeql/badge.svg)](https://github.com/coady/clients/security/code-scanning)
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
 [![image](http://mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 
-Clients provide [requests](https://python-requests.org) and
-[httpx](https://www.encode.io/httpx) wrappers which encourage best practices,
-particularly always using Sessions to connect to the same host or api endpoint.
+Clients provide [requests](https://python-requests.org) and [httpx](https://www.encode.io/httpx) wrappers which encourage best practices, particularly always using Sessions to connect to the same host or api endpoint.
 
 ## Usage
-Typical [requests](https://python-requests.org) usage is redundant and inefficient,
-by not taking advantage of connection pooling.
+Typical [requests](https://python-requests.org) usage is redundant and inefficient, by not taking advantage of connection pooling.
 
 ```python
 r = requests.get('https://api.github.com/user', headers={'authorization': token})
 r = requests.get('https://api.github.com/user/repos', headers={'authorization': token})
 ```
 
-Using sessions is the better approach,
-but more verbose and in practice requires manual url joining.
+Using sessions is the better approach, but more verbose and in practice requires manual url joining.
 
 ```python
 s = requests.Session()
@@ -42,8 +37,7 @@ r = client.get('user/repos')
 ```
 
 ### Resource
-Resources extend Clients to implicitly handle response content,
-with proper checking of status_code and content-type.
+Resources extend Clients to implicitly handle response content, with proper checking of status_code and content-type.
 
 ```python
 github = clients.Resource('https://api.github.com/', headers={'authorization': token})
@@ -51,20 +45,14 @@ for repo in github.get('user/repos', params={'visibility': 'public'}):
     ...
 ```
 
-Resources also implement syntactic support for methods such as __getattr__ and __call__,
-providing most of the benefits of custom clients as is.
+Resources also implement syntactic support for methods such as __getattr__ and __call__, providing most of the benefits of custom clients as is.
 
 ```python
 for repo in github.user.repos(visibility='public'):
     ...
 ```
 
-Being session based, Clients work seamlessly with other [requests](https://python-requests.org) adapters,
-such as [CacheControl](https://cachecontrol.readthedocs.org).
-Asynchronous variants of all client types are provided,
-using [httpx](https://www.encode.io/httpx) instead of [requests](https://python-requests.org).
-Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call),
-[GraphQL](http://graphql.org), and proxies also provided.
+Being session based, Clients work seamlessly with other [requests](https://python-requests.org) adapters, such as [CacheControl](https://cachecontrol.readthedocs.org). Asynchronous variants of all client types are provided, using [httpx](https://www.encode.io/httpx) instead of [requests](https://python-requests.org). Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call), [GraphQL](http://graphql.org), and proxies also provided.
 
 ## Installation
 ```console
@@ -82,8 +70,7 @@ Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call
 ```
 
 ## Roadmap
-`httpx` is on track to reach 1.0 status before `requests3` is available, and natively supports a base URL on its client.
-In the future `clients` may switch to only `httpx`.
+`httpx` is on track to reach 1.0 status before `requests3` is available, and natively supports a base URL on its client. In the future `clients` may switch to only `httpx`.
 
 ## Changes
 dev

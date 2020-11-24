@@ -88,9 +88,9 @@ class Client(requests.Session):
 
 
 class Resource(Client):
-    """A `Client`_ which returns json content and has syntactic support for requests."""
+    """A [Client][clients.base.Client] which returns json content and has syntactic support for requests."""
 
-    client = property(Client.clone, doc="upcasted `Client`_")
+    client = property(Client.clone, doc="upcasted [Client][clients.base.Client]")
     __getitem__ = Client.get
     __setitem__ = Client.put
     __delitem__ = Client.delete
@@ -177,12 +177,12 @@ class Resource(Client):
 
 
 class Remote(Client):
-    """A `Client`_ which defaults to posts with json bodies, i.e., RPC.
+    """A [Client][clients.base.Client] which defaults to posts with json bodies, i.e., RPC.
 
     Args:
         url: base url for requests
         json: default json body for all calls
-        **kwargs: same options as `Client`_
+        **kwargs: same options as [Client][clients.base.Client]
     """
 
     client = Resource.client
@@ -197,7 +197,7 @@ class Remote(Client):
         return Client.clone.__func__(cls, other, path, json=other.json)
 
     def __call__(self, path: str = '', **json):
-        """POST request with json body and :meth:`check` result."""
+        """POST request with json body and [check][clients.base.Remote.check] result."""
         response = self.post(path, json=dict(self.json, **json))
         response.raise_for_status()
         return self.check(response.json())
@@ -209,7 +209,7 @@ class Remote(Client):
 
 
 class Graph(Remote):
-    """A `Remote`_ client which executes GraphQL queries."""
+    """A [Remote][clients.base.Remote] client which executes GraphQL queries."""
 
     Error = requests.HTTPError
 
@@ -255,7 +255,7 @@ class Proxy(Client):
 
     Args:
         *urls: base urls for requests
-        **kwargs: same options as `Client`_
+        **kwargs: same options as [Client][clients.base.Client]
     """
 
     Stats = Stats

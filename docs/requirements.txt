@@ -1,3 +1,4 @@
+requests
 httpx
 mkdocs-material
 mkdocstrings

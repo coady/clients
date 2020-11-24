@@ -53,7 +53,8 @@ class AsyncClient(httpx.AsyncClient):
 
 
 class AsyncResource(AsyncClient):
-    """An [AsyncClient][clients.aio.AsyncClient] which returns json content and has syntactic support for requests."""
+    """An [AsyncClient][clients.aio.AsyncClient] which returns json content
+    and has syntactic support for requests."""
 
     client = property(AsyncClient.clone, doc="upcasted [AsyncClient][clients.aio.AsyncClient]")
     __getattr__ = AsyncClient.__truediv__

@@ -10,6 +10,8 @@
 
 Clients provide [requests](https://python-requests.org) and [httpx](https://www.encode.io/httpx) wrappers which encourage best practices, particularly always using Sessions to connect to the same host or api endpoint.
 
+`httpx` is on track to reach 1.0 status before `requests3` is available, and natively supports a base URL on its client. The next version of `clients` is planned to use only `httpx`.
+
 ## Usage
 Typical [requests](https://python-requests.org) usage is redundant and inefficient, by not taking advantage of connection pooling.
 
@@ -52,7 +54,7 @@ for repo in github.user.repos(visibility='public'):
     ...
 ```
 
-Being session based, Clients work seamlessly with other [requests](https://python-requests.org) adapters, such as [CacheControl](https://cachecontrol.readthedocs.org). Asynchronous variants of all client types are provided, using [httpx](https://www.encode.io/httpx) instead of [requests](https://python-requests.org). Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call), [GraphQL](http://graphql.org), and proxies also provided.
+Asynchronous variants of all client types are provided, using [httpx](https://www.encode.io/httpx) instead of [requests](https://python-requests.org). Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call), [GraphQL](http://graphql.org), and proxies also provided.
 
 ## Installation
 ```console
@@ -69,13 +71,11 @@ Being session based, Clients work seamlessly with other [requests](https://pytho
 % pytest [--cov]
 ```
 
-## Roadmap
-`httpx` is on track to reach 1.0 status before `requests3` is available, and natively supports a base URL on its client. In the future `clients` may switch to only `httpx`.
-
 ## Changes
 dev
 
 * httpx >=0.15 required
+* requests deprecated
 
 1.2
 

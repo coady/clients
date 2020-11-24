@@ -72,7 +72,7 @@ Asynchronous variants of all client types are provided, using [httpx](https://ww
 ```
 
 ## Changes
-dev
+1.3
 
 * httpx >=0.15 required
 * requests deprecated

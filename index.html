@@ -1,0 +1,490 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="HTTP for humanitarians.">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.6">
+    
+    
+      
+        <title>clients</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.6910b76c.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.196e0c26.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#quickstart" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="." title="clients" class="md-header-nav__button md-logo" aria-label="clients">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            clients
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Introduction
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header-nav__source">
+        
+<a href="https://github.com/coady/clients" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    coady/clients
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="clients" class="md-nav__button md-logo" aria-label="clients">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    clients
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/coady/clients" title="Go to repository" class="md-source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05L244 40.45a28.87 28.87 0 00-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 01-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 000 40.81l195.61 195.6a28.86 28.86 0 0040.8 0l194.69-194.69a28.86 28.86 0 000-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    coady/clients
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Introduction
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="." class="md-nav__link md-nav__link--active">
+      Introduction
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart" class="md-nav__link">
+    Quickstart
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    Advanced Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asyncio" class="md-nav__link">
+    Asyncio
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#avant-garde-usage" class="md-nav__link">
+    Avant-garde Usage
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="reference/" class="md-nav__link">
+      Reference
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quickstart" class="md-nav__link">
+    Quickstart
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    Advanced Usage
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#asyncio" class="md-nav__link">
+    Asyncio
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#avant-garde-usage" class="md-nav__link">
+    Avant-garde Usage
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>Introduction</h1>
+                
+                <h2 id="quickstart">Quickstart</h2>
+<p>As great as <a href="https://python-requests.org">requests</a> is, typical usage is falling into some anti-patterns.</p>
+<ul>
+<li>Being url-based, realistically all code needs to deal with url joining. Which tends to be redundant and suffer from leading or trailing slash issues.</li>
+<li>The module level methods don't take advantage of connection pooling, and require duplicate settings. Given the "100% automatic" documentation of connection reuse, it's unclear how widely known this is.</li>
+<li>Using <a href="http://docs.python-requests.org/en/master/user/advanced/#session-objects">Sessions</a> requires assigning every setting individually, and still requires url joining.</li>
+</ul>
+<p><a href="reference/#clients.Client">Clients</a> aim to be encourage best practices by making Sessions even easier to use than the module methods. Examples use the <a href="http://httpbin.org">httpbin</a> client testing service.</p>
+<pre><code class="language-python">client = clients.Client(url, auth=('user', 'pass'), headers={'x-test': 'true'})
+r = client.get('headers', headers={'x-test2': 'true'})
+assert {'x-test', 'x-test2'} &lt;= set(r.request.headers)
+
+r = client.get('cookies', cookies={'from-my': 'browser'})
+assert r.json() == {'cookies': {'from-my': 'browser'}}
+r = client.get('cookies')
+assert r.json() == {'cookies': {}}
+
+client.get('cookies/set', params={'sessioncookie': '123456789'})
+r = client.get('cookies')
+assert r.json() == {'cookies': {'sessioncookie': '123456789'}}
+</code></pre>
+<p>Which reveals another anti-pattern regarding <a href="http://docs.python-requests.org/en/master/user/quickstart/#response-content">Responses</a>. Although the response object is sometimes required, naturally the most common use case is to access the content. But the onus is on the caller to check the <code>status_code</code> and <code>content-type</code>.</p>
+<p><a href="reference/#clients.Resource">Resources</a> aim to making writing custom api clients or sdks easier. Their primary feature is to allow direct content access without silencing errors. Response content type is inferred from headers: <code>json</code>, <code>content</code>, or <code>text</code>.</p>
+<pre><code class="language-python">resource = clients.Resource(url)
+assert resource.get('get')['url'] == url + '/get'
+with pytest.raises(IOError):
+    resource.get('status/404')
+assert '&lt;html&gt;' in resource.get('html')
+assert isinstance(resource.get('bytes/10'), bytes)
+</code></pre>
+<h2 id="advanced-usage">Advanced Usage</h2>
+<p><code>Clients</code> allow any base url, not just hosts, and consequently support path concatenation. Following the semantics of <code>urljoin</code> however, absolute paths and urls are treated as such. Hence there's no need to parse a url retrieved from an api.</p>
+<pre><code class="language-python">client = clients.Client(url)
+cookies = client / 'cookies'
+assert isinstance(cookies, clients.Client)
+assert cookies.get().url == url + '/cookies'
+
+assert cookies.get('/').url == url + '/'
+assert cookies.get(url).url == url + '/'
+</code></pre>
+<p>Some api endpoints require trailing slashes; some forbid them. Set it and forget it.</p>
+<pre><code class="language-python">client = clients.Client(url, trailing='/')
+assert client.get('ip').status_code == 404
+</code></pre>
+<p>Note <code>trailing</code> isn\'t limited to only being a slash. This can be useful for static paths below a parameter: <code>api/v1/{query}.json</code>.</p>
+<h2 id="asyncio">Asyncio</h2>
+<p>Using <a href="https://www.encode.io/httpx">httpx</a> instead of <a href="https://python-requests.org">requests</a>, <a href="reference/#clients.AsyncClient">AsyncClients</a> and <a href="reference/#clients.AsyncResource">AsyncResources</a> implement the same interface, except the request methods return asyncio <a href="https://docs.python.org/3/library/asyncio-task.html#coroutines">coroutines</a>.</p>
+<h2 id="avant-garde-usage">Avant-garde Usage</h2>
+<p><code>Resources</code> support operator overloaded syntax wherever sensible. These interfaces often obviate the need for writing custom clients specific to an API.</p>
+<ul>
+<li><code>__getattr__</code>: alternate path concatenation</li>
+<li><code>__getitem__</code>: GET content</li>
+<li><code>__setitem__</code>: PUT json</li>
+<li><code>__delitem__</code>: DELETE</li>
+<li><code>__contains__</code>: HEAD ok</li>
+<li><code>__iter__</code>: GET streamed lines or content</li>
+<li><code>__call__</code>: GET with params</li>
+</ul>
+<pre><code class="language-python">resource = clients.Resource(url)
+assert set(resource['get']) == {'origin', 'headers', 'args', 'url'}
+resource['put'] = {}
+del resource['delete']
+
+assert '200' in resource.status
+assert '404' not in resource.status
+assert [line['id'] for line in resource / 'stream/3'] == [0, 1, 2]
+assert next(iter(resource / 'html')) == '&lt;!DOCTYPE html&gt;'
+assert resource('cookies/set', name='value') == {'cookies': {'name': 'value'}}
+</code></pre>
+<p>Higher-level methods for common requests.</p>
+<ul>
+<li><code>iter</code>: __iter__ with args</li>
+<li><code>update</code>: PATCH with json params, or GET with conditional PUT</li>
+<li><code>create</code>: POST and return location</li>
+<li><code>download</code>: GET streamed content to file</li>
+<li><code>authorize</code>: acquire oauth token</li>
+</ul>
+<pre><code class="language-python">resource = clients.Resource(url)
+assert list(map(len, resource.iter('stream-bytes/256'))) == [128] * 2
+assert resource.update('patch', name='value')['json'] == {'name': 'value'}
+assert resource.create('post', {'name': 'value'}) is None
+file = resource.download(io.BytesIO(), 'image/png')
+assert file.tell()
+</code></pre>
+<p>A <a href="reference/#clients.singleton">singleton</a> decorator can be used on subclasses, conveniently creating a single custom instance.</p>
+<pre><code class="language-python">@clients.singleton('http://localhost/')
+class custom_api(clients.Resource):
+    pass  # custom methods
+</code></pre>
+<p>assert isinstance(custom_api, clients.Resource)
+assert custom_api.url == 'http://localhost/'</p>
+<p><a href="reference/#clients.Remote">Remote</a> and <a href="reference/#clients.AsyncRemote">AsyncRemote</a> clients default to POSTs with json bodies, for APIs which are more RPC than REST.</p>
+<p><a href="reference/#clients.Graph">Graph</a> and <a href="reference/#clients.AsyncGraph">AsyncGraph</a> remote clients execute GraphQL queries.</p>
+<p><a href="reference/#clients.Proxy">Proxy</a> and <a href="reference/#clients.AsyncProxy">AsyncProxy</a> clients provide load-balancing across multiple hosts, with an extensible interface for different algorithms.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+        
+          <a href="reference/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Reference
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="assets/javascripts/vendor.fd16492e.min.js"></script>
+      <script src="assets/javascripts/bundle.7836ba4d.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: ".",
+          features: [],
+          search: Object.assign({
+            worker: "assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

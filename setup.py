@@ -16,7 +16,7 @@ setup(
     zip_safe=False,
     install_requires=['requests>=2.23', 'httpx>=0.15'],
     python_requires='>=3.6',
-    tests_require=['pytest-cov', 'pytest-httpbin'],
+    tests_require=['pytest-cov', 'pytest-httpbin', 'pytest-asyncio'],
     keywords='requests sessions responses resources asyncio',
     classifiers=[
         'Development Status :: 5 - Production/Stable',

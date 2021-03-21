@@ -6,14 +6,9 @@ import pytest
 import clients
 
 
-def results(*coros):
-    loop = asyncio.get_event_loop()
-    fs = [asyncio.ensure_future(coro, loop=loop) for coro in coros]
-    return map(loop.run_until_complete, fs)
-
-
-def test_client():
-    client = clients.AsyncClient('http://httpbin.org/', params={'q': 0})
+@pytest.mark.asyncio
+async def test_client(url):
+    client = clients.AsyncClient(url, params={'q': 0})
     coros = (
         client.head(),
         client.options(),
@@ -22,44 +17,40 @@ def test_client():
         client.patch('patch'),
         client.delete('delete'),
     )
-    for r in results(*coros):
+    for coro in coros:
+        r = await coro
         assert r.status_code == 200 and r.url.query == b'q=0'
-    (r,) = results((client / 'ip').get(params={'q': 1}))
+    r = await (client / 'ip').get(params={'q': 1})
     assert set(r.json()) == {'origin'} and r.url.query == b'q=1'
 
 
-def test_resource():
+@pytest.mark.asyncio
+async def test_resource(url):
     params = {'etag': 'W/0', 'last-modified': 'now'}
-    resource = clients.AsyncResource('http://httpbin.org/', params=params)
-    it = results(
-        resource['encoding/utf8'],
-        resource.bytes('1'),
-        resource.update('patch', key='value'),
-        resource.status('404'),
-        resource.update('response-headers', callback=dict, key='value'),
-    )
-    assert isinstance(next(it), str)
-    assert isinstance(next(it), bytes)
-    assert next(it)['json'] == {'key': 'value'}
+    resource = clients.AsyncResource(url, params=params)
+    assert isinstance(await resource['encoding/utf8'], str)
+    assert isinstance(await resource.bytes('1'), bytes)
+    assert (await resource.update('patch', key='value'))['json'] == {'key': 'value'}
     with pytest.raises(httpx.HTTPError, match='404'):
-        next(it)
-    with pytest.raises(httpx.HTTPError, match='405'):
-        next(it)
+        await resource.status('404')
+    with pytest.raises(httpx.HTTPError):
+        await resource.update('response-headers', callback=dict, key='value')
     cm = resource.updating('response-headers')
     if hasattr(cm, '__aenter__'):
-        (data,) = results(cm.__aenter__())
+        data = await cm.__aenter__()
         assert data['etag'] == 'W/0'
-        with pytest.raises(httpx.HTTPError, match='405'):
-            (data,) = results(cm.__aexit__(None, None, None))
+        with pytest.raises(httpx.HTTPError):
+            await cm.__aexit__(None, None, None)
 
 
-def test_content(url):
+@pytest.mark.asyncio
+async def test_content(url):
     resource = clients.AsyncResource(url)
     resource.content_type = lambda response: 'json'
     coro = resource.get('robots.txt')
     assert not hasattr(coro, '__aenter__')
     with pytest.raises(ValueError):
-        (data,) = results(coro)
+        await coro
 
 
 def test_authorize(url, monkeypatch):
@@ -72,41 +63,28 @@ def test_authorize(url, monkeypatch):
         assert resource.headers['authorization'] == 'Bearer abc123'
 
 
-def test_remote(url):
+@pytest.mark.asyncio
+async def test_remote(url):
     remote = clients.AsyncRemote(url, json={'key': 'value'})
-    (result,) = results(remote('post'))
-    assert result['json'] == {'key': 'value'}
+    assert (await remote('post'))['json'] == {'key': 'value'}
     clients.AsyncRemote.check = operator.methodcaller('pop', 'json')
-    (result,) = results((remote / 'post')(name='value'))
-    assert result == {'key': 'value', 'name': 'value'}
+    assert await (remote / 'post')(name='value') == {'key': 'value', 'name': 'value'}
 
 
-def test_graph(url):
+@pytest.mark.asyncio
+async def test_graph(url):
     graph = clients.AsyncGraph(url).anything
-    (data,) = results(graph.execute('{ viewer { login }}'))
+    data = await graph.execute('{ viewer { login }}')
     assert json.loads(data) == {'query': '{ viewer { login }}', 'variables': {}}
     with pytest.raises(httpx.HTTPError, match='reason'):
         clients.AsyncGraph.check({'errors': ['reason']})
 
 
-def test_proxy(url):
-    proxy = clients.AsyncProxy(url, 'http://httpbin.org/')
-    responses = results(*(proxy.get('get') for _ in proxy.urls))
-    urls = {response.url: response.json() for response in responses}
+@pytest.mark.asyncio
+async def test_proxy(httpbin):
+    proxy = clients.AsyncProxy(httpbin.url, f'http://localhost:{httpbin.port}')
+    urls = {(await proxy.get('status/500')).url for _ in proxy.urls}
     assert len(urls) == len(proxy.urls)
-    assert all(urls.values())
-
-    fs = (proxy.get('status/500') for _ in proxy.urls)
-    (response,) = results(next(fs))
-    assert next(results(*fs)).url != response.url
-
-    proxy = clients.AsyncProxy('http://localhost/', 'http://httpbin.org/')
-    responses = results(*(proxy.get() for _ in proxy.urls))
-    with pytest.raises(httpx.ConnectError):
-        list(responses)
-    list(responses)  # only one error
-    (response,) = results(proxy.get())
-    assert response.status_code == 200
 
 
 def test_clones():

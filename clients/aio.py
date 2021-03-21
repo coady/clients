@@ -2,50 +2,12 @@ import asyncio
 import contextlib
 from urllib.parse import urljoin
 import httpx
-from .base import validate, Client, Graph, Proxy, Remote, Resource
+from .base import validate, BaseClient, Graph, Proxy, Remote, Resource
 
 
-class AsyncClient(httpx.AsyncClient):
-    """An asynchronous Client which sends requests to a base url.
-
-    Args:
-        url: base url for requests
-        trailing: trailing chars (e.g. /) appended to the url
-        **attrs: additional AsyncClient options
-    """
-
-    __truediv__ = Client.__truediv__
-    __repr__ = Client.__repr__  # type: ignore
-    get = Client.get  # type: ignore
-    options = Client.options  # type: ignore
-    head = Client.head  # type: ignore
-    post = Client.post  # type: ignore
-    put = Client.put  # type: ignore
-    patch = Client.patch  # type: ignore
-    delete = Client.delete  # type: ignore
-
-    def __init__(self, url: str, *, trailing: str = '', **attrs):
-        super().__init__(base_url=url.rstrip('/') + '/', **attrs)
-        self._attrs = attrs
-        self.trailing = trailing
-
+class AsyncClient(BaseClient, httpx.AsyncClient):
     def __del__(self):
         pass
-
-    @property
-    def url(self):
-        return str(self.base_url)
-
-    @classmethod
-    def clone(cls, other, path='', **kwargs):
-        url = str(other.base_url.join(path))
-        kwargs.update(other._attrs)
-        return cls(url, trailing=other.trailing, **kwargs)
-
-    def request(self, method, path, **kwargs):
-        """Send request with relative or absolute path and return response."""
-        url = str(self.base_url.join(path)).rstrip('/') + self.trailing
-        return super().request(method, url, **kwargs)
 
     def run(self, name: str, *args, **kwargs):
         """Synchronously call method and run coroutine."""

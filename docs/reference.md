@@ -1,3 +1,5 @@
+::: clients.base.BaseClient
+
 ::: clients.Client
 
 ::: clients.Resource

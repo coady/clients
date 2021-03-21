@@ -17,7 +17,7 @@ jobs:
     - uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - run: pip install requests httpx pytest-cov pytest-httpbin pytest-asyncio
+    - run: pip install httpx pytest-cov pytest-httpbin pytest-asyncio
     - run: make check
     - uses: codecov/codecov-action@v1
 

@@ -14,7 +14,7 @@ setup(
     packages=['clients'],
     package_data={'clients': ['py.typed']},
     zip_safe=False,
-    install_requires=['requests>=2.23', 'httpx>=0.15'],
+    install_requires=['httpx>=0.17'],
     python_requires='>=3.6',
     tests_require=['pytest-cov', 'pytest-httpbin', 'pytest-asyncio'],
     keywords='requests sessions responses resources asyncio',

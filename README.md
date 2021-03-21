@@ -8,12 +8,15 @@
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
 [![image](http://mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
 
-Clients provide [requests](https://python-requests.org) and [httpx](https://www.encode.io/httpx) wrappers which encourage best practices, particularly always using Sessions to connect to the same host or api endpoint.
+Clients originally provided [requests](https://python-requests.org) wrappers to encourage best practices, particularly always using Sessions to connect to the same host or api endpoint. The primary goals were:
+* provide a `Client` object with a convenient constructor
+* support a base url so that requests can provide a relative path
+* provide the same interface for asyncio
 
-`httpx` is on track to reach 1.0 status before `requests3` is available, and natively supports a base URL on its client. The next version of `clients` is planned to use only `httpx`.
+Since then [httpx](https://www.encode.io/httpx) has emerged as the successor to `requests`, and supports the above features natively. So `clients.Client` can be replaced with `httpx.Client` for most use cases. The project will continue to be maintained for additional features, such as the `Resource` object.
 
 ## Usage
-Typical [requests](https://python-requests.org) usage is redundant and inefficient, by not taking advantage of connection pooling.
+Typical `requests` usage is redundant and inefficient, by not taking advantage of connection pooling.
 
 ```python
 r = requests.get('https://api.github.com/user', headers={'authorization': token})
@@ -54,7 +57,7 @@ for repo in github.user.repos(visibility='public'):
     ...
 ```
 
-Asynchronous variants of all client types are provided, using [httpx](https://www.encode.io/httpx) instead of [requests](https://python-requests.org). Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call), [GraphQL](http://graphql.org), and proxies also provided.
+Asynchronous variants of all client types are provided, e.g., `AsyncClient`. Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call), [GraphQL](http://graphql.org), and proxies also provided.
 
 ## Installation
 ```console
@@ -62,8 +65,7 @@ Asynchronous variants of all client types are provided, using [httpx](https://ww
 ```
 
 ## Dependencies
-* requests >=2.23
-* httpx >=0.15
+* httpx >=0.17
 
 ## Tests
 100% branch coverage.
@@ -72,6 +74,9 @@ Asynchronous variants of all client types are provided, using [httpx](https://ww
 ```
 
 ## Changes
+dev
+* requests removed
+
 1.3
 
 * httpx >=0.15 required

@@ -1,6 +1,7 @@
 import json
 import operator
 import io
+import httpx
 import pytest
 import clients
 
@@ -23,7 +24,7 @@ def test_cookies(url):
 def test_content(url):
     resource = clients.Resource(url)
     assert resource.get('get')['url'] == url + '/get'
-    with pytest.raises(IOError):
+    with pytest.raises(httpx.HTTPError):
         resource.get('status/404')
     assert '<html>' in resource.get('html')
     assert isinstance(resource.get('bytes/10'), bytes)
@@ -33,10 +34,10 @@ def test_path(url):
     client = clients.Client(url)
     cookies = client / 'cookies'
     assert isinstance(cookies, clients.Client)
-    assert cookies.get().url == url + '/cookies'
+    assert str(cookies.get().url) == url + '/cookies'
 
-    assert cookies.get('/').url == url + '/'
-    assert cookies.get(url).url == url + '/'
+    assert str(cookies.get('/').url) == url
+    assert str(cookies.get(url).url) == url
 
 
 def test_trailing(url):
@@ -53,13 +54,13 @@ def test_syntax(url):
     assert '200' in resource.status
     assert '404' not in resource.status
     assert [line['id'] for line in resource / 'stream/3'] == [0, 1, 2]
-    assert next(iter(resource / 'html')) == '<!DOCTYPE html>'
+    assert next(iter(resource / 'html')) == '<!DOCTYPE html>\n'
     assert resource('cookies/set', name='value') == {'cookies': {'name': 'value'}}
 
 
 def test_methods(url):
     resource = clients.Resource(url)
-    assert list(map(len, resource.iter('stream-bytes/256'))) == [128] * 2
+    assert sum(map(len, resource.stream(path='stream-bytes/256'))) == 256
     assert resource.update('patch', name='value')['json'] == {'name': 'value'}
     assert resource.create('post', {'name': 'value'}) is None
     file = resource.download(io.BytesIO(), 'image/png')
@@ -77,22 +78,22 @@ def test_authorize(url, monkeypatch):
 
 def test_callback(url):
     resource = clients.Resource(url, params={'etag': 'W/0', 'last-modified': 'now'})
-    with pytest.raises(IOError, match='405') as exc:
+    with pytest.raises(httpx.HTTPError, match='405') as exc:
         resource.update('response-headers', callback=dict, name='value')
     headers = exc.value.request.headers
     assert headers['if-match'] == 'W/0' and headers['if-unmodified-since'] == 'now'
-    with pytest.raises(IOError, match='405') as exc:
+    with pytest.raises(httpx.HTTPError, match='405') as exc:
         with resource.updating('response-headers') as data:
             data['name'] = 'value'
-    assert b'"name": "value"' in exc.value.request.body
+    assert b'"name": "value"' in exc.value.request.read()
 
 
 def test_meta(url):
     client = clients.Client(url)
     response = client.options('get')
-    assert response.ok and not response.content
+    assert not response.is_error and not response.content
     response = client.head('get')
-    assert response.ok and not response.content
+    assert not response.is_error and not response.content
     del response.headers['content-type']
     assert clients.Resource.content_type(response) == ''
 
@@ -108,7 +109,7 @@ def test_graph(url):
     graph = clients.Graph(url).anything
     data = graph.execute('{ viewer { login }}')
     assert json.loads(data) == {'query': '{ viewer { login }}', 'variables': {}}
-    with pytest.raises(IOError, match='reason'):
+    with pytest.raises(httpx.HTTPError, match='reason'):
         clients.Graph.check({'errors': ['reason']})
 
 
@@ -132,7 +133,7 @@ def test_clones():
     assert type(remote.client) is clients.Client
 
     proxy = clients.Proxy('http://localhost/', 'http://127.0.0.1') / 'path'
-    assert str(proxy) == 'Proxy(/... )'
+    assert str(proxy) == 'Proxy(https://proxies/... )'
 
 
 def test_singleton():

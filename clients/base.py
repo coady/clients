@@ -7,7 +7,7 @@ import re
 import threading
 from typing import Callable, Iterator
 from urllib.parse import urljoin
-import requests
+import httpx
 
 
 def content_type(response, **patterns):
@@ -24,27 +24,19 @@ def validate(response):
     return {validators[key]: headers[key] for key in validators if key in headers}
 
 
-class Client(requests.Session):
-    """A Session which sends requests to a base url.
+class BaseClient:
+    """Client mixin.
 
     Args:
         url: base url for requests
         trailing: trailing chars (e.g. /) appended to the url
-        headers: additional headers to include in requests
         **attrs: additional Session attributes
     """
 
-    def __init__(self, url, trailing='', headers=(), **attrs):
-        super().__init__()
-        self.__setstate__(attrs)
-        self.headers.update(headers)
+    def __init__(self, url: str, *, trailing: str = '', **attrs):
+        super().__init__(base_url=url.rstrip('/') + '/', **attrs)  # type: ignore
+        self._attrs = attrs
         self.trailing = trailing
-        self.url = url.rstrip('/') + '/'
-
-    @classmethod
-    def clone(cls, other, path='', **kwargs):
-        kwargs.update(other.__getstate__())
-        return cls(urljoin(other.url, path), trailing=other.trailing, **kwargs)
 
     def __repr__(self):
         return f'{type(self).__name__}({self.url}... {self.trailing})'
@@ -53,9 +45,19 @@ class Client(requests.Session):
         """Return a cloned client with appended path."""
         return type(self).clone(self, path)
 
+    @property
+    def url(self):
+        return str(self.base_url)
+
+    @classmethod
+    def clone(cls, other, path='', **kwargs):
+        url = str(other.base_url.join(path))
+        kwargs.update(other._attrs)
+        return cls(url, trailing=other.trailing, **kwargs)
+
     def request(self, method, path, **kwargs):
         """Send request with relative or absolute path and return response."""
-        url = urljoin(self.url, path).rstrip('/') + self.trailing
+        url = str(self.base_url.join(path)).rstrip('/') + self.trailing
         return super().request(method, url, **kwargs)
 
     def get(self, path='', **kwargs):
@@ -87,6 +89,13 @@ class Client(requests.Session):
         return self.request('DELETE', path, **kwargs)
 
 
+class Client(BaseClient, httpx.Client):
+    def stream(self, method, path, **kwargs):
+        """Send request with relative or absolute path and stream response."""
+        url = str(self.base_url.join(path)).rstrip('/') + self.trailing
+        return super().stream(method, url, **kwargs)
+
+
 class Resource(Client):
     """A [Client][clients.base.Client] which returns json content and has syntactic support for requests."""
 
@@ -101,27 +110,28 @@ class Resource(Client):
         """Send request with path and return processed content."""
         response = super().request(method, path, **kwargs)
         response.raise_for_status()
-        if self.content_type(response) == 'json':
-            return response.json()
-        return response.text if response.encoding else response.content
-
-    def iter(self, path: str = '', **kwargs) -> Iterator:
-        """Iterate lines or chunks from streamed GET request."""
-        response = super().request('GET', path, stream=True, **kwargs)
-        response.raise_for_status()
         content_type = self.content_type(response)
         if content_type == 'json':
-            response.encoding = response.encoding or 'utf8'
-            return map(json.loads, response.iter_lines(decode_unicode=True))
-        if response.encoding or content_type == 'text':
-            return response.iter_lines(decode_unicode=response.encoding)
-        return iter(response)
+            return response.json()
+        return response.text if content_type == 'text' else response.content
 
-    __iter__ = iter
+    def stream(self, method: str = 'GET', path: str = '', **kwargs) -> Iterator:  # type: ignore
+        """Iterate lines or chunks from streamed request."""
+        with super().stream(method, path, **kwargs) as response:
+            response.raise_for_status()
+            content_type = self.content_type(response)
+            if content_type == 'json':
+                yield from map(json.loads, response.iter_lines())
+            elif content_type == 'text':
+                yield from response.iter_lines()
+            else:
+                yield from response.iter_bytes()
+
+    __iter__ = stream
 
     def __contains__(self, path: str):
         """Return whether endpoint exists according to HEAD request."""
-        return super().request('HEAD', path, allow_redirects=False).ok
+        return not super().request('HEAD', path, allow_redirects=False).is_error
 
     def __call__(self, path: str = '', **params):
         """GET request with params."""
@@ -162,9 +172,7 @@ class Resource(Client):
 
     def download(self, file, path: str = '', **kwargs):
         """Output streamed GET request to file."""
-        response = super().request('GET', path, stream=True, **kwargs)
-        response.raise_for_status()
-        for chunk in response:
+        for chunk in self.stream(path=path, **kwargs):
             file.write(chunk)
         return file
 
@@ -211,13 +219,13 @@ class Remote(Client):
 class Graph(Remote):
     """A [Remote][clients.base.Remote] client which executes GraphQL queries."""
 
-    Error = requests.HTTPError
+    Error = httpx.HTTPError
 
     @classmethod
     def check(cls, result: dict):
         """Return ``data`` or raise ``errors``."""
         for error in result.get('errors', ()):
-            raise cls.Error(error)
+            raise cls.Error(error, request=None)
         return result.get('data')
 
     def execute(self, query: str, **variables):
@@ -261,13 +269,13 @@ class Proxy(Client):
     Stats = Stats
 
     def __init__(self, *urls: str, **kwargs):
-        super().__init__('', **kwargs)
+        super().__init__('https://proxies', **kwargs)
         self.urls = {(url.rstrip('/') + '/'): self.Stats() for url in urls}
 
     @classmethod
     def clone(cls, other, path=''):
         urls = (urljoin(url, path) for url in other.urls)
-        return cls(*urls, trailing=other.trailing, **other.__getstate__())
+        return cls(*urls, trailing=other.trailing, **other._attrs)
 
     def priority(self, url: str):
         """Return comparable priority for url.

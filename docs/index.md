@@ -1,12 +1,12 @@
 ## Quickstart
 
-As great as [requests](https://python-requests.org) is, typical usage is falling into some anti-patterns.
+Typical [requests](https://python-requests.org) usage has falling into some anti-patterns.
 
 * Being url-based, realistically all code needs to deal with url joining. Which tends to be redundant and suffer from leading or trailing slash issues.
 * The module level methods don't take advantage of connection pooling, and require duplicate settings. Given the "100% automatic" documentation of connection reuse, it's unclear how widely known this is.
-* Using [Sessions](http://docs.python-requests.org/en/master/user/advanced/#session-objects) requires assigning every setting individually, and still requires url joining.
+* Using a `Session` requires assigning every setting individually, and still requires url joining.
 
-[Clients](reference.md#clients.Client) aim to be encourage best practices by making Sessions even easier to use than the module methods. Examples use the [httpbin](http://httpbin.org) client testing service.
+[Clients](reference.md#clients.Client) aim to be encourage best practices while still being convenient. Examples use the [httpbin](http://httpbin.org) client testing service.
 
 ```python
 client = clients.Client(url, auth=('user', 'pass'), headers={'x-test': 'true'})
@@ -23,7 +23,7 @@ r = client.get('cookies')
 assert r.json() == {'cookies': {'sessioncookie': '123456789'}}
 ```
 
-Which reveals another anti-pattern regarding [Responses](http://docs.python-requests.org/en/master/user/quickstart/#response-content). Although the response object is sometimes required, naturally the most common use case is to access the content. But the onus is on the caller to check the `status_code` and `content-type`.
+Which reveals another anti-pattern regarding `Response` objects. Although the response object is sometimes required, naturally the most common use case is to access the content. But the onus is on the caller to check the `status_code` and `content-type`.
 
 [Resources](reference.md#clients.Resource) aim to making writing custom api clients or sdks easier. Their primary feature is to allow direct content access without silencing errors. Response content type is inferred from headers: `json`, `content`, or `text`.
 
@@ -61,7 +61,7 @@ Note `trailing` isn\'t limited to only being a slash. This can be useful for sta
 
 ## Asyncio
 
-Using [httpx](https://www.encode.io/httpx) instead of [requests](https://python-requests.org), [AsyncClients](reference.md#clients.AsyncClient) and [AsyncResources](reference.md#clients.AsyncResource) implement the same interface, except the request methods return asyncio [coroutines](https://docs.python.org/3/library/asyncio-task.html#coroutines).
+[AsyncClients](reference.md#clients.AsyncClient) and [AsyncResources](reference.md#clients.AsyncResource) implement the same interface, except the request methods return asyncio [coroutines](https://docs.python.org/3/library/asyncio-task.html#coroutines).
 
 ## Avant-garde Usage
 
@@ -111,10 +111,10 @@ A [singleton](reference.md#clients.singleton) decorator can be used on subclasse
 @clients.singleton('http://localhost/')
 class custom_api(clients.Resource):
     pass  # custom methods
-```
 
 assert isinstance(custom_api, clients.Resource)
 assert custom_api.url == 'http://localhost/'
+```
 
 [Remote](reference.md#clients.Remote) and [AsyncRemote](reference.md#clients.AsyncRemote) clients default to POSTs with json bodies, for APIs which are more RPC than REST.
 

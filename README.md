@@ -65,7 +65,7 @@ Asynchronous variants of all client types are provided, e.g., `AsyncClient`. Add
 ```
 
 ## Dependencies
-* httpx >=0.17
+* httpx >=0.18
 
 ## Tests
 100% branch coverage.

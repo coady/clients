@@ -103,13 +103,7 @@ class AsyncGraph(AsyncRemote):
 
     Error = httpx.HTTPError
     execute = Graph.execute
-
-    @classmethod
-    def check(cls, result: dict):  # type: ignore
-        """Return ``data`` or raise ``errors``."""
-        for error in result.get('errors', ()):
-            raise cls.Error(error, request=None)
-        return result.get('data')
+    check = classmethod(Graph.check.__func__)  # type: ignore
 
 
 class AsyncProxy(AsyncClient):

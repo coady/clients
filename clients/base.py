@@ -225,7 +225,7 @@ class Graph(Remote):
     def check(cls, result: dict):
         """Return ``data`` or raise ``errors``."""
         for error in result.get('errors', ()):
-            raise cls.Error(error, request=None)
+            raise cls.Error(error)
         return result.get('data')
 
     def execute(self, query: str, **variables):

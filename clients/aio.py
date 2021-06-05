@@ -38,15 +38,13 @@ class AsyncResource(AsyncClient):
         kwargs['headers'] = dict(kwargs.get('headers', {}), **validate(response))
         yield await self.put(path, (yield response.json()), **kwargs)
 
+    @contextlib.asynccontextmanager
     async def updating(self, path: str = '', **kwargs):
         """Provisional context manager to GET and conditionally PUT json data."""
         updater = self.updater(path, **kwargs)
         json = await updater.__anext__()
         yield json
         await updater.asend(json)
-
-    if hasattr(contextlib, 'asynccontextmanager'):  # pragma: no branch
-        updating = contextlib.asynccontextmanager(updating)
 
     async def update(self, path='', callback=None, **json):
         """PATCH request with json params.

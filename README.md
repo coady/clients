@@ -75,44 +75,37 @@ Asynchronous variants of all client types are provided, e.g., `AsyncClient`. Add
 
 ## Changes
 dev
-* requests removed
+* `requests` removed
+* Python >=3.7 required
 
 1.3
-
 * httpx >=0.15 required
 * requests deprecated
 
 1.2
-
 * Python 3 required
 * httpx >=0.11 required
 
 1.1
-
 * Async switched to httpx
 
 1.0
-
 * Allow missing content-type
 * Oauth access tokens supported in authorization header
 
 0.5
-
 * `AsyncClient` default params
 * `Remote` and `AsyncRemote` procedure calls
 * `Graph` and `AsyncGraph` execute GraphQL queries
 * `Proxy` and `AsyncProxy` clients
 
 0.4
-
 * Asynchronous clients and resources
 
 0.3
-
 * `singleton` decorator
 
 0.2
-
 * Resource attribute upcasts back to a `client`
 * `iter` and `download` implement GET requests with streamed content
 * `create` implements POST request and returns Location header

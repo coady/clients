@@ -35,12 +35,9 @@ async def test_resource(url):
         await resource.status('404')
     with pytest.raises(httpx.HTTPError):
         await resource.update('response-headers', callback=dict, key='value')
-    cm = resource.updating('response-headers')
-    if hasattr(cm, '__aenter__'):
-        data = await cm.__aenter__()
-        assert data['etag'] == 'W/0'
-        with pytest.raises(httpx.HTTPError):
-            await cm.__aexit__(None, None, None)
+    with pytest.raises(httpx.HTTPError):
+        async with resource.updating('response-headers') as data:
+            assert data['etag'] == 'W/0'
 
 
 @pytest.mark.asyncio

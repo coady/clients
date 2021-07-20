@@ -1,4 +1,5 @@
 site_name: clients
+site_url: https://coady.github.io/clients/
 site_description: HTTP for humanitarians.
 theme: material
 

@@ -1,6 +1,7 @@
 import json
 import operator
 import io
+import sys
 import httpx
 import pytest
 import clients
@@ -11,8 +12,6 @@ def test_cookies(url):
     r = client.get('headers', headers={'x-test2': 'true'})
     assert {'x-test', 'x-test2'} <= set(r.request.headers)
 
-    r = client.get('cookies', cookies={'from-my': 'browser'})
-    assert r.json() == {'cookies': {'from-my': 'browser'}}
     r = client.get('cookies')
     assert r.json() == {'cookies': {}}
 
@@ -105,6 +104,7 @@ def test_remote(url):
     assert (remote / 'post')(name='value') == {'key': 'value', 'name': 'value'}
 
 
+@pytest.mark.skipif(sys.version_info >= (3, 10), reason="brotlipy failing on github and 3.10")
 def test_graph(url):
     graph = clients.Graph(url).anything
     data = graph.execute('{ viewer { login }}')

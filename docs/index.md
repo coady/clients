@@ -13,8 +13,6 @@ client = clients.Client(url, auth=('user', 'pass'), headers={'x-test': 'true'})
 r = client.get('headers', headers={'x-test2': 'true'})
 assert {'x-test', 'x-test2'} <= set(r.request.headers)
 
-r = client.get('cookies', cookies={'from-my': 'browser'})
-assert r.json() == {'cookies': {'from-my': 'browser'}}
 r = client.get('cookies')
 assert r.json() == {'cookies': {}}
 

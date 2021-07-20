@@ -1,6 +1,7 @@
 import asyncio
 import json
 import operator
+import sys
 import httpx
 import pytest
 import clients
@@ -52,7 +53,7 @@ async def test_content(url):
 
 def test_authorize(url, monkeypatch):
     resource = clients.AsyncResource(url)
-    future = asyncio.Future()
+    future = asyncio.Future(loop=asyncio.new_event_loop())
     future.set_result({'access_token': 'abc123', 'token_type': 'Bearer', 'expires_in': 0})
     monkeypatch.setattr(clients.AsyncResource, 'request', lambda *args, **kwargs: future)
     for key in ('params', 'data', 'json'):
@@ -68,6 +69,7 @@ async def test_remote(url):
     assert await (remote / 'post')(name='value') == {'key': 'value', 'name': 'value'}
 
 
+@pytest.mark.skipif(sys.version_info >= (3, 10), reason="brotlipy failing on github and 3.10")
 @pytest.mark.asyncio
 async def test_graph(url):
     graph = clients.AsyncGraph(url).anything

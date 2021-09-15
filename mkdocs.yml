@@ -1,6 +1,6 @@
 site_name: clients
 site_url: https://coady.github.io/clients/
-site_description: HTTP for humanitarians.
+site_description: High-level HTTP clients for Python.
 theme: material
 
 repo_name: coady/clients

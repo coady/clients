@@ -68,9 +68,9 @@ class BaseClient:
         """OPTIONS request with optional path."""
         return self.request('OPTIONS', path, **kwargs)
 
-    def head(self, path='', allow_redirects=False, **kwargs):
+    def head(self, path='', **kwargs):
         """HEAD request with optional path."""
-        return self.request('HEAD', path, allow_redirects=allow_redirects, **kwargs)
+        return self.request('HEAD', path, **kwargs)
 
     def post(self, path='', json=None, **kwargs):
         """POST request with optional path and json body."""
@@ -131,7 +131,7 @@ class Resource(Client):
 
     def __contains__(self, path: str):
         """Return whether endpoint exists according to HEAD request."""
-        return not super().request('HEAD', path, allow_redirects=False).is_error
+        return not super().request('HEAD', path).is_error
 
     def __call__(self, path: str = '', **params):
         """GET request with params."""
@@ -145,7 +145,7 @@ class Resource(Client):
 
     @contextlib.contextmanager
     def updating(self, path: str = '', **kwargs):
-        """Provisional context manager to GET and conditionally PUT json data."""
+        """Context manager to GET and conditionally PUT json data."""
         updater = self.updater(path, **kwargs)
         json = next(updater)
         yield json

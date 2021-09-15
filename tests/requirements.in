@@ -1,4 +1,5 @@
-httpx
+--pre
+httpx>=1.0.0.b0
 pytest-cov
 pytest-httpbin
 pytest-asyncio

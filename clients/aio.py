@@ -40,7 +40,7 @@ class AsyncResource(AsyncClient):
 
     @contextlib.asynccontextmanager
     async def updating(self, path: str = '', **kwargs):
-        """Provisional context manager to GET and conditionally PUT json data."""
+        """Context manager to GET and conditionally PUT json data."""
         updater = self.updater(path, **kwargs)
         json = await updater.__anext__()
         yield json

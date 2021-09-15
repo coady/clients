@@ -45,7 +45,7 @@ def test_trailing(url):
 
 
 def test_syntax(url):
-    resource = clients.Resource(url)
+    resource = clients.Resource(url, follow_redirects=True)
     assert set(resource['get']) == {'origin', 'headers', 'args', 'url'}
     resource['put'] = {}
     del resource['delete']

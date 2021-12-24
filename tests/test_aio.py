@@ -1,7 +1,6 @@
 import asyncio
 import json
 import operator
-import sys
 import httpx
 import pytest
 import clients
@@ -69,7 +68,6 @@ async def test_remote(url):
     assert await (remote / 'post')(name='value') == {'key': 'value', 'name': 'value'}
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 10), reason="brotlipy failing on github and 3.10")
 @pytest.mark.asyncio
 async def test_graph(url):
     graph = clients.AsyncGraph(url).anything

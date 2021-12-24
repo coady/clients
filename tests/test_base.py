@@ -1,7 +1,6 @@
 import json
 import operator
 import io
-import sys
 import httpx
 import pytest
 import clients
@@ -104,7 +103,6 @@ def test_remote(url):
     assert (remote / 'post')(name='value') == {'key': 'value', 'name': 'value'}
 
 
-@pytest.mark.skipif(sys.version_info >= (3, 10), reason="brotlipy failing on github and 3.10")
 def test_graph(url):
     graph = clients.Graph(url).anything
     data = graph.execute('{ viewer { login }}')

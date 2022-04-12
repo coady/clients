@@ -1,5 +1,6 @@
 --pre
 httpx>=1.0.0.b0
 pytest-cov
+werkzeug<2.1 # https://github.com/postmanlabs/httpbin/issues/673
 pytest-httpbin
 pytest-asyncio

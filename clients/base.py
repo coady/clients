@@ -115,7 +115,7 @@ class Resource(Client):
             return response.json()
         return response.text if content_type == 'text' else response.content
 
-    def stream(self, method: str = 'GET', path: str = '', **kwargs) -> Iterator:  # type: ignore
+    def stream(self, method: str = 'GET', path: str = '', **kwargs) -> Iterator:
         """Iterate lines or chunks from streamed request."""
         with super().stream(method, path, **kwargs) as response:
             response.raise_for_status()
@@ -292,7 +292,7 @@ class Proxy(Client):
         Args:
             method: placeholder for extensions which distinguish read/write requests
         """
-        priorities = collections.defaultdict(list)  # type: dict
+        priorities = collections.defaultdict(list)
         for url in self.urls:
             priorities[self.priority(url)].append(url)
         priorities.pop(None, None)

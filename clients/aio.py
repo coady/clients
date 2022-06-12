@@ -20,7 +20,7 @@ class AsyncResource(AsyncClient):
 
     client = property(AsyncClient.clone, doc="upcasted [AsyncClient][clients.aio.AsyncClient]")
     __getattr__ = AsyncClient.__truediv__
-    __getitem__ = AsyncClient.get  # type: ignore
+    __getitem__ = AsyncClient.get
     content_type = Resource.content_type
     __call__ = Resource.__call__
 

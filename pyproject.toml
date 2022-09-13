@@ -1,7 +1,55 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=61", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "clients"
+dynamic = ["version"]
+description = "High-level HTTP clients for Python."
+readme = "README.md"
+requires-python = ">=3.7"
+license = {file = "LICENSE.txt"}
+authors = [{name = "Aric Coady", email = "aric.coady@gmail.com"}]
+keywords = ["requests", "sessions", "responses", "resources", "asyncio"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Internet :: WWW/HTTP :: Session",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = ["httpx>=1"]
+
+[project.urls]
+Homepage = "https://github.com/coady/clients"
+Documentation = "https://coady.github.io/clients"
+
+[tool.setuptools]
+packages = ["clients"]
+
+[tool.setuptools.dynamic]
+version = {attr = "clients.__version__"}
+
+[tool.setuptools.package-data]
+clients = ["py.typed"]
 
 [tool.black]
 line-length = 110
 skip-string-normalization = true
+
+[[tool.mypy.overrides]]
+module = ["httpx.*"]
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["clients"]
+branch = true

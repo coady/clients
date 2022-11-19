@@ -1,5 +1,6 @@
 import asyncio
 import contextlib
+from typing import Callable, Mapping, Optional
 from urllib.parse import urljoin
 import httpx
 from .base import validate, BaseClient, Graph, Proxy, Remote, Resource
@@ -15,10 +16,10 @@ class AsyncClient(BaseClient, httpx.AsyncClient):
 
 
 class AsyncResource(AsyncClient):
-    """An [AsyncClient][clients.aio.AsyncClient] which returns json content
+    """An `AsyncClient` which returns json content
     and has syntactic support for requests."""
 
-    client = property(AsyncClient.clone, doc="upcasted [AsyncClient][clients.aio.AsyncClient]")
+    client = property(AsyncClient.clone, doc="upcasted `AsyncClient`")
     __getattr__ = AsyncClient.__truediv__
     __getitem__ = AsyncClient.get
     content_type = Resource.content_type
@@ -46,7 +47,7 @@ class AsyncResource(AsyncClient):
         yield json
         await updater.asend(json)
 
-    async def update(self, path='', callback=None, **json):
+    async def update(self, path: str = '', callback: Optional[Callable] = None, **json):
         """PATCH request with json params.
 
         Args:
@@ -69,19 +70,19 @@ class AsyncResource(AsyncClient):
 
 
 class AsyncRemote(AsyncClient):
-    """An [AsyncClient][clients.aio.AsyncClient] which defaults to posts with json bodies, i.e., RPC.
+    """An `AsyncClient` which defaults to posts with json bodies, i.e., RPC.
 
     Args:
         url: base url for requests
         json: default json body for all calls
-        **kwargs: same options as [AsyncClient][clients.aio.AsyncClient]
+        **kwargs: same options as `AsyncClient`
     """
 
     client = AsyncResource.client
     __getattr__ = AsyncResource.__getattr__
     check = staticmethod(Remote.check)
 
-    def __init__(self, url: str, json=(), **kwargs):
+    def __init__(self, url: str, json: Mapping = {}, **kwargs):
         super().__init__(url, **kwargs)
         self.json = dict(json)
 
@@ -97,7 +98,7 @@ class AsyncRemote(AsyncClient):
 
 
 class AsyncGraph(AsyncRemote):
-    """An [AsyncRemote][clients.aio.AsyncRemote] client which executes GraphQL queries."""
+    """An `AsyncRemote` client which executes GraphQL queries."""
 
     Error = httpx.HTTPError
     execute = Graph.execute
@@ -112,7 +113,7 @@ class AsyncProxy(AsyncClient):
 
     Args:
         *urls: base urls for requests
-        **kwargs: same options as [AsyncClient][clients.aio.AsyncClient]
+        **kwargs: same options as `AsyncClient`
     """
 
     Stats = Proxy.Stats

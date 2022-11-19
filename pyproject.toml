@@ -27,7 +27,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
-dependencies = ["httpx>=1"]
+dependencies = ["httpx>=0.23"]
 
 [project.urls]
 Homepage = "https://github.com/coady/clients"

@@ -5,7 +5,7 @@ import json
 import random
 import re
 import threading
-from typing import Callable, Iterator
+from typing import Callable, Iterator, Mapping, Optional
 from urllib.parse import urljoin
 import httpx
 
@@ -97,9 +97,9 @@ class Client(BaseClient, httpx.Client):
 
 
 class Resource(Client):
-    """A [Client][clients.base.Client] which returns json content and has syntactic support for requests."""
+    """A `Client` which returns json content and has syntactic support for requests."""
 
-    client = property(Client.clone, doc="upcasted [Client][clients.base.Client]")
+    client = property(Client.clone, doc="upcasted `Client`")
     __getitem__ = Client.get
     __setitem__ = Client.put
     __delitem__ = Client.delete
@@ -151,7 +151,7 @@ class Resource(Client):
         yield json
         updater.send(json)
 
-    def update(self, path: str = '', callback: Callable = None, **json):
+    def update(self, path: str = '', callback: Optional[Callable] = None, **json):
         """PATCH request with json params.
 
         Args:
@@ -185,18 +185,18 @@ class Resource(Client):
 
 
 class Remote(Client):
-    """A [Client][clients.base.Client] which defaults to posts with json bodies, i.e., RPC.
+    """A `Client` which defaults to posts with json bodies, i.e., RPC.
 
     Args:
         url: base url for requests
         json: default json body for all calls
-        **kwargs: same options as [Client][clients.base.Client]
+        **kwargs: same options as `Client`
     """
 
     client = Resource.client
     __getattr__ = Resource.__getattr__
 
-    def __init__(self, url: str, json=(), **kwargs):
+    def __init__(self, url: str, json: Mapping = {}, **kwargs):
         super().__init__(url, **kwargs)
         self.json = dict(json)
 
@@ -217,7 +217,7 @@ class Remote(Client):
 
 
 class Graph(Remote):
-    """A [Remote][clients.base.Remote] client which executes GraphQL queries."""
+    """A `Remote` client which executes GraphQL queries."""
 
     Error = httpx.HTTPError
 
@@ -263,7 +263,7 @@ class Proxy(Client):
 
     Args:
         *urls: base urls for requests
-        **kwargs: same options as [Client][clients.base.Client]
+        **kwargs: same options as `Client`
     """
 
     Stats = Stats

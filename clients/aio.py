@@ -16,8 +16,7 @@ class AsyncClient(BaseClient, httpx.AsyncClient):
 
 
 class AsyncResource(AsyncClient):
-    """An `AsyncClient` which returns json content
-    and has syntactic support for requests."""
+    """An `AsyncClient` which returns json content and has syntactic support for requests."""
 
     client = property(AsyncClient.clone, doc="upcasted `AsyncClient`")
     __getattr__ = AsyncClient.__truediv__
@@ -52,8 +51,8 @@ class AsyncResource(AsyncClient):
 
         Args:
             callback: optionally update with GET and validated PUT.
-                ``callback`` is called on the json result with keyword params, i.e.,
-                ``dict`` correctly implements the simple update case.
+                `callback` is called on the json result with keyword params, i.e.,
+                `dict` correctly implements the simple update case.
         """
         if callback is None:
             return await self.patch(path, json)
@@ -61,7 +60,7 @@ class AsyncResource(AsyncClient):
         return await updater.asend(callback(await updater.__anext__(), **json))
 
     async def authorize(self, path: str = '', **kwargs) -> dict:
-        """Acquire oauth access token and set ``Authorization`` header."""
+        """Acquire oauth access token and set `Authorization` header."""
         method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
         result = await self.request(method, path, **kwargs)
         self.headers['authorization'] = f"{result['token_type']} {result['access_token']}"

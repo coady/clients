@@ -156,8 +156,8 @@ class Resource(Client):
 
         Args:
             callback: optionally update with GET and validated PUT.
-                ``callback`` is called on the json result with keyword params, i.e.,
-                ``dict`` correctly implements the simple update case.
+                `callback` is called on the json result with keyword params, i.e.,
+                `dict` correctly implements the simple update case.
         """
         if callback is None:
             return self.patch(path, json=json)
@@ -177,7 +177,7 @@ class Resource(Client):
         return file
 
     def authorize(self, path: str = '', **kwargs) -> dict:
-        """Acquire oauth access token and set ``Authorization`` header."""
+        """Acquire oauth access token and set `Authorization` header."""
         method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
         result = self.request(method, path, **kwargs)
         self.headers['authorization'] = f"{result['token_type']} {result['access_token']}"
@@ -223,7 +223,7 @@ class Graph(Remote):
 
     @classmethod
     def check(cls, result: dict):
-        """Return ``data`` or raise ``errors``."""
+        """Return `data` or raise `errors`."""
         for error in result.get('errors', ()):
             raise cls.Error(error)
         return result.get('data')

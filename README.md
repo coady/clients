@@ -74,6 +74,9 @@ Asynchronous variants of all client types are provided, e.g., `AsyncClient`. Add
 ```
 
 ## Changes
+dev
+* Python >=3.8 required
+
 1.4
 * `requests` removed
 * Python >=3.7 required

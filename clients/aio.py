@@ -6,7 +6,7 @@ import httpx
 from .base import validate, BaseClient, Graph, Proxy, Remote, Resource
 
 
-class AsyncClient(BaseClient, httpx.AsyncClient):
+class AsyncClient(BaseClient, httpx.AsyncClient):  # type: ignore
     def __del__(self):
         pass
 

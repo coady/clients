@@ -3,7 +3,7 @@ check:
 
 lint:
 	black --check .
-	flake8 --exclude .venv --ignore E501
+	flake8 --ignore E501 clients tests
 	mypy -p clients
 
 html:

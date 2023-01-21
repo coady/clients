@@ -89,8 +89,8 @@ class BaseClient:
         return self.request('DELETE', path, **kwargs)
 
 
-class Client(BaseClient, httpx.Client):
-    def stream(self, method, path, **kwargs):
+class Client(BaseClient, httpx.Client):  # type: ignore
+    def stream(self, method, path, **kwargs):  # type: ignore
         """Send request with relative or absolute path and stream response."""
         url = str(self.base_url.join(path)).rstrip('/') + self.trailing
         return super().stream(method, url, **kwargs)
@@ -115,7 +115,7 @@ class Resource(Client):
             return response.json()
         return response.text if content_type == 'text' else response.content
 
-    def stream(self, method: str = 'GET', path: str = '', **kwargs) -> Iterator:
+    def stream(self, method: str = 'GET', path: str = '', **kwargs) -> Iterator:  # type: ignore
         """Iterate lines or chunks from streamed request."""
         with super().stream(method, path, **kwargs) as response:
             response.raise_for_status()

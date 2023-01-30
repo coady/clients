@@ -1,5 +1,5 @@
 httpx>=0.23
 pytest-cov
-werkzeug<2.1 # https://github.com/postmanlabs/httpbin/issues/673
+werkzeug<2.3 # https://github.com/postmanlabs/httpbin/issues/673
 pytest-httpbin
 pytest-asyncio

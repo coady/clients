@@ -1,10 +1,10 @@
 check:
-	python3 -m pytest --cov
+	python -m pytest --cov
 
 lint:
 	black --check .
-	flake8 --ignore E501 clients tests
+	ruff .
 	mypy -p clients
 
 html:
-	python3 -m mkdocs build
+	python -m mkdocs build

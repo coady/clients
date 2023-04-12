@@ -7,9 +7,6 @@ from .base import validate, BaseClient, Graph, Proxy, Remote, Resource
 
 
 class AsyncClient(BaseClient, httpx.AsyncClient):  # type: ignore
-    def __del__(self):
-        pass
-
     def run(self, name: str, *args, **kwargs):
         """Synchronously call method and run coroutine."""
         return asyncio.new_event_loop().run_until_complete(getattr(self, name)(*args, **kwargs))

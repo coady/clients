@@ -65,7 +65,7 @@ Asynchronous variants of all client types are provided, e.g., `AsyncClient`. Add
 ```
 
 ## Dependencies
-* httpx >=0.23
+* httpx
 
 ## Tests
 100% branch coverage.
@@ -76,6 +76,7 @@ Asynchronous variants of all client types are provided, e.g., `AsyncClient`. Add
 ## Changes
 dev
 * Python >=3.8 required
+* httpx >=0.24 required
 
 1.4
 * `requests` removed

@@ -25,7 +25,7 @@ def test_content(url):
     with pytest.raises(httpx.HTTPError):
         resource.get('status/404')
     assert '<html>' in resource.get('html')
-    assert isinstance(resource.get('bytes/10'), bytes)
+    assert isinstance(resource.get('stream-bytes/10'), bytes)
 
 
 def test_path(url):

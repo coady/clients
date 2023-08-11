@@ -29,7 +29,7 @@ async def test_resource(url):
     params = {'etag': 'W/0', 'last-modified': 'now'}
     resource = clients.AsyncResource(url, params=params)
     assert isinstance(await resource['encoding/utf8'], str)
-    assert isinstance(await resource.bytes('1'), (bytes, str))
+    assert isinstance(await resource('stream-bytes/1'), (str, bytes))
     assert (await resource.update('patch', key='value'))['json'] == {'key': 'value'}
     with pytest.raises(httpx.HTTPError, match='404'):
         await resource.status('404')

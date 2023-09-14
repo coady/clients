@@ -32,6 +32,8 @@ dependencies = ["httpx>=0.24"]
 [project.urls]
 Homepage = "https://github.com/coady/clients"
 Documentation = "https://coady.github.io/clients"
+Changelog = "https://github.com/coady/clients/blob/main/CHANGELOG.md"
+Issues = "https://github.com/coady/clients/issues"
 
 [tool.setuptools]
 packages = ["clients"]

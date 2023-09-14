@@ -6,7 +6,7 @@
 [![image](https://codecov.io/gh/coady/clients/branch/main/graph/badge.svg)](https://codecov.io/gh/coady/clients/)
 [![image](https://github.com/coady/clients/workflows/codeql/badge.svg)](https://github.com/coady/clients/security/code-scanning)
 [![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
-[![image](http://mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+[![image](https://mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 
 Clients originally provided [requests](https://python-requests.org) wrappers to encourage best practices, particularly always using Sessions to connect to the same host or api endpoint. The primary goals were:
 * provide a `Client` object with a convenient constructor
@@ -57,7 +57,7 @@ for repo in github.user.repos(visibility='public'):
     ...
 ```
 
-Asynchronous variants of all client types are provided, e.g., `AsyncClient`. Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call), [GraphQL](http://graphql.org), and proxies also provided.
+Asynchronous variants of all client types are provided, e.g., `AsyncClient`. Additional clients for [RPC](https://en.wikipedia.org/wiki/Remote_procedure_call), [GraphQL](https://graphql.org), and proxies also provided.
 
 ## Installation
 ```console
@@ -72,47 +72,3 @@ Asynchronous variants of all client types are provided, e.g., `AsyncClient`. Add
 ```console
 % pytest [--cov]
 ```
-
-## Changes
-dev
-* Python >=3.8 required
-* httpx >=0.24 required
-
-1.4
-* `requests` removed
-* Python >=3.7 required
-* httpx >=0.23 required
-
-1.3
-* httpx >=0.15 required
-* requests deprecated
-
-1.2
-* Python 3 required
-* httpx >=0.11 required
-
-1.1
-* Async switched to httpx
-
-1.0
-* Allow missing content-type
-* Oauth access tokens supported in authorization header
-
-0.5
-* `AsyncClient` default params
-* `Remote` and `AsyncRemote` procedure calls
-* `Graph` and `AsyncGraph` execute GraphQL queries
-* `Proxy` and `AsyncProxy` clients
-
-0.4
-* Asynchronous clients and resources
-
-0.3
-* `singleton` decorator
-
-0.2
-* Resource attribute upcasts back to a `client`
-* `iter` and `download` implement GET requests with streamed content
-* `create` implements POST request and returns Location header
-* `update` implements PATCH request with json params
-* `__call__` implements GET request with params

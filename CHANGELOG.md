@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## Unreleased
 ### Changed
 * Python >=3.8 required
-* httpx >=0.24 required
+* httpx >=0.25 required
 
 ## [1.4](https://pypi.org/project/clients/1.4/) - 2022-11-19
 ### Changed

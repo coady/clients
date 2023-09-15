@@ -1,4 +1,4 @@
-httpx>=0.24
+httpx>=0.25
 pytest-cov
 pytest-httpbin
 pytest-asyncio

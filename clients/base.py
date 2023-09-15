@@ -108,8 +108,7 @@ class Resource(Client):
 
     def request(self, method, path, **kwargs):
         """Send request with path and return processed content."""
-        response = super().request(method, path, **kwargs)
-        response.raise_for_status()
+        response = super().request(method, path, **kwargs).raise_for_status()
         content_type = self.content_type(response)
         if content_type == 'json':
             return response.json()
@@ -138,8 +137,7 @@ class Resource(Client):
         return self.get(path, params=params)
 
     def updater(self, path='', **kwargs):
-        response = super().request('GET', path, **kwargs)
-        response.raise_for_status()
+        response = super().request('GET', path, **kwargs).raise_for_status()
         kwargs['headers'] = dict(kwargs.get('headers', {}), **validate(response))
         yield self.put(path, (yield response.json()), **kwargs)
 
@@ -166,8 +164,7 @@ class Resource(Client):
 
     def create(self, path: str = '', json=None, **kwargs) -> str:
         """POST request and return location."""
-        response = super().request('POST', path, json=json, **kwargs)
-        response.raise_for_status()
+        response = super().request('POST', path, json=json, **kwargs).raise_for_status()
         return response.headers.get('location')
 
     def download(self, file, path: str = '', **kwargs):
@@ -206,8 +203,7 @@ class Remote(Client):
 
     def __call__(self, path: str = '', **json):
         """POST request with json body and [check][clients.base.Remote.check] result."""
-        response = self.post(path, json=dict(self.json, **json))
-        response.raise_for_status()
+        response = self.post(path, json=dict(self.json, **json)).raise_for_status()
         return self.check(response.json())
 
     @staticmethod

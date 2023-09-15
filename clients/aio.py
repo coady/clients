@@ -23,15 +23,13 @@ class AsyncResource(AsyncClient):
 
     async def request(self, method, path, **kwargs):
         """Send request with path and return processed content."""
-        response = await super().request(method, path, **kwargs)
-        response.raise_for_status()
+        response = (await super().request(method, path, **kwargs)).raise_for_status()
         if self.content_type(response) == 'json':
             return response.json()
         return response.text if response.encoding else response.content
 
     async def updater(self, path='', **kwargs):
-        response = await super().request('GET', path, **kwargs)
-        response.raise_for_status()
+        response = (await super().request('GET', path, **kwargs)).raise_for_status()
         kwargs['headers'] = dict(kwargs.get('headers', {}), **validate(response))
         yield await self.put(path, (yield response.json()), **kwargs)
 
@@ -88,8 +86,7 @@ class AsyncRemote(AsyncClient):
 
     async def __call__(self, path='', **json):
         """POST request with json body and check result."""
-        response = await self.post(path, json=dict(self.json, **json))
-        response.raise_for_status()
+        response = (await self.post(path, json=dict(self.json, **json))).raise_for_status()
         return self.check(response.json())
 
 

@@ -1,6 +1,7 @@
+from __future__ import annotations
 import asyncio
 import contextlib
-from typing import Callable, Mapping, Optional
+from typing import Callable, Mapping
 from urllib.parse import urljoin
 import httpx
 from .base import validate, BaseClient, Graph, Proxy, Remote, Resource
@@ -41,7 +42,7 @@ class AsyncResource(AsyncClient):
         yield json
         await updater.asend(json)
 
-    async def update(self, path: str = '', callback: Optional[Callable] = None, **json):
+    async def update(self, path: str = '', callback: Callable | None = None, **json):
         """PATCH request with json params.
 
         Args:

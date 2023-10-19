@@ -1,3 +1,4 @@
+from __future__ import annotations
 import collections
 import contextlib
 import functools
@@ -5,7 +6,7 @@ import json
 import random
 import re
 import threading
-from typing import Callable, Iterator, Mapping, Optional
+from typing import Callable, Iterator, Mapping
 from urllib.parse import urljoin
 import httpx
 
@@ -41,7 +42,7 @@ class BaseClient:
     def __repr__(self):
         return f'{type(self).__name__}({self.url}... {self.trailing})'
 
-    def __truediv__(self, path: str) -> 'Client':
+    def __truediv__(self, path: str) -> Client:
         """Return a cloned client with appended path."""
         return type(self).clone(self, path)
 
@@ -149,7 +150,7 @@ class Resource(Client):
         yield json
         updater.send(json)
 
-    def update(self, path: str = '', callback: Optional[Callable] = None, **json):
+    def update(self, path: str = '', callback: Callable | None = None, **json):
         """PATCH request with json params.
 
         Args:

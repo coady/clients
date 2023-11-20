@@ -1,5 +1,5 @@
 httpx>=0.25
 pytest-cov
-werkzeug<3 # psf/httpbin#28,35,36
+werkzeug<4 # psf/httpbin#28,35,36
 pytest-httpbin
 pytest-asyncio

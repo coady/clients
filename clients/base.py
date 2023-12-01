@@ -6,7 +6,7 @@ import json
 import random
 import re
 import threading
-from typing import Callable, Iterator, Mapping
+from collections.abc import Callable, Iterator, Mapping
 from urllib.parse import urljoin
 import httpx
 

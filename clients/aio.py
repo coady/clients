@@ -1,7 +1,7 @@
 from __future__ import annotations
 import asyncio
 import contextlib
-from typing import Callable, Mapping
+from collections.abc import Callable, Mapping
 from urllib.parse import urljoin
 import httpx
 from .base import validate, BaseClient, Graph, Proxy, Remote, Resource

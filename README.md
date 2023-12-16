@@ -5,7 +5,7 @@
 [![image](https://github.com/coady/clients/workflows/build/badge.svg)](https://github.com/coady/clients/actions)
 [![image](https://codecov.io/gh/coady/clients/branch/main/graph/badge.svg)](https://codecov.io/gh/coady/clients/)
 [![image](https://github.com/coady/clients/workflows/codeql/badge.svg)](https://github.com/coady/clients/security/code-scanning)
-[![image](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
+[![image](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![image](https://mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 
 Clients originally provided [requests](https://python-requests.org) wrappers to encourage best practices, particularly always using Sessions to connect to the same host or api endpoint. The primary goals were:

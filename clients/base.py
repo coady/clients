@@ -53,8 +53,7 @@ class BaseClient:
     @classmethod
     def clone(cls, other, path='', **kwargs):
         url = str(other.base_url.join(path))
-        kwargs.update(other._attrs)
-        return cls(url, trailing=other.trailing, **kwargs)
+        return cls(url, trailing=other.trailing, **(other._attrs | kwargs))
 
     def request(self, method, path, **kwargs):
         """Send request with relative or absolute path and return response."""
@@ -105,7 +104,9 @@ class Resource(Client):
     __setitem__ = Client.put
     __delitem__ = Client.delete
     __getattr__ = Client.__truediv__
-    content_type = functools.partial(content_type, text='text/', json=r'application/(\w|\.)*\+?json')
+    content_type = functools.partial(
+        content_type, text='text/', json=r'application/(\w|\.)*\+?json'
+    )
 
     def request(self, method, path, **kwargs):
         """Send request with path and return processed content."""

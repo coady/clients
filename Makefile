@@ -2,8 +2,8 @@ check:
 	python -m pytest --cov
 
 lint:
-	black --check .
 	ruff .
+	ruff format --check .
 	mypy -p clients
 
 html:

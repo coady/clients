@@ -43,12 +43,12 @@ version = {attr = "clients.__version__"}
 [tool.setuptools.package-data]
 clients = ["py.typed"]
 
-[tool.black]
-line-length = 110
-skip-string-normalization = true
-
 [tool.ruff]
-ignore = ["E501"]
+line-length = 100
+
+[tool.ruff.format]
+preview = true
+quote-style = "preserve"
 
 [[tool.mypy.overrides]]
 module = ["httpx.*"]

@@ -54,6 +54,9 @@ quote-style = "preserve"
 module = ["httpx.*"]
 ignore_missing_imports = true
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
 [tool.coverage.run]
 source = ["clients"]
 branch = true

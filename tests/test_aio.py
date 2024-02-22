@@ -6,7 +6,6 @@ import pytest
 import clients
 
 
-@pytest.mark.asyncio
 async def test_client(url):
     client = clients.AsyncClient(url, params={'q': 0})
     coros = (
@@ -24,7 +23,6 @@ async def test_client(url):
     assert set(r.json()) == {'origin'} and r.url.query == b'q=1'
 
 
-@pytest.mark.asyncio
 async def test_resource(url):
     params = {'etag': 'W/0', 'last-modified': 'now'}
     resource = clients.AsyncResource(url, params=params)
@@ -40,7 +38,6 @@ async def test_resource(url):
             assert data['etag'] == 'W/0'
 
 
-@pytest.mark.asyncio
 async def test_content(url):
     resource = clients.AsyncResource(url)
     resource.content_type = lambda response: 'json'
@@ -60,7 +57,6 @@ def test_authorize(url, monkeypatch):
         assert resource.headers['authorization'] == 'Bearer abc123'
 
 
-@pytest.mark.asyncio
 async def test_remote(url):
     remote = clients.AsyncRemote(url, json={'key': 'value'})
     assert (await remote('post'))['json'] == {'key': 'value'}
@@ -68,7 +64,6 @@ async def test_remote(url):
     assert await (remote / 'post')(name='value') == {'key': 'value', 'name': 'value'}
 
 
-@pytest.mark.asyncio
 async def test_graph(url):
     graph = clients.AsyncGraph(url).anything
     data = await graph.execute('{ viewer { login }}')
@@ -77,7 +72,6 @@ async def test_graph(url):
         clients.AsyncGraph.check({'errors': ['reason']})
 
 
-@pytest.mark.asyncio
 async def test_proxy(httpbin):
     proxy = clients.AsyncProxy(httpbin.url, f'http://localhost:{httpbin.port}')
     urls = {(await proxy.get('status/500')).url for _ in proxy.urls}

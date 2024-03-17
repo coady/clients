@@ -2,7 +2,7 @@ check:
 	python -m pytest --cov
 
 lint:
-	ruff .
+	ruff check .
 	ruff format --check .
 	mypy -p clients
 

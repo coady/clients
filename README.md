@@ -2,9 +2,9 @@
 ![image](https://img.shields.io/pypi/pyversions/clients.svg)
 [![image](https://pepy.tech/badge/clients)](https://pepy.tech/project/clients)
 ![image](https://img.shields.io/pypi/status/clients.svg)
-[![image](https://github.com/coady/clients/workflows/build/badge.svg)](https://github.com/coady/clients/actions)
+[![build](https://github.com/coady/clients/actions/workflows/build.yml/badge.svg)](https://github.com/coady/clients/actions/workflows/build.yml)
 [![image](https://codecov.io/gh/coady/clients/branch/main/graph/badge.svg)](https://codecov.io/gh/coady/clients/)
-[![image](https://github.com/coady/clients/workflows/codeql/badge.svg)](https://github.com/coady/clients/security/code-scanning)
+[![CodeQL](https://github.com/coady/clients/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/coady/clients/actions/workflows/github-code-scanning/codeql)
 [![image](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![image](https://mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 

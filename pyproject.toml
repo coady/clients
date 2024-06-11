@@ -1,10 +1,6 @@
-[build-system]
-requires = ["setuptools>=61", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "clients"
-dynamic = ["version"]
+version = "1.5"
 description = "High-level HTTP clients for Python."
 readme = "README.md"
 requires-python = ">=3.9"
@@ -34,20 +30,10 @@ Documentation = "https://coady.github.io/clients"
 Changelog = "https://github.com/coady/clients/blob/main/CHANGELOG.md"
 Issues = "https://github.com/coady/clients/issues"
 
-[tool.setuptools]
-packages = ["clients"]
-
-[tool.setuptools.dynamic]
-version = {attr = "clients.__version__"}
-
-[tool.setuptools.package-data]
-clients = ["py.typed"]
-
 [tool.ruff]
 line-length = 100
 
 [tool.ruff.format]
-preview = true
 quote-style = "preserve"
 
 [[tool.mypy.overrides]]

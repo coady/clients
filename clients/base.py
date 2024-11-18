@@ -90,7 +90,7 @@ class BaseClient:
 
 
 class Client(BaseClient, httpx.Client):  # type: ignore
-    def stream(self, method, path, **kwargs):  # type: ignore
+    def stream(self, method, path, **kwargs):
         """Send request with relative or absolute path and stream response."""
         url = str(self.base_url.join(path)).rstrip('/') + self.trailing
         return super().stream(method, url, **kwargs)

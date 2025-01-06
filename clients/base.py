@@ -111,22 +111,23 @@ class Resource(Client):
     def request(self, method, path, **kwargs):
         """Send request with path and return processed content."""
         response = super().request(method, path, **kwargs).raise_for_status()
-        content_type = self.content_type(response)
-        if content_type == 'json':
-            return response.json()
-        return response.text if content_type == 'text' else response.content
+        match self.content_type(response):
+            case 'json':
+                return response.json()
+            case 'text':
+                return response.text
+        return response.content
 
     def stream(self, method: str = 'GET', path: str = '', **kwargs) -> Iterator:  # type: ignore
         """Iterate lines or chunks from streamed request."""
         with super().stream(method, path, **kwargs) as response:
-            response.raise_for_status()
-            content_type = self.content_type(response)
-            if content_type == 'json':
-                yield from map(json.loads, response.iter_lines())
-            elif content_type == 'text':
-                yield from response.iter_lines()
-            else:
-                yield from response.iter_bytes()
+            match self.content_type(response.raise_for_status()):
+                case 'json':
+                    yield from map(json.loads, response.iter_lines())
+                case 'text':
+                    yield from response.iter_lines()
+                case _:
+                    yield from response.iter_bytes()
 
     __iter__ = stream
 

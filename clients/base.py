@@ -104,8 +104,8 @@ class Resource(Client):
     __setitem__ = Client.put
     __delitem__ = Client.delete
     __getattr__ = Client.__truediv__
-    content_type = functools.partial(
-        content_type, text='text/', json=r'application/(\w|\.)*\+?json'
+    content_type = staticmethod(
+        functools.partial(content_type, text='text/', json=r'application/(\w|\.)*\+?json')
     )
 
     def request(self, method, path, **kwargs):
@@ -302,5 +302,5 @@ class Proxy(Client):
         url = self.choice(method)
         with self.urls[url] as stats:
             response = super().request(method, urljoin(url, path), **kwargs)
-        stats.add(failures=int(response.status_code >= 500))
+        stats.add(failures=int(response.is_server_error))
         return response

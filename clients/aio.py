@@ -19,15 +19,18 @@ class AsyncResource(AsyncClient):
     client = property(AsyncClient.clone, doc="upcasted `AsyncClient`")
     __getattr__ = AsyncClient.__truediv__
     __getitem__ = AsyncClient.get
-    content_type = Resource.content_type
+    content_type = staticmethod(Resource.content_type)
     __call__ = Resource.__call__
 
     async def request(self, method, path, **kwargs):
         """Send request with path and return processed content."""
         response = (await super().request(method, path, **kwargs)).raise_for_status()
-        if self.content_type(response) == 'json':
-            return response.json()
-        return response.text if response.encoding else response.content
+        match self.content_type(response):
+            case 'json':
+                return response.json()
+            case 'text':
+                return response.text
+        return response.content
 
     async def updater(self, path='', **kwargs):
         response = (await super().request('GET', path, **kwargs)).raise_for_status()

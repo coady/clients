@@ -107,7 +107,7 @@ def test_graph(url):
     graph = clients.Graph(url).anything
     data = graph.execute('{ viewer { login }}')
     assert json.loads(data) == {'query': '{ viewer { login }}', 'variables': {}}
-    with pytest.raises(httpx.HTTPError, match='reason'):
+    with pytest.raises(ValueError, match='reason'):
         clients.Graph.check({'errors': ['reason']})
 
 

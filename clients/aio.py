@@ -7,7 +7,7 @@ import httpx
 from .base import validate, BaseClient, Graph, Proxy, Remote, Resource
 
 
-class AsyncClient(BaseClient, httpx.AsyncClient):  # type: ignore
+class AsyncClient(BaseClient, httpx.AsyncClient):
     def run(self, name: str, *args, **kwargs):
         """Synchronously call method and run coroutine."""
         return asyncio.new_event_loop().run_until_complete(getattr(self, name)(*args, **kwargs))
@@ -99,7 +99,7 @@ class AsyncGraph(AsyncRemote):
 
     Error = httpx.HTTPError
     execute = Graph.execute
-    check = classmethod(Graph.check.__func__)  # type: ignore
+    check = classmethod(Graph.check.__func__)
 
 
 class AsyncProxy(AsyncClient):

@@ -4,14 +4,13 @@ version = "1.5"
 description = "High-level HTTP clients for Python."
 readme = "README.md"
 requires-python = ">=3.10"
-license = {file = "LICENSE.txt"}
+license = "Apache-2.0"
 authors = [{name = "Aric Coady", email = "aric.coady@gmail.com"}]
 keywords = ["requests", "sessions", "responses", "resources", "asyncio"]
 classifiers = [
     "Development Status :: 6 - Mature",
     "Framework :: AsyncIO",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -36,13 +35,20 @@ line-length = 100
 [tool.ruff.format]
 quote-style = "preserve"
 
-[[tool.mypy.overrides]]
-module = ["httpx.*"]
-ignore_missing_imports = true
-
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 
 [tool.coverage.run]
 source = ["clients"]
 branch = true
+
+[dependency-groups]
+dev = [
+    "pytest-cov",
+    "pytest-httpbin>=0.10.2",
+    "pytest-asyncio>=0.17",
+    "ruff",
+    "ty",
+    "mkdocstrings[python]",
+    "mkdocs-material",
+]

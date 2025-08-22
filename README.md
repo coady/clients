@@ -6,7 +6,7 @@
 [![image](https://codecov.io/gh/coady/clients/branch/main/graph/badge.svg)](https://codecov.io/gh/coady/clients/)
 [![CodeQL](https://github.com/coady/clients/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/coady/clients/actions/workflows/github-code-scanning/codeql)
 [![image](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![image](https://mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
++[![ty](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ty/main/assets/badge/v0.json)](https://github.com/astral-sh/ty)
 
 Clients originally provided [requests](https://python-requests.org) wrappers to encourage best practices, particularly always using Sessions to connect to the same host or api endpoint. The primary goals were:
 * provide a `Client` object with a convenient constructor
@@ -61,7 +61,7 @@ Asynchronous variants of all client types are provided, e.g., `AsyncClient`. Add
 
 ## Installation
 ```console
-% pip install clients
+pip install clients
 ```
 
 ## Dependencies
@@ -70,5 +70,5 @@ Asynchronous variants of all client types are provided, e.g., `AsyncClient`. Add
 ## Tests
 100% branch coverage.
 ```console
-% pytest [--cov]
+pytest [--cov]
 ```

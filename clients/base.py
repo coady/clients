@@ -35,7 +35,7 @@ class BaseClient:
     """
 
     def __init__(self, url: str, *, trailing: str = '', **attrs):
-        super().__init__(base_url=url.rstrip('/') + '/', **attrs)  # type: ignore
+        super().__init__(base_url=url.rstrip('/') + '/', **attrs)
         self._attrs = attrs
         self.trailing = trailing
 
@@ -89,7 +89,7 @@ class BaseClient:
         return self.request('DELETE', path, **kwargs)
 
 
-class Client(BaseClient, httpx.Client):  # type: ignore
+class Client(BaseClient, httpx.Client):
     def stream(self, method, path, **kwargs):
         """Send request with relative or absolute path and stream response."""
         url = str(self.base_url.join(path)).rstrip('/') + self.trailing
@@ -118,7 +118,7 @@ class Resource(Client):
                 return response.text
         return response.content
 
-    def stream(self, method: str = 'GET', path: str = '', **kwargs) -> Iterator:  # type: ignore
+    def stream(self, method: str = 'GET', path: str = '', **kwargs) -> Iterator:
         """Iterate lines or chunks from streamed request."""
         with super().stream(method, path, **kwargs) as response:
             match self.content_type(response.raise_for_status()):
@@ -218,7 +218,7 @@ class Remote(Client):
 class Graph(Remote):
     """A `Remote` client which executes GraphQL queries."""
 
-    Error = httpx.HTTPError
+    Error = ValueError
 
     @classmethod
     def check(cls, result: dict):

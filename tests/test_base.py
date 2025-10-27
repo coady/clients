@@ -1,8 +1,10 @@
+import io
 import json
 import operator
-import io
+
 import httpx
 import pytest
+
 import clients
 
 

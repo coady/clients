@@ -1,10 +1,13 @@
 from __future__ import annotations
+
 import asyncio
 import contextlib
 from collections.abc import Callable, Mapping
 from urllib.parse import urljoin
+
 import httpx
-from .base import validate, BaseClient, Graph, Proxy, Remote, Resource
+
+from .base import BaseClient, Graph, Proxy, Remote, Resource, validate
 
 
 class AsyncClient(BaseClient, httpx.AsyncClient):
@@ -128,7 +131,7 @@ class AsyncProxy(AsyncClient):
 
     async def request(self, method, path, **kwargs):
         """Send request with relative or absolute path and return response."""
-        url = self.choice(method)
+        url = self.choice(method)  # type: ignore
         with self.urls[url] as stats:
             response = await super().request(method, urljoin(url, path), **kwargs)
         stats.add(failures=int(response.status_code >= 500))

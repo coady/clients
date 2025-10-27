@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import collections
 import contextlib
 import functools
@@ -8,6 +9,7 @@ import re
 import threading
 from collections.abc import Callable, Iterator, Mapping
 from urllib.parse import urljoin
+
 import httpx
 
 
@@ -35,7 +37,7 @@ class BaseClient:
     """
 
     def __init__(self, url: str, *, trailing: str = '', **attrs):
-        super().__init__(base_url=url.rstrip('/') + '/', **attrs)
+        super().__init__(base_url=url.rstrip('/') + '/', **attrs)  # type: ignore
         self._attrs = attrs
         self.trailing = trailing
 
@@ -57,8 +59,8 @@ class BaseClient:
 
     def request(self, method, path, **kwargs):
         """Send request with relative or absolute path and return response."""
-        url = str(self.base_url.join(path)).rstrip('/') + self.trailing
-        return super().request(method, url, **kwargs)
+        url = str(self.base_url.join(path)).rstrip('/') + self.trailing  # type: ignore
+        return super().request(method, url, **kwargs)  # type: ignore
 
     def get(self, path='', **kwargs):
         """GET request with optional path."""

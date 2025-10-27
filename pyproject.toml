@@ -17,6 +17,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Internet :: WWW/HTTP :: Session",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
@@ -31,6 +32,9 @@ Issues = "https://github.com/coady/clients/issues"
 
 [tool.ruff]
 line-length = 100
+
+[tool.ruff.lint]
+select = ["I"]
 
 [tool.ruff.format]
 quote-style = "preserve"

@@ -1,6 +1,6 @@
 [project]
 name = "clients"
-version = "1.5"
+version = "1.5.1"
 description = "High-level HTTP clients for Python."
 readme = "README.md"
 requires-python = ">=3.10"

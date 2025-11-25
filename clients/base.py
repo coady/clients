@@ -50,7 +50,7 @@ class BaseClient:
 
     @property
     def url(self):
-        return str(self.base_url)
+        return str(self.base_url)  # type: ignore
 
     @classmethod
     def clone(cls, other, path='', **kwargs):

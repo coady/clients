@@ -39,6 +39,10 @@ select = ["I"]
 [tool.ruff.format]
 quote-style = "preserve"
 
+[tool.ty.rules]
+unused-ignore-comment = "error"
+invalid-method-override = "ignore"
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 
@@ -47,12 +51,5 @@ source = ["clients"]
 branch = true
 
 [dependency-groups]
-dev = [
-    "pytest-cov",
-    "pytest-httpbin>=0.10.2",
-    "pytest-asyncio>=0.17",
-    "ruff",
-    "ty",
-    "mkdocstrings[python]",
-    "mkdocs-material",
-]
+dev = ["pytest-cov", "pytest-httpbin>=0.10.2", "pytest-asyncio>=0.17"]
+docs = ["mkdocstrings[python]", "mkdocs-material"]

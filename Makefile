@@ -2,9 +2,9 @@ check:
 	uv run pytest -s --cov
 
 lint:
-	uv run ruff check
-	uv run ruff format --check
-	uv run ty check clients
+	uvx ruff check
+	uvx ruff format --check
+	uvx ty check clients
 
 html:
-	uv run mkdocs build
+	uv run --group docs mkdocs build

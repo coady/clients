@@ -42,6 +42,7 @@ quote-style = "preserve"
 [tool.ty.rules]
 unused-ignore-comment = "error"
 invalid-method-override = "ignore"
+unresolved-import = "ignore"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

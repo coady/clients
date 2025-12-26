@@ -29,26 +29,26 @@ class AsyncResource(AsyncClient):
         """Send request with path and return processed content."""
         response = (await super().request(method, path, **kwargs)).raise_for_status()
         match self.content_type(response):
-            case 'json':
+            case "json":
                 return response.json()
-            case 'text':
+            case "text":
                 return response.text
         return response.content
 
-    async def updater(self, path='', **kwargs):
-        response = (await super().request('GET', path, **kwargs)).raise_for_status()
-        kwargs['headers'] = dict(kwargs.get('headers', {}), **validate(response))
+    async def updater(self, path="", **kwargs):
+        response = (await super().request("GET", path, **kwargs)).raise_for_status()
+        kwargs["headers"] = dict(kwargs.get("headers", {}), **validate(response))
         yield await self.put(path, (yield response.json()), **kwargs)
 
     @contextlib.asynccontextmanager
-    async def updating(self, path: str = '', **kwargs):
+    async def updating(self, path: str = "", **kwargs):
         """Context manager to GET and conditionally PUT json data."""
         updater = self.updater(path, **kwargs)
         json = await updater.__anext__()
         yield json
         await updater.asend(json)
 
-    async def update(self, path: str = '', callback: Callable | None = None, **json):
+    async def update(self, path: str = "", callback: Callable | None = None, **json):
         """PATCH request with json params.
 
         Args:
@@ -61,12 +61,12 @@ class AsyncResource(AsyncClient):
         updater = self.updater(path)
         return await updater.asend(callback(await updater.__anext__(), **json))
 
-    async def authorize(self, path: str = '', **kwargs) -> dict:
+    async def authorize(self, path: str = "", **kwargs) -> dict:
         """Acquire oauth access token and set `Authorization` header."""
-        method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
+        method = "GET" if {"json", "data"}.isdisjoint(kwargs) else "POST"
         result = await self.request(method, path, **kwargs)
-        self.headers['authorization'] = f"{result['token_type']} {result['access_token']}"
-        self._attrs['headers'] = self.headers
+        self.headers["authorization"] = f"{result['token_type']} {result['access_token']}"
+        self._attrs["headers"] = self.headers
         return result
 
 
@@ -88,10 +88,10 @@ class AsyncRemote(AsyncClient):
         self.json = dict(json)
 
     @classmethod
-    def clone(cls, other, path=''):
+    def clone(cls, other, path=""):
         return AsyncClient.clone.__func__(cls, other, path, json=other.json)
 
-    async def __call__(self, path='', **json):
+    async def __call__(self, path="", **json):
         """POST request with json body and check result."""
         response = (await self.post(path, json=dict(self.json, **json))).raise_for_status()
         return self.check(response.json())
@@ -121,11 +121,11 @@ class AsyncProxy(AsyncClient):
     choice = Proxy.choice
 
     def __init__(self, *urls: str, **kwargs):
-        super().__init__('https://proxies', **kwargs)
-        self.urls = {(url.rstrip('/') + '/'): self.Stats() for url in urls}
+        super().__init__("https://proxies", **kwargs)
+        self.urls = {(url.rstrip("/") + "/"): self.Stats() for url in urls}
 
     @classmethod
-    def clone(cls, other, path=''):
+    def clone(cls, other, path=""):
         urls = (urljoin(url, path) for url in other.urls)
         return cls(*urls, trailing=other.trailing, **other._attrs)
 

@@ -14,15 +14,15 @@ import httpx
 
 def content_type(response, **patterns):
     """Return name for response's content-type based on regular expression matches."""
-    ct = response.headers.get('content-type', '')
+    ct = response.headers.get("content-type", "")
     matches = (name for name, pattern in patterns.items() if re.match(pattern, ct))
-    return next(matches, '')
+    return next(matches, "")
 
 
 def validate(response):
     """Return validation headers from response translated for modification."""
     headers = response.headers
-    validators = {'etag': 'if-match', 'last-modified': 'if-unmodified-since'}
+    validators = {"etag": "if-match", "last-modified": "if-unmodified-since"}
     return {validators[key]: headers[key] for key in validators if key in headers}
 
 
@@ -35,13 +35,13 @@ class BaseClient:
         **attrs: additional Session attributes
     """
 
-    def __init__(self, url: str, *, trailing: str = '', **attrs):
-        super().__init__(base_url=url.rstrip('/') + '/', **attrs)  # type: ignore
+    def __init__(self, url: str, *, trailing: str = "", **attrs):
+        super().__init__(base_url=url.rstrip("/") + "/", **attrs)  # type: ignore
         self._attrs = attrs
         self.trailing = trailing
 
     def __repr__(self):
-        return f'{type(self).__name__}({self.url}... {self.trailing})'
+        return f"{type(self).__name__}({self.url}... {self.trailing})"
 
     def __truediv__(self, path: str) -> Self:
         """Return a cloned client with appended path."""
@@ -52,48 +52,48 @@ class BaseClient:
         return str(self.base_url)  # type: ignore
 
     @classmethod
-    def clone(cls, other, path='', **kwargs):
+    def clone(cls, other, path="", **kwargs):
         url = str(other.base_url.join(path))
         return cls(url, trailing=other.trailing, **(other._attrs | kwargs))
 
     def request(self, method, path, **kwargs):
         """Send request with relative or absolute path and return response."""
-        url = str(self.base_url.join(path)).rstrip('/') + self.trailing  # type: ignore
+        url = str(self.base_url.join(path)).rstrip("/") + self.trailing  # type: ignore
         return super().request(method, url, **kwargs)  # type: ignore
 
-    def get(self, path='', **kwargs):
+    def get(self, path="", **kwargs):
         """GET request with optional path."""
-        return self.request('GET', path, **kwargs)
+        return self.request("GET", path, **kwargs)
 
-    def options(self, path='', **kwargs):
+    def options(self, path="", **kwargs):
         """OPTIONS request with optional path."""
-        return self.request('OPTIONS', path, **kwargs)
+        return self.request("OPTIONS", path, **kwargs)
 
-    def head(self, path='', **kwargs):
+    def head(self, path="", **kwargs):
         """HEAD request with optional path."""
-        return self.request('HEAD', path, **kwargs)
+        return self.request("HEAD", path, **kwargs)
 
-    def post(self, path='', json=None, **kwargs):
+    def post(self, path="", json=None, **kwargs):
         """POST request with optional path and json body."""
-        return self.request('POST', path, json=json, **kwargs)
+        return self.request("POST", path, json=json, **kwargs)
 
-    def put(self, path='', json=None, **kwargs):
+    def put(self, path="", json=None, **kwargs):
         """PUT request with optional path and json body."""
-        return self.request('PUT', path, json=json, **kwargs)
+        return self.request("PUT", path, json=json, **kwargs)
 
-    def patch(self, path='', json=None, **kwargs):
+    def patch(self, path="", json=None, **kwargs):
         """PATCH request with optional path and json body."""
-        return self.request('PATCH', path, json=json, **kwargs)
+        return self.request("PATCH", path, json=json, **kwargs)
 
-    def delete(self, path='', **kwargs):
+    def delete(self, path="", **kwargs):
         """DELETE request with optional path."""
-        return self.request('DELETE', path, **kwargs)
+        return self.request("DELETE", path, **kwargs)
 
 
 class Client(BaseClient, httpx.Client):
     def stream(self, method, path, **kwargs):
         """Send request with relative or absolute path and stream response."""
-        url = str(self.base_url.join(path)).rstrip('/') + self.trailing
+        url = str(self.base_url.join(path)).rstrip("/") + self.trailing
         return super().stream(method, url, **kwargs)
 
 
@@ -106,26 +106,26 @@ class Resource(Client):
     __delitem__ = Client.delete
     __getattr__ = Client.__truediv__
     content_type = staticmethod(
-        functools.partial(content_type, text='text/', json=r'application/(\w|\.)*\+?json')
+        functools.partial(content_type, text="text/", json=r"application/(\w|\.)*\+?json")
     )
 
     def request(self, method, path, **kwargs):
         """Send request with path and return processed content."""
         response = super().request(method, path, **kwargs).raise_for_status()
         match self.content_type(response):
-            case 'json':
+            case "json":
                 return response.json()
-            case 'text':
+            case "text":
                 return response.text
         return response.content
 
-    def stream(self, method: str = 'GET', path: str = '', **kwargs) -> Iterator:
+    def stream(self, method: str = "GET", path: str = "", **kwargs) -> Iterator:
         """Iterate lines or chunks from streamed request."""
         with super().stream(method, path, **kwargs) as response:
             match self.content_type(response.raise_for_status()):
-                case 'json':
+                case "json":
                     yield from map(json.loads, response.iter_lines())
-                case 'text':
+                case "text":
                     yield from response.iter_lines()
                 case _:
                     yield from response.iter_bytes()
@@ -134,26 +134,26 @@ class Resource(Client):
 
     def __contains__(self, path: str):
         """Return whether endpoint exists according to HEAD request."""
-        return not super().request('HEAD', path).is_error
+        return not super().request("HEAD", path).is_error
 
-    def __call__(self, path: str = '', **params):
+    def __call__(self, path: str = "", **params):
         """GET request with params."""
         return self.get(path, params=params)
 
-    def updater(self, path='', **kwargs):
-        response = super().request('GET', path, **kwargs).raise_for_status()
-        kwargs['headers'] = dict(kwargs.get('headers', {}), **validate(response))
+    def updater(self, path="", **kwargs):
+        response = super().request("GET", path, **kwargs).raise_for_status()
+        kwargs["headers"] = dict(kwargs.get("headers", {}), **validate(response))
         yield self.put(path, (yield response.json()), **kwargs)
 
     @contextlib.contextmanager
-    def updating(self, path: str = '', **kwargs):
+    def updating(self, path: str = "", **kwargs):
         """Context manager to GET and conditionally PUT json data."""
         updater = self.updater(path, **kwargs)
         json = next(updater)
         yield json
         updater.send(json)
 
-    def update(self, path: str = '', callback: Callable | None = None, **json):
+    def update(self, path: str = "", callback: Callable | None = None, **json):
         """PATCH request with json params.
 
         Args:
@@ -166,22 +166,22 @@ class Resource(Client):
         updater = self.updater(path)
         return updater.send(callback(next(updater), **json))
 
-    def create(self, path: str = '', json=None, **kwargs) -> str:
+    def create(self, path: str = "", json=None, **kwargs) -> str:
         """POST request and return location."""
-        response = super().request('POST', path, json=json, **kwargs).raise_for_status()
-        return response.headers.get('location')
+        response = super().request("POST", path, json=json, **kwargs).raise_for_status()
+        return response.headers.get("location")
 
-    def download(self, file, path: str = '', **kwargs):
+    def download(self, file, path: str = "", **kwargs):
         """Output streamed GET request to file."""
         for chunk in self.stream(path=path, **kwargs):
             file.write(chunk)
         return file
 
-    def authorize(self, path: str = '', **kwargs) -> dict:
+    def authorize(self, path: str = "", **kwargs) -> dict:
         """Acquire oauth access token and set `Authorization` header."""
-        method = 'GET' if {'json', 'data'}.isdisjoint(kwargs) else 'POST'
+        method = "GET" if {"json", "data"}.isdisjoint(kwargs) else "POST"
         result = self.request(method, path, **kwargs)
-        self.headers['authorization'] = f"{result['token_type']} {result['access_token']}"
+        self.headers["authorization"] = f"{result['token_type']} {result['access_token']}"
         return result
 
 
@@ -202,10 +202,10 @@ class Remote(Client):
         self.json = dict(json)
 
     @classmethod
-    def clone(cls, other, path=''):
+    def clone(cls, other, path=""):
         return Client.clone.__func__(cls, other, path, json=other.json)
 
-    def __call__(self, path: str = '', **json):
+    def __call__(self, path: str = "", **json):
         """POST request with json body and [check][clients.base.Remote.check] result."""
         response = self.post(path, json=dict(self.json, **json)).raise_for_status()
         return self.check(response.json())
@@ -224,9 +224,9 @@ class Graph(Remote):
     @classmethod
     def check(cls, result: dict):
         """Return `data` or raise `errors`."""
-        for error in result.get('errors', ()):
+        for error in result.get("errors", ()):
             raise cls.Error(error)
-        return result.get('data')
+        return result.get("data")
 
     def execute(self, query: str, **variables):
         """Execute query over POST."""
@@ -269,11 +269,11 @@ class Proxy(Client):
     Stats = Stats
 
     def __init__(self, *urls: str, **kwargs):
-        super().__init__('https://proxies', **kwargs)
-        self.urls = {(url.rstrip('/') + '/'): self.Stats() for url in urls}
+        super().__init__("https://proxies", **kwargs)
+        self.urls = {(url.rstrip("/") + "/"): self.Stats() for url in urls}
 
     @classmethod
-    def clone(cls, other, path=''):
+    def clone(cls, other, path=""):
         urls = (urljoin(url, path) for url in other.urls)
         return cls(*urls, trailing=other.trailing, **other._attrs)
 
@@ -284,7 +284,7 @@ class Proxy(Client):
         None may be used to eliminate from consideration.
         """
         stats = self.urls[url]
-        return tuple(stats[key] for key in ('errors', 'failures', 'connections'))
+        return tuple(stats[key] for key in ("errors", "failures", "connections"))
 
     def choice(self, method: str) -> str:
         """Return chosen url according to priority.

@@ -49,4 +49,4 @@ branch = true
 
 [dependency-groups]
 dev = ["pytest-cov", "pytest-httpbin>=0.10.2", "pytest-asyncio>=0.17"]
-docs = ["mkdocstrings[python]", "mkdocs-material"]
+docs = ["zensical", "mkdocstrings[python]"]

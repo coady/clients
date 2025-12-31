@@ -1,0 +1,30 @@
+[project]
+site_name = "clients"
+site_description = "High-level HTTP clients for Python."
+site_url = "https://coady.github.io/clients/"
+
+repo_name = "coady/clients"
+repo_url = "https://github.com/coady/clients"
+
+[project.theme]
+features = [
+    "content.code.annotate",
+    "content.code.copy",
+    "content.code.select",
+    "content.footnote.tooltips",
+    "navigation.instant",
+    "navigation.instant.prefetch",
+    "search.highlight",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle = { icon = "lucide/sun", name = "Switch to dark mode" }
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle = { icon = "lucide/moon", name = "Switch to light mode" }
+
+[project.plugins.mkdocstrings.handlers.python]

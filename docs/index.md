@@ -1,4 +1,4 @@
-## Quickstart
+# Introduction
 
 Typical [requests](https://python-requests.org) usage has falling into some anti-patterns.
 

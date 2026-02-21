@@ -33,10 +33,12 @@ Issues = "https://github.com/coady/clients/issues"
 line-length = 100
 
 [tool.ruff.lint]
-select = ["I"]
+extend-select = ["I"]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
 
 [tool.ty.rules]
-# unused-ignore-comment = "error"
 invalid-method-override = "ignore"
 unresolved-import = "ignore"
 

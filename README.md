@@ -13,7 +13,7 @@ Clients originally provided [requests](https://python-requests.org) wrappers to 
 * support a base url so that requests can provide a relative path
 * provide the same interface for asyncio
 
-Since then [httpx](https://www.encode.io/httpx) has emerged as the successor to `requests`, and supports the above features natively. So `clients.Client` can be replaced with `httpx.Client` for most use cases. The project will continue to be maintained for additional features, such as the `Resource` object.
+Since then [httpx(2)](https://httpx2.pydantic.dev) has emerged as the successor to `requests`, and supports the above features natively. So `clients.Client` can be replaced with `httpx.Client` for most use cases. The project will continue to be maintained for additional features, such as the `Resource` object.
 
 ## Usage
 Typical `requests` usage is redundant and inefficient, by not taking advantage of connection pooling.
@@ -65,7 +65,7 @@ pip install clients
 ```
 
 ## Dependencies
-* httpx
+* httpx2
 
 ## Tests
 100% branch coverage.

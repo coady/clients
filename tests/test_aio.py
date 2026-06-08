@@ -2,7 +2,7 @@ import asyncio
 import json
 import operator
 
-import httpx
+import httpx2 as httpx
 import pytest
 
 import clients

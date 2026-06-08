@@ -4,7 +4,7 @@ import pytest
 
 
 def pytest_report_header(config):
-    return "httpx: " + metadata.version("httpx")
+    return "httpx2: " + metadata.version("httpx2")
 
 
 @pytest.fixture

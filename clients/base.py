@@ -9,7 +9,7 @@ from collections.abc import Callable, Iterator, Mapping
 from typing import Self
 from urllib.parse import urljoin
 
-import httpx
+import httpx2 as httpx
 
 
 def content_type(response, **patterns):

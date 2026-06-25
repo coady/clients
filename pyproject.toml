@@ -5,7 +5,7 @@ description = "High-level HTTP clients for Python."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
-authors = [{name = "Aric Coady", email = "aric.coady@gmail.com"}]
+authors = [{name = "A. Coady"}]
 keywords = ["requests", "sessions", "responses", "resources", "asyncio"]
 classifiers = [
     "Development Status :: 6 - Mature",
@@ -51,4 +51,4 @@ branch = true
 
 [dependency-groups]
 dev = ["pytest-cov", "pytest-httpbin>=0.10.2", "pytest-asyncio>=0.17"]
-docs = ["zensical", "mkdocstrings[python]"]
+docs = ["great-docs"]

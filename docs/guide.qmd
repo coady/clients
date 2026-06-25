@@ -1,4 +1,6 @@
-# Introduction
+---
+title: Guide
+---
 
 Typical [requests](https://python-requests.org) usage has falling into some anti-patterns.
 
@@ -6,7 +8,7 @@ Typical [requests](https://python-requests.org) usage has falling into some anti
 * The module level methods don't take advantage of connection pooling, and require duplicate settings. Given the "100% automatic" documentation of connection reuse, it's unclear how widely known this is.
 * Using a `Session` requires assigning every setting individually, and still requires url joining.
 
-[Clients](reference.md#clients.Client) aim to be encourage best practices while still being convenient. Examples use the [httpbin](http://httpbin.org) client testing service.
+[Clients](../reference/Client.qmd) aim to be encourage best practices while still being convenient. Examples use the [httpbin](http://httpbin.org) client testing service.
 
 ```python
 client = clients.Client(url, auth=('user', 'pass'), headers={'x-test': 'true'})
@@ -23,7 +25,7 @@ assert r.json() == {'cookies': {'sessioncookie': '123456789'}}
 
 Which reveals another anti-pattern regarding `Response` objects. Although the response object is sometimes required, naturally the most common use case is to access the content. But the onus is on the caller to check the `status_code` and `content-type`.
 
-[Resources](reference.md#clients.Resource) aim to making writing custom api clients or sdks easier. Their primary feature is to allow direct content access without silencing errors. Response content type is inferred from headers: `json`, `content`, or `text`.
+[Resources](../reference/Resource.qmd) aim to making writing custom api clients or sdks easier. Their primary feature is to allow direct content access without silencing errors. Response content type is inferred from headers: `json`, `content`, or `text`.
 
 ```python
 resource = clients.Resource(url)
@@ -59,7 +61,7 @@ Note `trailing` isn\'t limited to only being a slash. This can be useful for sta
 
 ## Asyncio
 
-[AsyncClients](reference.md#clients.AsyncClient) and [AsyncResources](reference.md#clients.AsyncResource) implement the same interface, except the request methods return asyncio [coroutines](https://docs.python.org/3/library/asyncio-task.html#coroutines).
+[AsyncClients](../reference/AsyncClient.qmd) and [AsyncResources](../reference/AsyncResource.qmd) implement the same interface, except the request methods return asyncio [coroutines](https://docs.python.org/3/library/asyncio-task.html#coroutines).
 
 ## Avant-garde Usage
 
@@ -103,7 +105,7 @@ file = resource.download(io.BytesIO(), 'image/png')
 assert file.tell()
 ```
 
-A [singleton](reference.md#clients.singleton) decorator can be used on subclasses, conveniently creating a single custom instance.
+A [singleton](../reference/singleton.qmd) decorator can be used on subclasses, conveniently creating a single custom instance.
 
 ```python
 @clients.singleton('http://localhost/')
@@ -114,8 +116,8 @@ assert isinstance(custom_api, clients.Resource)
 assert custom_api.url == 'http://localhost/'
 ```
 
-[Remote](reference.md#clients.Remote) and [AsyncRemote](reference.md#clients.AsyncRemote) clients default to POSTs with json bodies, for APIs which are more RPC than REST.
+[Remote](../reference/Remote.qmd) and [AsyncRemote](../reference/AsyncRemote.qmd) clients default to POSTs with json bodies, for APIs which are more RPC than REST.
 
-[Graph](reference.md#clients.Graph) and [AsyncGraph](reference.md#clients.AsyncGraph) remote clients execute GraphQL queries.
+[Graph](../reference/Graph.qmd) and [AsyncGraph](../reference/AsyncGraph.qmd) remote clients execute GraphQL queries.
 
-[Proxy](reference.md#clients.Proxy) and [AsyncProxy](reference.md#clients.AsyncProxy) clients provide load-balancing across multiple hosts, with an extensible interface for different algorithms.
+[Proxy](../reference/Proxy.qmd) and [AsyncProxy](../reference/AsyncProxy.qmd) clients provide load-balancing across multiple hosts, with an extensible interface for different algorithms.

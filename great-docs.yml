@@ -1,0 +1,29 @@
+user_guide: docs
+parser: google
+inline_methods: true
+
+authors:
+- name: A. Coady
+  github: coady
+
+reference:
+- title: Base
+  contents:
+  - base.BaseClient
+- title: Clients
+  contents:
+  - Client
+  - Resource
+  - Remote
+  - Graph
+  - Proxy
+- title: Async
+  contents:
+  - AsyncClient
+  - AsyncResource
+  - AsyncRemote
+  - AsyncGraph
+  - AsyncProxy
+- title: Utilities
+  contents:
+  - singleton

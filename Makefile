@@ -7,4 +7,4 @@ lint:
 	uvx ty check clients
 
 html:
-	uv run --group docs zensical build
+	uv run --group docs great-docs build

@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## Unreleased
+
+## [1.6](https://pypi.org/project/clients/1.6/) - 2026-07-22
 ### Changed
 * Python >=3.11 required
+* httpx2 required
 
 ## [1.5.1](https://pypi.org/project/clients/1.5.1/) - 2025-10-27
 ### Changed

@@ -19,41 +19,41 @@ Since then [httpx(2)](https://httpx2.pydantic.dev) has emerged as the successor 
 Typical `requests` usage is redundant and inefficient, by not taking advantage of connection pooling.
 
 ```python
-r = requests.get('https://api.github.com/user', headers={'authorization': token})
-r = requests.get('https://api.github.com/user/repos', headers={'authorization': token})
+r = requests.get("https://api.github.com/user", headers={"authorization": token})
+r = requests.get("https://api.github.com/user/repos", headers={"authorization": token})
 ```
 
 Using sessions is the better approach, but more verbose and in practice requires manual url joining.
 
 ```python
 s = requests.Session()
-s.headers['authorization'] = token
-r = s.get('https://api.github.com/user')
-r = s.get('https://api.github.com/user/repos')
+s.headers["authorization"] = token
+r = s.get("https://api.github.com/user")
+r = s.get("https://api.github.com/user/repos")
 ```
 
 ### Client
 Clients make using sessions easier, with implicit url joining.
 
 ```python
-client = clients.Client('https://api.github.com/', headers={'authorization': token})
-r = client.get('user')
-r = client.get('user/repos')
+client = clients.Client("https://api.github.com/", headers={"authorization": token})
+r = client.get("user")
+r = client.get("user/repos")
 ```
 
 ### Resource
 Resources extend Clients to implicitly handle response content, with proper checking of status_code and content-type.
 
 ```python
-github = clients.Resource('https://api.github.com/', headers={'authorization': token})
-for repo in github.get('user/repos', params={'visibility': 'public'}):
+github = clients.Resource("https://api.github.com/", headers={"authorization": token})
+for repo in github.get("user/repos", params={"visibility": "public"}):
     ...
 ```
 
 Resources also implement syntactic support for methods such as __getattr__ and __call__, providing most of the benefits of custom clients as is.
 
 ```python
-for repo in github.user.repos(visibility='public'):
+for repo in github.user.repos(visibility="public"):
     ...
 ```
 

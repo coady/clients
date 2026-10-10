@@ -206,12 +206,12 @@ class Remote(Client):
         return Client.clone.__func__(cls, other, path, json=other.json)
 
     def __call__(self, path: str = "", **json):
-        """POST request with json body and [check][clients.base.Remote.check] result."""
+        """POST request with json body and `check` result."""
         response = self.post(path, json=dict(self.json, **json)).raise_for_status()
         return self.check(response.json())
 
-    @staticmethod
-    def check(result):
+    @classmethod
+    def check(cls, result):
         """Override to return result or raise error, for APIs which don't use status codes."""
         return result
 
